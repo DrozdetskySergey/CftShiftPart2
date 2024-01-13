@@ -1,0 +1,22 @@
+package ru.cft.drozdetskiy.statistics.impl;
+
+import ru.cft.drozdetskiy.statistics.Statistics;
+import ru.cft.drozdetskiy.statistics.StatisticsFactory;
+
+public class SimpleStatisticsFactory implements StatisticsFactory {
+
+    @Override
+    public Statistics<Long> createForInteger() {
+        return new SimpleLongsStatistics();
+    }
+
+    @Override
+    public Statistics<Double> createForDouble() {
+        return new SimpleDoublesStatistics();
+    }
+
+    @Override
+    public Statistics<String> createForString() {
+        return new SimpleStringsStatistics();
+    }
+}
