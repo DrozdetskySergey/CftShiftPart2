@@ -40,10 +40,9 @@ class FullDoublesStatistics implements Statistics<Double> {
 
         if (count > 0) {
             Double average = (sum.divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN)).doubleValue();
-            sum = sum.setScale(8, RoundingMode.HALF_EVEN);
-            result += String.format("| Минимальное значение = %.8f%n", min) +
-                    String.format("| Максимальное значение = %.8f%n", max) +
-                    String.format("| Среднее арифметическое значение = %.8f%n", average) +
+            result += String.format("| Минимальное значение = %f%n", min) +
+                    String.format("| Максимальное значение = %f%n", max) +
+                    String.format("| Среднее арифметическое значение = %f%n", average) +
                     String.format("| Сумма всех элементов = %s%n", sum.toString());
         }
 
