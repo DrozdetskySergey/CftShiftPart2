@@ -1,4 +1,4 @@
-package ru.cft.drozdetskiy;
+package ru.cft.drozdetskiy.writer;
 
 import ru.cft.drozdetskiy.buffer.Buffer;
 
