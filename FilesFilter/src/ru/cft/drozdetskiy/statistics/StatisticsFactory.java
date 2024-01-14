@@ -2,7 +2,7 @@ package ru.cft.drozdetskiy.statistics;
 
 public interface StatisticsFactory {
 
-    Statistics<Long> createForInteger();
+    Statistics<Long> createForLong();
 
     Statistics<Double> createForDouble();
 

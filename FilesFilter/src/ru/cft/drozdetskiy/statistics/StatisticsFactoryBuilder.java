@@ -6,7 +6,7 @@ import ru.cft.drozdetskiy.statistics.impl.SimpleStatisticsFactory;
 public class StatisticsFactoryBuilder {
 
     public static StatisticsFactory buildFactory(StatisticsType type) throws StatisticsException {
-        StatisticsFactory result = null;
+        StatisticsFactory result;
 
         if (type == StatisticsType.SIMPLE) {
             result = new SimpleStatisticsFactory();

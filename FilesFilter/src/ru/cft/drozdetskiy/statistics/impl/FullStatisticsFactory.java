@@ -6,7 +6,7 @@ import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 public class FullStatisticsFactory implements StatisticsFactory {
 
     @Override
-    public Statistics<Long> createForInteger() {
+    public Statistics<Long> createForLong() {
         return new FullLongsStatistics();
     }
 
