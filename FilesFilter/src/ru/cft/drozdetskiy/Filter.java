@@ -6,27 +6,27 @@ import ru.cft.drozdetskiy.supplier.StringSupplier;
 class Filter {
 
     public static void divide(StringSupplier supplier,
-                              Buffer<Integer> integerBuffer,
+                              Buffer<Long> longBuffer,
                               Buffer<Double> doubleBuffer,
                               Buffer<String> stringBuffer) {
         for (String s = supplier.next(); s != null; s = supplier.next()) {
             FilterType type = FilterType.STRING;
-            Double number = null;
-            Integer integer = null;
+            Double realNumber = null;
+            Long intNumber = null;
 
             try {
-                number = Double.valueOf(s);
+                realNumber = Double.valueOf(s);
                 type = FilterType.DOUBLE;
-                integer = Integer.valueOf(s);
-                type = FilterType.INTEGER;
+                intNumber = Long.valueOf(s);
+                type = FilterType.LONG;
             } catch (NumberFormatException ignored) {
-                // is not Integer (100%)
+                // is not Long (100%)
             }
 
-            if (type == FilterType.INTEGER) {
-                integerBuffer.add(integer);
+            if (type == FilterType.LONG) {
+                longBuffer.add(intNumber);
             } else if (type == FilterType.DOUBLE) {
-                doubleBuffer.add(number);
+                doubleBuffer.add(realNumber);
             } else {
                 stringBuffer.add(s);
             }
