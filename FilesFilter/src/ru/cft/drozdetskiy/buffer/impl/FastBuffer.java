@@ -23,11 +23,6 @@ public class FastBuffer<T> implements Buffer<T> {
     }
 
     @Override
-    public boolean isNotEmpty() {
-        return queue.size() > 0;
-    }
-
-    @Override
     public T get() {
         return queue.poll();
     }
