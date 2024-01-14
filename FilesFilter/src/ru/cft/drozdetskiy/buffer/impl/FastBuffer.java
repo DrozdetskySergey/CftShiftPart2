@@ -28,6 +28,11 @@ public class FastBuffer<T> implements Buffer<T> {
     }
 
     @Override
+    public int size() {
+        return queue.size();
+    }
+
+    @Override
     public String getStatisticsInfo() {
         return statistics.getInfo();
     }
