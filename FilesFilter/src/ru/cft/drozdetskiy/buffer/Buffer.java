@@ -4,9 +4,11 @@ public interface Buffer<T> {
 
     void add(T value);
 
-    boolean hasNext();
+    T removeLast();
 
-    T next();
+    boolean isNotEmpty();
+
+    T getFirst();
 
     String getStatisticsInfo();
 }
