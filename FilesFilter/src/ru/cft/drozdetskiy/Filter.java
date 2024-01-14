@@ -1,4 +1,4 @@
-package ru.cft.drozdetskiy.filter;
+package ru.cft.drozdetskiy;
 
 import ru.cft.drozdetskiy.buffer.Buffer;
 import ru.cft.drozdetskiy.supplier.StringSupplier;
