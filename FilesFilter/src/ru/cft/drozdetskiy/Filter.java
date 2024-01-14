@@ -3,7 +3,7 @@ package ru.cft.drozdetskiy;
 import ru.cft.drozdetskiy.buffer.Buffer;
 import ru.cft.drozdetskiy.supplier.StringSupplier;
 
-public class Filter {
+class Filter {
 
     public static void divide(StringSupplier supplier,
                               Buffer<Integer> integerBuffer,
