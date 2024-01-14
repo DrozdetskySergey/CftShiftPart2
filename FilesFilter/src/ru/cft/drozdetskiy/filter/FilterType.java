@@ -1,4 +1,4 @@
-package ru.cft.drozdetskiy.util;
+package ru.cft.drozdetskiy.filter;
 
 public enum FilterType {
 

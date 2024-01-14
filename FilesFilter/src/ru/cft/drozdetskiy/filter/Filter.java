@@ -1,4 +1,4 @@
-package ru.cft.drozdetskiy.util;
+package ru.cft.drozdetskiy.filter;
 
 import ru.cft.drozdetskiy.buffer.Buffer;
 import ru.cft.drozdetskiy.supplier.StringSupplier;
@@ -20,6 +20,7 @@ public class Filter {
                 integer = Integer.valueOf(s);
                 type = FilterType.INTEGER;
             } catch (NumberFormatException ignored) {
+                // is not Integer (100%)
             }
 
             if (type == FilterType.INTEGER) {
