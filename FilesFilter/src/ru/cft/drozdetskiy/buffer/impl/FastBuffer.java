@@ -3,38 +3,33 @@ package ru.cft.drozdetskiy.buffer.impl;
 import ru.cft.drozdetskiy.buffer.Buffer;
 import ru.cft.drozdetskiy.statistics.Statistics;
 
-import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Queue;
 
 public class FastBuffer<T> implements Buffer<T> {
 
     private final Statistics<T> statistics;
-    private final Deque<T> deque;
+    private final Queue<T> queue;
 
     public FastBuffer(Statistics<T> statistics) {
         this.statistics = statistics;
-        deque = new LinkedList<>();
+        queue = new LinkedList<>();
     }
 
     @Override
     public void add(T value) {
         statistics.include(value);
-        deque.offer(value);
-    }
-
-    @Override
-    public T removeLast() {
-        return deque.pollLast();
+        queue.offer(value);
     }
 
     @Override
     public boolean isNotEmpty() {
-        return deque.size() > 0;
+        return queue.size() > 0;
     }
 
     @Override
-    public T getFirst() {
-        return deque.pollFirst();
+    public T get() {
+        return queue.poll();
     }
 
     @Override

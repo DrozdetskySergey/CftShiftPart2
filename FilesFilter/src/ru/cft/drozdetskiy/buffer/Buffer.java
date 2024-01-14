@@ -4,11 +4,9 @@ public interface Buffer<T> {
 
     void add(T value);
 
-    T removeLast();
-
     boolean isNotEmpty();
 
-    T getFirst();
+    T get();
 
     String getStatisticsInfo();
 }
