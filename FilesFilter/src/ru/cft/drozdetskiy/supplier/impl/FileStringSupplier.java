@@ -5,7 +5,7 @@ import ru.cft.drozdetskiy.supplier.StringSupplier;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,15 +14,15 @@ public class FileStringSupplier implements StringSupplier {
     private final List<BufferedReader> readers;
     private int index = 0;
 
-    public FileStringSupplier(List<Path> files) {
+    public FileStringSupplier(List<String> files) {
         readers = new ArrayList<>(files.size());
 
-        for (Path p : files) {
+        for (String s : files) {
             try {
-                BufferedReader reader = Files.newBufferedReader(p);
+                BufferedReader reader = Files.newBufferedReader(Paths.get(s));
                 readers.add(reader);
             } catch (IOException e) {
-                System.out.printf("Не удалось для чтения открыть файл: %s%n", p.getFileName());
+                System.out.printf("Не удалось открыть файл для чтения: %s%n", s);
             }
         }
     }
