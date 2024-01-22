@@ -36,16 +36,16 @@ class FullDoublesStatistics implements Statistics<Double> {
 
     @Override
     public String getInfo() {
-        String result = String.format("Количество элементов типа Double = %d%n", count);
+        StringBuilder result = new StringBuilder(String.format("Количество элементов типа Double = %d%n", count));
 
         if (count > 0) {
             Double average = (sum.divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN)).doubleValue();
-            result += String.format("| Минимальное значение = %f%n", min) +
-                    String.format("| Максимальное значение = %f%n", max) +
-                    String.format("| Среднее арифметическое значение = %f%n", average) +
-                    String.format("| Сумма всех элементов = %s%n", sum.toString());
+            result.append(String.format("| Минимальное значение = %f%n", min));
+            result.append(String.format("| Максимальное значение = %f%n", max));
+            result.append(String.format("| Среднее арифметическое значение = %f%n", average));
+            result.append(String.format("| Сумма всех элементов = %s%n", sum.toString()));
         }
 
-        return result;
+        return result.toString();
     }
 }

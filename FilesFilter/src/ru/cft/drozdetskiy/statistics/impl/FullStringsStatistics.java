@@ -28,13 +28,13 @@ public class FullStringsStatistics implements Statistics<String> {
 
     @Override
     public String getInfo() {
-        String result = String.format("Количество элементов типа String = %d%n", count);
+        StringBuilder result = new StringBuilder(String.format("Количество элементов типа String = %d%n", count));
 
         if (count > 0) {
-            result += String.format("| Минимальная длина строки = %d%n", minLength) +
-                    String.format("| Максимальная длина строки = %d%n", maxLength);
+            result.append(String.format("| Минимальная длина строки = %d%n", minLength));
+            result.append(String.format("| Максимальная длина строки = %d%n", maxLength));
         }
 
-        return result;
+        return result.toString();
     }
 }

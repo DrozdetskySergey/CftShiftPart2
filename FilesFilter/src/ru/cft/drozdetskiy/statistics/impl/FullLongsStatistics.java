@@ -35,16 +35,16 @@ class FullLongsStatistics implements Statistics<Long> {
 
     @Override
     public String getInfo() {
-        String result = String.format("Количество элементов типа Long = %d%n", count);
+        StringBuilder result = new StringBuilder(String.format("Количество элементов типа Long = %d%n", count));
 
         if (count > 0) {
             long average = (sum.divide(BigInteger.valueOf(count))).longValue();
-            result += String.format("| Минимальное значение = %d%n", min) +
-                    String.format("| Максимальное значение = %d%n", max) +
-                    String.format("| Среднее арифметическое значение = %d%n", average) +
-                    String.format("| Сумма всех элементов = %s%n", sum.toString());
+            result.append(String.format("| Минимальное значение = %d%n", min));
+            result.append(String.format("| Максимальное значение = %d%n", max));
+            result.append(String.format("| Среднее арифметическое значение = %d%n", average));
+            result.append(String.format("| Сумма всех элементов = %s%n", sum.toString()));
         }
 
-        return result;
+        return result.toString();
     }
 }
