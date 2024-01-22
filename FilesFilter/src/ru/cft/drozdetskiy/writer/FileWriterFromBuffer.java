@@ -3,24 +3,31 @@ package ru.cft.drozdetskiy.writer;
 import ru.cft.drozdetskiy.buffer.Buffer;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
 public class FileWriterFromBuffer<T> {
 
-    private final String file;
-    private final Buffer<T> buffer;
-    private final boolean isAppend;
+    private static final OpenOption[] WRITE_OPTIONS =
+            {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
+    private static final OpenOption[] APPEND_OPTIONS =
+            {StandardOpenOption.CREATE, StandardOpenOption.APPEND};
 
-    public FileWriterFromBuffer(String file, Buffer<T> buffer, boolean isAppend) {
+    private final Path file;
+    private final Buffer<T> buffer;
+    private final OpenOption[] openOptions;
+
+    public FileWriterFromBuffer(Path file, Buffer<T> buffer, boolean isAppend) {
         this.file = file;
         this.buffer = buffer;
-        this.isAppend = isAppend;
+        openOptions = isAppend ? APPEND_OPTIONS : WRITE_OPTIONS;
     }
 
     public void run() {
-        try (FileWriter writer = new FileWriter(file, isAppend);
-             BufferedWriter bufferWriter = new BufferedWriter(writer)) {
+        try (BufferedWriter bufferWriter = Files.newBufferedWriter(file, openOptions)) {
             for (T value = buffer.get(); value != null; value = buffer.get()) {
                 bufferWriter.write(String.format("%s%n", value.toString()));
             }
