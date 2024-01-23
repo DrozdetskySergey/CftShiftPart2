@@ -78,16 +78,13 @@ public class Parser {
 
         for (String s : arguments) {
             if (s.startsWith("-")) {
-                char[] symbols = s.substring(1).toCharArray();
+                for (int i = 1; i < s.length(); i++) {
+                    char key = s.charAt(i);
+                    result.add("-" + key);
 
-                for (int i = 0; i < symbols.length; i++) {
-                    result.add("-" + symbols[i]);
-
-                    if (symbols[i] == SET_FOLDER.symbol || symbols[i] == SET_PREFIX.symbol) {
-                        if (i < symbols.length - 1) {
-                            result.add(s.substring(i + 1));
-                            break;
-                        }
+                    if ((key == SET_FOLDER.symbol || key == SET_PREFIX.symbol) && (i < s.length() - 1)) {
+                        result.add(s.substring(i + 1));
+                        break;
                     }
                 }
             } else {
