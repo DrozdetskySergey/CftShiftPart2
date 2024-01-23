@@ -26,9 +26,9 @@ public class Main {
 
             Filter.divide(supplier, longBuffer, doubleBuffer, stringBuffer);
 
-            System.out.println(longBuffer.getStatisticsInfo());
-            System.out.println(doubleBuffer.getStatisticsInfo());
-            System.out.println(stringBuffer.getStatisticsInfo());
+            System.out.print(longBuffer.getStatisticsInfo());
+            System.out.print(doubleBuffer.getStatisticsInfo());
+            System.out.print(stringBuffer.getStatisticsInfo());
 
             String folder = parser.getFolder() + "\\";
 
@@ -50,7 +50,7 @@ public class Main {
         if (buffer.size() > 0) {
             Path path = Paths.get(absoluteFileName);
             FileWriter<T> writer = new FileWriter<>(path, buffer, isAppend);
-            writer.run();
+            writer.write();
         }
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 public class FileStringSupplier implements StringSupplier {
 
     private final List<BufferedReader> readers = new ArrayList<>();
-    private int index = 0;
+    private int index;
 
     public FileStringSupplier(List<String> files) {
         for (String s : files) {
