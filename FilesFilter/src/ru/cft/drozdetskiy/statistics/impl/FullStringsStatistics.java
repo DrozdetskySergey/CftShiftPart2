@@ -4,14 +4,9 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 
 public class FullStringsStatistics implements Statistics<String> {
 
-    private int minLength;
-    private int maxLength;
+    private int minLength = Integer.MAX_VALUE;
+    private int maxLength = Integer.MIN_VALUE;
     private int count;
-
-    public FullStringsStatistics() {
-        minLength = Integer.MAX_VALUE;
-        maxLength = Integer.MIN_VALUE;
-    }
 
     @Override
     public void include(String value) {

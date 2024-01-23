@@ -7,16 +7,10 @@ import java.math.RoundingMode;
 
 class FullDoublesStatistics implements Statistics<Double> {
 
-    private double min;
-    private double max;
-    private BigDecimal sum;
+    private double min = Double.MAX_VALUE;
+    private double max = Double.MIN_VALUE;
+    private BigDecimal sum = BigDecimal.ZERO;
     private int count;
-
-    public FullDoublesStatistics() {
-        min = Double.MAX_VALUE;
-        max = Double.MIN_VALUE;
-        sum = BigDecimal.ZERO;
-    }
 
     @Override
     public void include(Double value) {

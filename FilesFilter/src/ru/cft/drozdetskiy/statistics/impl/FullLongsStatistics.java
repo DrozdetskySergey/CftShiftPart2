@@ -6,16 +6,10 @@ import java.math.BigInteger;
 
 class FullLongsStatistics implements Statistics<Long> {
 
-    private long min;
-    private long max;
-    private BigInteger sum;
+    private long min = Long.MAX_VALUE;
+    private long max = Long.MIN_VALUE;
+    private BigInteger sum = BigInteger.ZERO;
     private int count;
-
-    public FullLongsStatistics() {
-        min = Long.MAX_VALUE;
-        max = Long.MIN_VALUE;
-        sum = BigInteger.ZERO;
-    }
 
     @Override
     public void include(Long value) {
