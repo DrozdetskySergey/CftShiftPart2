@@ -8,13 +8,13 @@ enum Key {
     SIMPLE_STAT('s'),
     FULL_STAT('f');
 
-    final char symbol;
+    final char key;
 
-    Key(char symbol) {
-        this.symbol = symbol;
+    Key(char key) {
+        this.key = key;
     }
 
-    public char symbol() {
-        return symbol;
+    public char key() {
+        return key;
     }
 }
