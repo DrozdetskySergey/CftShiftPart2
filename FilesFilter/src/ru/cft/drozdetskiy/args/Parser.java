@@ -26,16 +26,20 @@ public class Parser {
             if (arguments.get(i).startsWith("-")) {
                 char key = arguments.get(i).charAt(1);
 
-                if (key == APPEND_FILES.symbol) {
+                if (key == APPEND_FILES.key) {
                     isAppend = true;
-                } else if (key == SIMPLE_STAT.symbol) {
+                } else if (key == SIMPLE_STAT.key) {
                     statisticsType = StatisticsType.SIMPLE;
-                } else if (key == FULL_STAT.symbol) {
+                } else if (key == FULL_STAT.key) {
                     statisticsType = StatisticsType.FULL;
-                } else if (key == SET_FOLDER.symbol && i < arguments.size() - 1 && !arguments.get(i + 1).startsWith("-")) {
-                    folder = arguments.get(++i);
-                } else if (key == SET_PREFIX.symbol && i < arguments.size() - 1 && !arguments.get(i + 1).startsWith("-")) {
-                    prefix = arguments.get(++i);
+                } else if (key == SET_FOLDER.key) {
+                    if (i < arguments.size() - 1 && !arguments.get(i + 1).startsWith("-")) {
+                        folder = arguments.get(++i);
+                    }
+                } else if (key == SET_PREFIX.key) {
+                    if (i < arguments.size() - 1 && !arguments.get(i + 1).startsWith("-")) {
+                        prefix = arguments.get(++i);
+                    }
                 } else {
                     System.out.printf("Не известный параметр: %c%n", key);
                 }
@@ -82,7 +86,7 @@ public class Parser {
                     char key = s.charAt(i);
                     result.add("-" + key);
 
-                    if ((key == SET_FOLDER.symbol || key == SET_PREFIX.symbol) && (i < s.length() - 1)) {
+                    if ((key == SET_FOLDER.key || key == SET_PREFIX.key) && (i < s.length() - 1)) {
                         result.add(s.substring(i + 1));
                         break;
                     }
