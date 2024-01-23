@@ -2,19 +2,19 @@ package ru.cft.drozdetskiy.args;
 
 enum Key {
 
-    SET_FOLDER("-o"),
-    SET_PREFIX("-p"),
-    APPEND_FILES("-a"),
-    SIMPLE_STAT("-s"),
-    FULL_STAT("-f");
+    SET_FOLDER('o'),
+    SET_PREFIX('p'),
+    APPEND_FILES('a'),
+    SIMPLE_STAT('s'),
+    FULL_STAT('f');
 
-    final String key;
+    final char symbol;
 
-    Key(String key) {
-        this.key = key;
+    Key(char symbol) {
+        this.symbol = symbol;
     }
 
-    public String key() {
-        return key;
+    public char symbol() {
+        return symbol;
     }
 }
