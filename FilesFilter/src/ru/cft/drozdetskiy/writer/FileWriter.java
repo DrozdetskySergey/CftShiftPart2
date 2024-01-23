@@ -9,7 +9,7 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-public class FileWriterFromBuffer<T> {
+public class FileWriter<T> {
 
     private static final OpenOption[] WRITE_OPTIONS =
             {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
@@ -20,7 +20,7 @@ public class FileWriterFromBuffer<T> {
     private final Buffer<T> buffer;
     private final OpenOption[] openOptions;
 
-    public FileWriterFromBuffer(Path file, Buffer<T> buffer, boolean isAppend) {
+    public FileWriter(Path file, Buffer<T> buffer, boolean isAppend) {
         this.file = file;
         this.buffer = buffer;
         openOptions = isAppend ? APPEND_OPTIONS : WRITE_OPTIONS;
