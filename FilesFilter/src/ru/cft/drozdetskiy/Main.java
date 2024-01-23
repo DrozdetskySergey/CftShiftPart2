@@ -7,7 +7,7 @@ import ru.cft.drozdetskiy.statistics.StatisticsFactoryBuilder;
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 import ru.cft.drozdetskiy.supplier.StringSupplier;
 import ru.cft.drozdetskiy.supplier.impl.FileStringSupplier;
-import ru.cft.drozdetskiy.writer.FileWriterFromBuffer;
+import ru.cft.drozdetskiy.writer.FileWriter;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,7 +20,7 @@ public class Main {
     public static void main(String[] args) {
         List<String> inputFiles = Arrays.asList("in1", "in2", "in3");
         StatisticsType statisticsType = StatisticsType.FULL;
-        boolean isAppend = true;
+        boolean isAppend = false;
         String prefix = "";
         String folder = "";
 
@@ -44,25 +44,19 @@ public class Main {
 
             Files.createDirectories(Paths.get(folder));
 
-            if (longBuffer.size() > 0) {
-                Path longFile = Paths.get(folder + prefix + "integers.txt");
-                FileWriterFromBuffer<Long> longWriter = new FileWriterFromBuffer<>(longFile, longBuffer, isAppend);
-                longWriter.run();
-            }
-
-            if (doubleBuffer.size() > 0) {
-                Path doubleFile = Paths.get(folder + prefix + "floats.txt");
-                FileWriterFromBuffer<Double> doubleWriter = new FileWriterFromBuffer<>(doubleFile, doubleBuffer, isAppend);
-                doubleWriter.run();
-            }
-
-            if (stringBuffer.size() > 0) {
-                Path stringFile = Paths.get(folder + prefix + "strings.txt");
-                FileWriterFromBuffer<String> stringWriter = new FileWriterFromBuffer<>(stringFile, stringBuffer, isAppend);
-                stringWriter.run();
-            }
+            writeFileFromBuffer(folder + prefix + "integers.txt", longBuffer, isAppend);
+            writeFileFromBuffer(folder + prefix + "floats.txt", doubleBuffer, isAppend);
+            writeFileFromBuffer(folder + prefix + "strings.txt", stringBuffer, isAppend);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    private static <T> void writeFileFromBuffer(String absoluteFileName, Buffer<T> buffer, boolean isAppend) {
+        if (buffer.size() > 0) {
+            Path path = Paths.get(absoluteFileName);
+            FileWriter<T> writer = new FileWriter<>(path, buffer, isAppend);
+            writer.run();
         }
     }
 }
