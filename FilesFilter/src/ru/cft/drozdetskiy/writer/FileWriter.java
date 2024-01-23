@@ -26,13 +26,13 @@ public class FileWriter<T> {
         openOptions = isAppend ? APPEND_OPTIONS : WRITE_OPTIONS;
     }
 
-    public void run() {
+    public void write() {
         try (BufferedWriter bufferWriter = Files.newBufferedWriter(file, openOptions)) {
             for (T value = buffer.get(); value != null; value = buffer.get()) {
                 bufferWriter.write(String.format("%s%n", value.toString()));
             }
         } catch (IOException e) {
-            System.out.printf("Сбой записи в файл: %s%n", file);
+            System.out.printf("Сбой записи в файл: %s. %s%n", file, e.getMessage());
         }
     }
 }
