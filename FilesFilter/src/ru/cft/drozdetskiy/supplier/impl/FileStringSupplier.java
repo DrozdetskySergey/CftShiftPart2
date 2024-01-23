@@ -11,18 +11,16 @@ import java.util.List;
 
 public class FileStringSupplier implements StringSupplier {
 
-    private final List<BufferedReader> readers;
+    private final List<BufferedReader> readers = new ArrayList<>();
     private int index = 0;
 
     public FileStringSupplier(List<String> files) {
-        readers = new ArrayList<>(files.size());
-
         for (String s : files) {
             try {
                 BufferedReader reader = Files.newBufferedReader(Paths.get(s));
                 readers.add(reader);
             } catch (IOException e) {
-                System.out.printf("Не удалось открыть файл для чтения: %s%n", s);
+                System.out.printf("Не удалось открыть файл для чтения: %s. %s%n", s, e.getMessage());
             }
         }
     }
