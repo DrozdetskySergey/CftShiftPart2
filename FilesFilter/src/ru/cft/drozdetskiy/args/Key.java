@@ -13,8 +13,4 @@ enum Key {
     Key(char key) {
         this.key = key;
     }
-
-    public char key() {
-        return key;
-    }
 }
