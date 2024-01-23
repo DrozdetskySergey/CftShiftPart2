@@ -9,11 +9,10 @@ import java.util.Queue;
 public class FastBuffer<T> implements Buffer<T> {
 
     private final Statistics<T> statistics;
-    private final Queue<T> queue;
+    private final Queue<T> queue = new LinkedList<>();
 
     public FastBuffer(Statistics<T> statistics) {
         this.statistics = statistics;
-        queue = new LinkedList<>();
     }
 
     @Override
