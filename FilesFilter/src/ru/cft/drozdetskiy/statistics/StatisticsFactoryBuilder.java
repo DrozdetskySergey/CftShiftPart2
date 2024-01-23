@@ -5,17 +5,7 @@ import ru.cft.drozdetskiy.statistics.impl.SimpleStatisticsFactory;
 
 public class StatisticsFactoryBuilder {
 
-    public static StatisticsFactory buildFactory(StatisticsType type) throws StatisticsException {
-        StatisticsFactory result;
-
-        if (type == StatisticsType.SIMPLE) {
-            result = new SimpleStatisticsFactory();
-        } else if (type == StatisticsType.FULL) {
-            result = new FullStatisticsFactory();
-        } else {
-            throw new StatisticsException("Не известный тип статистики.");
-        }
-
-        return result;
+    public static StatisticsFactory buildFactory(StatisticsType type) {
+        return type == StatisticsType.FULL ? new FullStatisticsFactory() : new SimpleStatisticsFactory();
     }
 }
