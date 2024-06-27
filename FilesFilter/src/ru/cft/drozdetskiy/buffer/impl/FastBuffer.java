@@ -27,7 +27,7 @@ public class FastBuffer<T> implements Buffer<T> {
     }
 
     @Override
-    public int size() {
+    public int getSize() {
         return queue.size();
     }
 

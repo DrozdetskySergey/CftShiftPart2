@@ -6,7 +6,7 @@ public interface Buffer<T> {
 
     T get();
 
-    int size();
+    int getSize();
 
     String getStatisticsInfo();
 }
