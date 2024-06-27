@@ -27,7 +27,7 @@
 либо в научной нотации.\
 Программа реализована на Java версия 11.\
 Используется библиотека Apache Commons Lang версия 3.14\
-https://commons.apache.org/proper/commons-lang/download_lang.cgi\
+https://commons.apache.org/proper/commons-lang
 ### Запуск
 Можно запустить с помощью команды:
 java -jar FilesFilter.jar [options] [files...]
