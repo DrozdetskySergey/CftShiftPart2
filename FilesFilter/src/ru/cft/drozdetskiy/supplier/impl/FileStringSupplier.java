@@ -20,7 +20,7 @@ public class FileStringSupplier implements StringSupplier {
                 BufferedReader reader = Files.newBufferedReader(Paths.get(s));
                 readers.add(reader);
             } catch (IOException e) {
-                System.out.printf("Не удалось открыть файл для чтения: %s. %s%n", s, e.getMessage());
+                System.out.printf("Не удалось открыть файл для чтения: %s%n", s);
             }
         }
     }
@@ -33,7 +33,7 @@ public class FileStringSupplier implements StringSupplier {
             try {
                 result = readers.get(index).readLine();
             } catch (IOException e) {
-                System.out.printf("Сбой чтения из потока. %s%n", e.getMessage());
+                System.out.printf("Сбой чтения из файла %s%n", e.getMessage());
             }
 
             if (result == null) {
@@ -62,7 +62,7 @@ public class FileStringSupplier implements StringSupplier {
             try {
                 reader.close();
             } catch (IOException e) {
-                System.out.printf("Сбой закрытия потока чтения. %s%n", e.getMessage());
+                System.out.printf("Сбой закрытия потока чтения из файла %s%n", e.getMessage());
             }
         }
     }
