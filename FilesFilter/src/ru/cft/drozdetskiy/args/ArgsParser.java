@@ -2,29 +2,31 @@ package ru.cft.drozdetskiy.args;
 
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static ru.cft.drozdetskiy.args.Key.*;
 
-public class Parser {
+public class ArgsParser {
 
     private final List<String> inputFiles = new ArrayList<>();
     private StatisticsType statisticsType = StatisticsType.SIMPLE;
     private boolean isAppend = false;
-    private String prefix = "";
-    private String folder = "";
+    private final StringBuilder prefix = new StringBuilder();
+    private final StringBuilder folder = new StringBuilder();
+    private final StringBuilder unknownKeys = new StringBuilder();
 
-    public Parser(String[] args) {
+    public ArgsParser(String[] args) {
         List<String> arguments = decompose(filter(args));
 
-        for (int i = 0; i < arguments.size(); i++) {
-            if (arguments.get(i).startsWith("-")) {
-                char key = arguments.get(i).charAt(1);
+        for (Iterator<String> iterator = arguments.iterator(); iterator.hasNext(); ) {
+            String argument = iterator.next();
+
+            if (isNotKey(argument)) {
+                inputFiles.add(argument);
+            } else {
+                char key = argument.charAt(1);
 
                 if (key == APPEND_FILES.key) {
                     isAppend = true;
@@ -32,19 +34,15 @@ public class Parser {
                     statisticsType = StatisticsType.SIMPLE;
                 } else if (key == FULL_STAT.key) {
                     statisticsType = StatisticsType.FULL;
-                } else if (key == SET_FOLDER.key) {
-                    if (i < arguments.size() - 1 && !arguments.get(i + 1).startsWith("-")) {
-                        folder = arguments.get(++i);
-                    }
-                } else if (key == SET_PREFIX.key) {
-                    if (i < arguments.size() - 1 && !arguments.get(i + 1).startsWith("-")) {
-                        prefix = arguments.get(++i);
-                    }
+                } else if (key == SET_FOLDER.key && iterator.hasNext()) {
+                    argument = iterator.next();
+                    folder.append(argument);
+                } else if (key == SET_PREFIX.key && iterator.hasNext()) {
+                    argument = iterator.next();
+                    prefix.append(argument);
                 } else {
-                    System.out.printf("Не известный параметр: %c%n", key);
+                    unknownKeys.append(key);
                 }
-            } else {
-                inputFiles.add(arguments.get(i));
             }
         }
     }
@@ -62,11 +60,19 @@ public class Parser {
     }
 
     public String getPrefix() {
-        return prefix;
+        return prefix.toString();
     }
 
     public String getFolder() {
-        return folder;
+        return folder.toString();
+    }
+
+    public String getUnknownKeys() {
+        return unknownKeys.toString();
+    }
+
+    private boolean isNotKey(String string) {
+        return !string.startsWith("-");
     }
 
     private List<String> filter(String[] args) {
@@ -81,18 +87,18 @@ public class Parser {
         List<String> result = new ArrayList<>();
 
         for (String s : arguments) {
-            if (s.startsWith("-")) {
+            if (isNotKey(s)) {
+                result.add(s);
+            } else {
                 for (int i = 1; i < s.length(); i++) {
                     char key = s.charAt(i);
                     result.add("-" + key);
 
-                    if ((key == SET_FOLDER.key || key == SET_PREFIX.key) && (i < s.length() - 1)) {
+                    if ((key == SET_FOLDER.key || key == SET_PREFIX.key) && (i + 1 < s.length())) {
                         result.add(s.substring(i + 1));
                         break;
                     }
                 }
-            } else {
-                result.add(s);
             }
         }
 
