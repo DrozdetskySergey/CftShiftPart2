@@ -23,7 +23,7 @@ public class FullStringsStatistics implements Statistics<String> {
 
     @Override
     public String getInfo() {
-        StringBuilder result = new StringBuilder(String.format("Количество элементов типа String = %d%n", count));
+        StringBuilder result = new StringBuilder(String.format("Количество сток = %d%n", count));
 
         if (count > 0) {
             result.append(String.format("| Минимальная длина строки = %d%n", minLength));

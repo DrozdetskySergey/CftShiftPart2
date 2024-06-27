@@ -13,6 +13,6 @@ class SimpleLongsStatistics implements Statistics<Long> {
 
     @Override
     public String getInfo() {
-        return String.format("Количество элементов типа Long = %d%n", count);
+        return String.format("Количество целых чисел = %d%n", count);
     }
 }

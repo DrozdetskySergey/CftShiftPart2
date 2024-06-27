@@ -13,6 +13,6 @@ class SimpleDoublesStatistics implements Statistics<Double> {
 
     @Override
     public String getInfo() {
-        return String.format("Количество элементов типа Double = %d%n", count);
+        return String.format("Количество вещественных чисел = %d%n", count);
     }
 }

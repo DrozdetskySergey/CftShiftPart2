@@ -2,14 +2,11 @@ package ru.cft.drozdetskiy.statistics.impl;
 
 import ru.cft.drozdetskiy.statistics.Statistics;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 class FullDoublesStatistics implements Statistics<Double> {
 
     private double min = Double.MAX_VALUE;
     private double max = Double.MIN_VALUE;
-    private BigDecimal sum = BigDecimal.ZERO;
+    private double sum = 0;
     private int count;
 
     @Override
@@ -24,20 +21,20 @@ class FullDoublesStatistics implements Statistics<Double> {
             max = number;
         }
 
-        sum = sum.add(BigDecimal.valueOf(value));
+        sum += number;
         count++;
     }
 
     @Override
     public String getInfo() {
-        StringBuilder result = new StringBuilder(String.format("Количество элементов типа Double = %d%n", count));
+        StringBuilder result = new StringBuilder(String.format("Количество вещественных чисел = %d%n", count));
 
         if (count > 0) {
-            Double average = (sum.divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN)).doubleValue();
-            result.append(String.format("| Минимальное значение = %f%n", min));
-            result.append(String.format("| Максимальное значение = %f%n", max));
-            result.append(String.format("| Среднее арифметическое значение = %f%n", average));
-            result.append(String.format("| Сумма всех элементов = %s%n", sum.toString()));
+            double average = sum / count;
+            result.append(String.format("| Минимальное значение = %e%n", min));
+            result.append(String.format("| Максимальное значение = %e%n", max));
+            result.append(String.format("| Среднее арифметическое значение = %e%n", average));
+            result.append(String.format("| Сумма всех элементов = %e%n", sum));
         }
 
         return result.toString();

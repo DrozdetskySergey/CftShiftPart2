@@ -29,7 +29,7 @@ class FullLongsStatistics implements Statistics<Long> {
 
     @Override
     public String getInfo() {
-        StringBuilder result = new StringBuilder(String.format("Количество элементов типа Long = %d%n", count));
+        StringBuilder result = new StringBuilder(String.format("Количество целых чисел = %d%n", count));
 
         if (count > 0) {
             long average = (sum.divide(BigInteger.valueOf(count))).longValue();

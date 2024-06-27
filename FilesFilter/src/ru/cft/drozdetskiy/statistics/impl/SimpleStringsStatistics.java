@@ -13,6 +13,6 @@ class SimpleStringsStatistics implements Statistics<String> {
 
     @Override
     public String getInfo() {
-        return String.format("Количество элементов типа String = %d%n", count);
+        return String.format("Количество строк = %d%n", count);
     }
 }
