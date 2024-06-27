@@ -1,6 +1,6 @@
 package ru.cft.drozdetskiy;
 
-import ru.cft.drozdetskiy.args.Parser;
+import ru.cft.drozdetskiy.args.ArgsParser;
 import ru.cft.drozdetskiy.buffer.Buffer;
 import ru.cft.drozdetskiy.buffer.impl.FastBuffer;
 import ru.cft.drozdetskiy.statistics.StatisticsFactory;
@@ -16,10 +16,20 @@ import java.nio.file.Paths;
 public class Main {
 
     public static void main(String[] args) {
-        Parser parser = new Parser(args);
+        ArgsParser argsParser = new ArgsParser(args);
 
-        try (StringSupplier supplier = new FileStringSupplier(parser.getInputFiles())) {
-            StatisticsFactory statisticsFactory = StatisticsFactoryBuilder.buildFactory(parser.getStatisticsType());
+        if (argsParser.getInputFiles().size() == 0) {
+            System.out.println("Не заданы файлы.");
+        } else if (argsParser.getUnknownKeys().length() > 0) {
+            System.out.printf("Не известные опции: %s%n", argsParser.getUnknownKeys());
+        } else {
+            filterFiles(argsParser);
+        }
+    }
+
+    private static void filterFiles(ArgsParser argsParser) {
+        try (StringSupplier supplier = new FileStringSupplier(argsParser.getInputFiles())) {
+            StatisticsFactory statisticsFactory = StatisticsFactoryBuilder.buildFactory(argsParser.getStatisticsType());
             Buffer<Long> longBuffer = new FastBuffer<>(statisticsFactory.createForLong());
             Buffer<Double> doubleBuffer = new FastBuffer<>(statisticsFactory.createForDouble());
             Buffer<String> stringBuffer = new FastBuffer<>(statisticsFactory.createForString());
@@ -30,7 +40,7 @@ public class Main {
             System.out.print(doubleBuffer.getStatisticsInfo());
             System.out.print(stringBuffer.getStatisticsInfo());
 
-            String folder = parser.getFolder() + "\\";
+            String folder = argsParser.getFolder() + "\\";
 
             if (!Paths.get(folder).isAbsolute()) {
                 folder = Paths.get("").toAbsolutePath().toString() + "\\" + folder;
@@ -38,16 +48,18 @@ public class Main {
 
             Files.createDirectories(Paths.get(folder));
 
-            writeFileFromBuffer(folder + parser.getPrefix() + "integers.txt", longBuffer, parser.isAppend());
-            writeFileFromBuffer(folder + parser.getPrefix() + "floats.txt", doubleBuffer, parser.isAppend());
-            writeFileFromBuffer(folder + parser.getPrefix() + "strings.txt", stringBuffer, parser.isAppend());
+            String folderAndPrefix = folder + argsParser.getPrefix();
+
+            writeFileFromBuffer(folderAndPrefix + "integers.txt", longBuffer, argsParser.isAppend());
+            writeFileFromBuffer(folderAndPrefix + "floats.txt", doubleBuffer, argsParser.isAppend());
+            writeFileFromBuffer(folderAndPrefix + "strings.txt", stringBuffer, argsParser.isAppend());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
     private static <T> void writeFileFromBuffer(String absoluteFileName, Buffer<T> buffer, boolean isAppend) {
-        if (buffer.size() > 0) {
+        if (buffer.getSize() > 0) {
             Path path = Paths.get(absoluteFileName);
             FileWriter<T> writer = new FileWriter<>(path, buffer, isAppend);
             writer.write();
