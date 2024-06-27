@@ -32,7 +32,7 @@ public class FileWriter<T> {
                 bufferWriter.write(String.format("%s%n", value.toString()));
             }
         } catch (IOException e) {
-            System.out.printf("Сбой записи в файл: %s. %s%n", file, e.getMessage());
+            System.out.printf("Сбой записи в файл: %s%n", file);
         }
     }
 }
