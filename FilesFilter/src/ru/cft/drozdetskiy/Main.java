@@ -15,13 +15,28 @@ import java.nio.file.Paths;
 
 public class Main {
 
+    private static final String help =
+            "FilesFilter [options] [files...]\n" +
+                    "options:\n" +
+                    "-o <путь>     Путь до файлов с результатом.\n" +
+                    "-p <префикс>  Префикс имён файлов с результатом.\n" +
+                    "-a            Режим записи в конец файла.\n" +
+                    "-s            Краткая статистика.\n" +
+                    "-f            Полная статистика.\n";
+
     public static void main(String[] args) {
+        if (args.length == 0 || args[0].equals("-h")) {
+            System.out.print(help);
+
+            return;
+        }
+
         ArgsParser argsParser = new ArgsParser(args);
 
-        if (argsParser.getInputFiles().size() == 0) {
-            System.out.println("Не заданы файлы.");
-        } else if (argsParser.getUnknownKeys().length() > 0) {
-            System.out.printf("Не известные опции: %s%n", argsParser.getUnknownKeys());
+        if (argsParser.getUnknownKeys().length() > 0) {
+            System.out.printf("Не верные опции: %s%n%s", argsParser.getUnknownKeys(), help);
+        } else if (argsParser.getInputFiles().size() == 0) {
+            System.out.printf("Не заданы файлы.%n%s", help);
         } else {
             filterFiles(argsParser);
         }
