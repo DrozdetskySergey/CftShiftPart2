@@ -11,12 +11,14 @@ class Filter {
                               Buffer<Double> doubleBuffer,
                               Buffer<String> stringBuffer) {
         for (String s = supplier.next(); s != null; s = supplier.next()) {
-            if (s.isBlank()) {
-                stringBuffer.add(s);
-            } else if (isLongInteger(s)) {
-                longBuffer.add(Long.valueOf(s));
-            } else if (isDecimalSystem(s) && NumberUtils.isCreatable(s)) {
-                doubleBuffer.add(Double.valueOf(s));
+            if (isDecimalSystem(s)) {
+                if (isLongInteger(s)) {
+                    longBuffer.add(Long.valueOf(s));
+                } else if (NumberUtils.isCreatable(s)) {
+                    doubleBuffer.add(Double.valueOf(s));
+                } else {
+                    stringBuffer.add(s);
+                }
             } else {
                 stringBuffer.add(s);
             }
@@ -24,6 +26,10 @@ class Filter {
     }
 
     private static boolean isDecimalSystem(String string) {
+        if (string.isEmpty()) {
+            return false;
+        }
+
         for (char c : string.toCharArray()) {
             if ((c < '0' || c > '9') && c != '.' && c != '-' && c != '+' && c != 'e' && c != 'E') {
                 return false;
