@@ -43,10 +43,10 @@ public class Main {
 
     private static void filterFiles(ArgsParser argsParser) {
         try (StringSupplier supplier = new FileStringSupplier(argsParser.getInputFiles())) {
-            StatisticsFactory statisticsFactory = StatisticsFactoryBuilder.buildFactory(argsParser.getStatisticsType());
-            Buffer<Long> longBuffer = new FastBuffer<>(statisticsFactory.createForLong());
-            Buffer<Double> doubleBuffer = new FastBuffer<>(statisticsFactory.createForDouble());
-            Buffer<String> stringBuffer = new FastBuffer<>(statisticsFactory.createForString());
+            StatisticsFactory factory = StatisticsFactoryBuilder.build(argsParser.getStatisticsType());
+            Buffer<Long> longBuffer = new FastBuffer<>(factory.createForLong());
+            Buffer<Double> doubleBuffer = new FastBuffer<>(factory.createForDouble());
+            Buffer<String> stringBuffer = new FastBuffer<>(factory.createForString());
 
             if (!Filter.divide(supplier, longBuffer, doubleBuffer, stringBuffer)) {
                 System.out.println("Буфер не смог обработать строку. Фильтрация прервана.");

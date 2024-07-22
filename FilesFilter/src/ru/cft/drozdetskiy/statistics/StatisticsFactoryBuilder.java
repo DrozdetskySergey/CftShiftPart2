@@ -5,7 +5,7 @@ import ru.cft.drozdetskiy.statistics.impl.SimpleStatisticsFactory;
 
 public class StatisticsFactoryBuilder {
 
-    public static StatisticsFactory buildFactory(StatisticsType type) {
+    public static StatisticsFactory build(StatisticsType type) {
         return type == StatisticsType.FULL ? new FullStatisticsFactory() : new SimpleStatisticsFactory();
     }
 }
