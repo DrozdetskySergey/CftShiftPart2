@@ -77,8 +77,8 @@ public class Main {
     private static <T> void writeFileFromBuffer(String absoluteFileName, Buffer<T> buffer, boolean isAppend) {
         if (buffer.isNotEmpty()) {
             Path path = Paths.get(absoluteFileName);
-            FileWriter<T> writer = new FileWriter<>(path, buffer, isAppend);
-            writer.write();
+            FileWriter<T> writer = new FileWriter<>(path, isAppend);
+            writer.write(buffer);
         }
     }
 }

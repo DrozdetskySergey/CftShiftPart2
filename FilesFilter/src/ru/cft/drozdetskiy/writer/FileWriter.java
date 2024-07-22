@@ -17,19 +17,17 @@ public class FileWriter<T> {
             {StandardOpenOption.CREATE, StandardOpenOption.APPEND};
 
     private final Path file;
-    private final Buffer<T> buffer;
     private final OpenOption[] openOptions;
 
-    public FileWriter(Path file, Buffer<T> buffer, boolean isAppend) {
+    public FileWriter(Path file, boolean isAppend) {
         this.file = file;
-        this.buffer = buffer;
         openOptions = isAppend ? APPEND_OPTIONS : WRITE_OPTIONS;
     }
 
-    public void write() {
+    public void write(Buffer<T> buffer) {
         try (BufferedWriter bufferWriter = Files.newBufferedWriter(file, openOptions)) {
-            for (T value = buffer.get(); value != null; value = buffer.get()) {
-                bufferWriter.write(String.format("%s%n", value.toString()));
+            while (buffer.isNotEmpty()) {
+                bufferWriter.write(String.format("%s%n", buffer.get().toString()));
             }
         } catch (IOException e) {
             System.out.printf("Сбой записи в файл: %s%n", file);
