@@ -2,11 +2,11 @@ package ru.cft.drozdetskiy.buffer;
 
 public interface Buffer<T> {
 
-    void add(T value);
+    boolean add(T value);
 
     T get();
 
-    int getSize();
+    boolean isNotEmpty();
 
     String getStatisticsInfo();
 }

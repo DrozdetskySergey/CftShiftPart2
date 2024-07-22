@@ -16,9 +16,14 @@ public class FastBuffer<T> implements Buffer<T> {
     }
 
     @Override
-    public void add(T value) {
-        statistics.include(value);
-        queue.offer(value);
+    public boolean add(T value) {
+        boolean isAdded = queue.offer(value);
+
+        if (isAdded) {
+            statistics.include(value);
+        }
+
+        return isAdded;
     }
 
     @Override
@@ -27,8 +32,8 @@ public class FastBuffer<T> implements Buffer<T> {
     }
 
     @Override
-    public int getSize() {
-        return queue.size();
+    public boolean isNotEmpty() {
+        return queue.size() > 0;
     }
 
     @Override

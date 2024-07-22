@@ -15,16 +15,15 @@ import java.nio.file.Paths;
 
 public class Main {
 
-    private static final String help =
-            "FilesFilter [options] [files...]\n" +
-                    "options:\n" +
-                    "-o <путь>     Путь до файлов с результатом.\n" +
-                    "-p <префикс>  Префикс имён файлов с результатом.\n" +
-                    "-a            Режим записи в конец файла.\n" +
-                    "-s            Краткая статистика.\n" +
-                    "-f            Полная статистика.\n";
-
     public static void main(String[] args) {
+        final String help = "FilesFilter [options] [files...]\n" +
+                "options:\n" +
+                "-o <путь>     Путь до файлов с результатом.\n" +
+                "-p <префикс>  Префикс имён файлов с результатом.\n" +
+                "-a            Режим записи в конец файла.\n" +
+                "-s            Краткая статистика.\n" +
+                "-f            Полная статистика.\n";
+
         if (args.length == 0 || args[0].equals("-h")) {
             System.out.print(help);
 
@@ -49,7 +48,9 @@ public class Main {
             Buffer<Double> doubleBuffer = new FastBuffer<>(statisticsFactory.createForDouble());
             Buffer<String> stringBuffer = new FastBuffer<>(statisticsFactory.createForString());
 
-            Filter.divide(supplier, longBuffer, doubleBuffer, stringBuffer);
+            if (!Filter.divide(supplier, longBuffer, doubleBuffer, stringBuffer)) {
+                System.out.println("Буфер не смог обработать строку. Фильтрация прервана.");
+            }
 
             System.out.print(longBuffer.getStatisticsInfo());
             System.out.print(doubleBuffer.getStatisticsInfo());
@@ -74,7 +75,7 @@ public class Main {
     }
 
     private static <T> void writeFileFromBuffer(String absoluteFileName, Buffer<T> buffer, boolean isAppend) {
-        if (buffer.getSize() > 0) {
+        if (buffer.isNotEmpty()) {
             Path path = Paths.get(absoluteFileName);
             FileWriter<T> writer = new FileWriter<>(path, buffer, isAppend);
             writer.write();

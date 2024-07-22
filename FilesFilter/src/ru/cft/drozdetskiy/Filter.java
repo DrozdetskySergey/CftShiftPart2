@@ -6,23 +6,27 @@ import ru.cft.drozdetskiy.supplier.StringSupplier;
 
 class Filter {
 
-    public static void divide(StringSupplier supplier,
-                              Buffer<Long> longBuffer,
-                              Buffer<Double> doubleBuffer,
-                              Buffer<String> stringBuffer) {
-        for (String s = supplier.next(); s != null; s = supplier.next()) {
+    public static boolean divide(StringSupplier supplier,
+                                 Buffer<Long> longBuffer,
+                                 Buffer<Double> doubleBuffer,
+                                 Buffer<String> stringBuffer) {
+        boolean isAdded = true;
+
+        for (String s = supplier.next(); isAdded && s != null; s = supplier.next()) {
             if (isDecimalSystem(s)) {
                 if (isLongInteger(s)) {
-                    longBuffer.add(Long.valueOf(s));
+                    isAdded = longBuffer.add(Long.valueOf(s));
                 } else if (NumberUtils.isCreatable(s)) {
-                    doubleBuffer.add(Double.valueOf(s));
+                    isAdded = doubleBuffer.add(Double.valueOf(s));
                 } else {
-                    stringBuffer.add(s);
+                    isAdded = stringBuffer.add(s);
                 }
             } else {
-                stringBuffer.add(s);
+                isAdded = stringBuffer.add(s);
             }
         }
+
+        return isAdded;
     }
 
     private static boolean isDecimalSystem(String string) {
