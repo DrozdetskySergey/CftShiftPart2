@@ -11,7 +11,7 @@ class FullDoublesStatistics implements Statistics<Double> {
 
     @Override
     public void include(Double value) {
-        double number = value; // only one unboxing
+        double number = value;
 
         if (number < min) {
             min = number;

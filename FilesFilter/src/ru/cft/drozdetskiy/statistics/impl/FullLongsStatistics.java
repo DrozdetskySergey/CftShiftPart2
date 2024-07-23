@@ -13,7 +13,7 @@ class FullLongsStatistics implements Statistics<Long> {
 
     @Override
     public void include(Long value) {
-        long number = value; // only one unboxing
+        long number = value;
 
         if (number < min) {
             min = number;

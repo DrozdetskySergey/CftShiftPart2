@@ -10,12 +10,14 @@ public class FullStringsStatistics implements Statistics<String> {
 
     @Override
     public void include(String value) {
-        if (value.length() < minLength) {
-            minLength = value.length();
+        int length = value.length();
+
+        if (length < minLength) {
+            minLength = length;
         }
 
-        if (value.length() > maxLength) {
-            maxLength = value.length();
+        if (length > maxLength) {
+            maxLength = length;
         }
 
         count++;
