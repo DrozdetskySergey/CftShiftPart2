@@ -9,7 +9,7 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-public class FileWriter<T> {
+public class FileWriter {
 
     private static final OpenOption[] WRITE_OPTIONS =
             {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
@@ -24,7 +24,7 @@ public class FileWriter<T> {
         openOptions = isAppend ? APPEND_OPTIONS : WRITE_OPTIONS;
     }
 
-    public void write(Buffer<T> buffer) {
+    public <T> void write(Buffer<T> buffer) {
         try (BufferedWriter bufferWriter = Files.newBufferedWriter(file, openOptions)) {
             while (buffer.isNotEmpty()) {
                 bufferWriter.write(String.format("%s%n", buffer.get().toString()));
