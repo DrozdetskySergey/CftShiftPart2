@@ -5,7 +5,7 @@ import ru.cft.drozdetskiy.buffer.Buffer;
 import ru.cft.drozdetskiy.buffer.impl.FastBuffer;
 import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 import ru.cft.drozdetskiy.statistics.StatisticsFactoryBuilder;
-import ru.cft.drozdetskiy.supplier.StringSupplier;
+import ru.cft.drozdetskiy.supplier.Supplier;
 import ru.cft.drozdetskiy.supplier.impl.FileStringSupplier;
 import ru.cft.drozdetskiy.writer.FileWriter;
 
@@ -42,7 +42,7 @@ public class Main {
     }
 
     private static void filterFiles(ArgsParser argsParser) {
-        try (StringSupplier supplier = new FileStringSupplier(argsParser.getInputFiles())) {
+        try (Supplier<String> supplier = new FileStringSupplier(argsParser.getInputFiles())) {
             StatisticsFactory factory = StatisticsFactoryBuilder.build(argsParser.getStatisticsType());
             Buffer<Long> longBuffer = new FastBuffer<>(factory.createForLong());
             Buffer<Double> doubleBuffer = new FastBuffer<>(factory.createForDouble());

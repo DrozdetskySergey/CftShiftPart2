@@ -1,6 +1,6 @@
 package ru.cft.drozdetskiy.supplier.impl;
 
-import ru.cft.drozdetskiy.supplier.StringSupplier;
+import ru.cft.drozdetskiy.supplier.Supplier;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,10 +9,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileStringSupplier implements StringSupplier {
+public class FileStringSupplier implements Supplier<String> {
 
     private final List<BufferedReader> readers = new ArrayList<>();
     private int index;
+    private String next;
 
     public FileStringSupplier(List<String> files) {
         for (String s : files) {
@@ -23,20 +24,41 @@ public class FileStringSupplier implements StringSupplier {
                 System.out.printf("Не удалось открыть файл для чтения: %s%n", s);
             }
         }
+
+        updateNext();
     }
 
     @Override
     public String next() {
-        String result = null;
+        String result = next;
+        updateNext();
 
-        while (result == null && readers.size() > 0) {
+        return result;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return next != null;
+    }
+
+    @Override
+    public void close() {
+        for (BufferedReader r : readers) {
+            closeBufferedReader(r);
+        }
+    }
+
+    private void updateNext() {
+        next = null;
+
+        while (next == null && readers.size() > 0) {
             try {
-                result = readers.get(index).readLine();
+                next = readers.get(index).readLine();
             } catch (IOException e) {
                 System.out.printf("Сбой чтения из файла %s%n", e.getMessage());
             }
 
-            if (result == null) {
+            if (next == null) {
                 closeBufferedReader(readers.remove(index));
             } else {
                 index++;
@@ -45,15 +67,6 @@ public class FileStringSupplier implements StringSupplier {
             if (index >= readers.size()) {
                 index = 0;
             }
-        }
-
-        return result;
-    }
-
-    @Override
-    public void close() {
-        for (BufferedReader r : readers) {
-            closeBufferedReader(r);
         }
     }
 

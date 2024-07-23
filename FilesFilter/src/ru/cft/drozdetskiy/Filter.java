@@ -2,11 +2,11 @@ package ru.cft.drozdetskiy;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import ru.cft.drozdetskiy.buffer.Buffer;
-import ru.cft.drozdetskiy.supplier.StringSupplier;
+import ru.cft.drozdetskiy.supplier.Supplier;
 
 class Filter {
 
-    public static boolean divide(StringSupplier supplier,
+    public static boolean divide(Supplier<String> supplier,
                                  Buffer<Long> longBuffer,
                                  Buffer<Double> doubleBuffer,
                                  Buffer<String> stringBuffer) {
