@@ -12,7 +12,9 @@ class Filter {
                                  Buffer<String> stringBuffer) {
         boolean isAdded = true;
 
-        for (String s = supplier.next(); isAdded && s != null; s = supplier.next()) {
+        while (supplier.hasNext() && isAdded) {
+            String s = supplier.next();
+
             if (isDecimalSystem(s)) {
                 if (isLongInteger(s)) {
                     isAdded = longBuffer.add(Long.valueOf(s));
