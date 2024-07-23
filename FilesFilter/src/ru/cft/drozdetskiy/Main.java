@@ -63,21 +63,17 @@ public class Main {
             }
 
             Files.createDirectories(Paths.get(folder));
-
-            String folderAndPrefix = folder + argsParser.getPrefix();
-
-            writeFileFromBuffer(folderAndPrefix + "integers.txt", longBuffer, argsParser.isAppend());
-            writeFileFromBuffer(folderAndPrefix + "floats.txt", doubleBuffer, argsParser.isAppend());
-            writeFileFromBuffer(folderAndPrefix + "strings.txt", stringBuffer, argsParser.isAppend());
+            writeFileFromBuffer(Paths.get(folder + argsParser.getPrefix() + "integers.txt"), longBuffer, argsParser.isAppend());
+            writeFileFromBuffer(Paths.get(folder + argsParser.getPrefix() + "floats.txt"), doubleBuffer, argsParser.isAppend());
+            writeFileFromBuffer(Paths.get(folder + argsParser.getPrefix() + "strings.txt"), stringBuffer, argsParser.isAppend());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static <T> void writeFileFromBuffer(String absoluteFileName, Buffer<T> buffer, boolean isAppend) {
+    private static <T> void writeFileFromBuffer(Path path, Buffer<T> buffer, boolean isAppend) {
         if (buffer.isNotEmpty()) {
-            Path path = Paths.get(absoluteFileName);
-            FileWriter<T> writer = new FileWriter<>(path, isAppend);
+            FileWriter writer = new FileWriter(path, isAppend);
             writer.write(buffer);
         }
     }
