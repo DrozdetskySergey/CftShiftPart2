@@ -37,11 +37,11 @@ public class Main {
         } else if (argsParser.getInputFiles().size() == 0) {
             System.out.printf("Не заданы файлы.%n%s", help);
         } else {
-            filterFiles(argsParser);
+            handleFiles(argsParser);
         }
     }
 
-    private static void filterFiles(ArgsParser argsParser) {
+    private static void handleFiles(ArgsParser argsParser) {
         try (Supplier<String> supplier = new FileStringSupplier(argsParser.getInputFiles())) {
             StatisticsFactory factory = StatisticsFactoryBuilder.build(argsParser.getStatisticsType());
             Buffer<Long> longBuffer = new FastBuffer<>(factory.createForLong());
@@ -52,23 +52,36 @@ public class Main {
                 System.out.println("Буфер не смог обработать строку. Фильтрация прервана.");
             }
 
+            String folder = prepareFolder(argsParser.getFolder());
+
+            writeFileFromBuffer(Paths.get(folder, argsParser.getPrefix(), "integers.txt"), longBuffer, argsParser.isAppend());
             System.out.print(longBuffer.getStatistics());
+            writeFileFromBuffer(Paths.get(folder, argsParser.getPrefix(), "floats.txt"), doubleBuffer, argsParser.isAppend());
             System.out.print(doubleBuffer.getStatistics());
+            writeFileFromBuffer(Paths.get(folder, argsParser.getPrefix(), "strings.txt"), stringBuffer, argsParser.isAppend());
             System.out.print(stringBuffer.getStatistics());
-
-            String folder = argsParser.getFolder() + "\\";
-
-            if (!Paths.get(folder).isAbsolute()) {
-                folder = Paths.get("").toAbsolutePath().toString() + "\\" + folder;
-            }
-
-            Files.createDirectories(Paths.get(folder));
-            writeFileFromBuffer(Paths.get(folder + argsParser.getPrefix() + "integers.txt"), longBuffer, argsParser.isAppend());
-            writeFileFromBuffer(Paths.get(folder + argsParser.getPrefix() + "floats.txt"), doubleBuffer, argsParser.isAppend());
-            writeFileFromBuffer(Paths.get(folder + argsParser.getPrefix() + "strings.txt"), stringBuffer, argsParser.isAppend());
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static String prepareFolder(String folder) {
+        StringBuilder result = new StringBuilder(folder);
+        result.append("\\");
+
+        try {
+            if (!Paths.get(result.toString()).isAbsolute()) {
+                result.setLength(0);
+                result.append(Paths.get("").toAbsolutePath().toString()).append("\\").append(folder).append("\\");
+            }
+
+            Files.createDirectories(Paths.get(result.toString()));
+        } catch (Exception e) {
+            result.setLength(0);
+            System.out.printf("Задана не корректная папка: %s%n", folder);
+        }
+
+        return result.toString();
     }
 
     private static <T> void writeFileFromBuffer(Path path, Buffer<T> buffer, boolean isAppend) {
