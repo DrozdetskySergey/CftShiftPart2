@@ -28,7 +28,7 @@ class FullLongsStatistics implements Statistics<Long> {
     }
 
     @Override
-    public String getInfo() {
+    public String toString() {
         StringBuilder result = new StringBuilder(String.format("Количество целых чисел = %d%n", count));
 
         if (count > 0) {

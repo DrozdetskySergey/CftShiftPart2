@@ -12,7 +12,7 @@ class SimpleStringsStatistics implements Statistics<String> {
     }
 
     @Override
-    public String getInfo() {
+    public String toString() {
         return String.format("Количество строк = %d%n", count);
     }
 }

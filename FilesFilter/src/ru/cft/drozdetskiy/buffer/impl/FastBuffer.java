@@ -37,7 +37,7 @@ public class FastBuffer<T> implements Buffer<T> {
     }
 
     @Override
-    public String getStatisticsInfo() {
-        return statistics.getInfo();
+    public Statistics<T> getStatistics() {
+        return statistics;
     }
 }

@@ -12,7 +12,7 @@ class SimpleLongsStatistics implements Statistics<Long> {
     }
 
     @Override
-    public String getInfo() {
+    public String toString() {
         return String.format("Количество целых чисел = %d%n", count);
     }
 }

@@ -12,7 +12,7 @@ class SimpleDoublesStatistics implements Statistics<Double> {
     }
 
     @Override
-    public String getInfo() {
+    public String toString() {
         return String.format("Количество вещественных чисел = %d%n", count);
     }
 }

@@ -52,9 +52,9 @@ public class Main {
                 System.out.println("Буфер не смог обработать строку. Фильтрация прервана.");
             }
 
-            System.out.print(longBuffer.getStatisticsInfo());
-            System.out.print(doubleBuffer.getStatisticsInfo());
-            System.out.print(stringBuffer.getStatisticsInfo());
+            System.out.print(longBuffer.getStatistics());
+            System.out.print(doubleBuffer.getStatistics());
+            System.out.print(stringBuffer.getStatistics());
 
             String folder = argsParser.getFolder() + "\\";
 

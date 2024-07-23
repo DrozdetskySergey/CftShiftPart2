@@ -1,5 +1,7 @@
 package ru.cft.drozdetskiy.buffer;
 
+import ru.cft.drozdetskiy.statistics.Statistics;
+
 public interface Buffer<T> {
 
     boolean add(T value);
@@ -8,5 +10,5 @@ public interface Buffer<T> {
 
     boolean isNotEmpty();
 
-    String getStatisticsInfo();
+    Statistics<T> getStatistics();
 }

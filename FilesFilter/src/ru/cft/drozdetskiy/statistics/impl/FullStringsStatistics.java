@@ -22,7 +22,7 @@ public class FullStringsStatistics implements Statistics<String> {
     }
 
     @Override
-    public String getInfo() {
+    public String toString() {
         StringBuilder result = new StringBuilder(String.format("Количество сток = %d%n", count));
 
         if (count > 0) {
