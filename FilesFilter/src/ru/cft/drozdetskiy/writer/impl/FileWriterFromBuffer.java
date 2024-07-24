@@ -1,6 +1,7 @@
-package ru.cft.drozdetskiy.writer;
+package ru.cft.drozdetskiy.writer.impl;
 
 import ru.cft.drozdetskiy.buffer.Buffer;
+import ru.cft.drozdetskiy.writer.WriterFromBuffer;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-public class FileWriter {
+public class FileWriterFromBuffer implements WriterFromBuffer {
 
     private static final OpenOption[] WRITE_OPTIONS =
             {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
@@ -19,11 +20,12 @@ public class FileWriter {
     private final Path file;
     private final OpenOption[] openOptions;
 
-    public FileWriter(Path file, boolean isAppend) {
+    public FileWriterFromBuffer(Path file, boolean isAppend) {
         this.file = file;
         openOptions = isAppend ? APPEND_OPTIONS : WRITE_OPTIONS;
     }
 
+    @Override
     public <T> void write(Buffer<T> buffer) {
         try (BufferedWriter bufferWriter = Files.newBufferedWriter(file, openOptions)) {
             while (buffer.isNotEmpty()) {

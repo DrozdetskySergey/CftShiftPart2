@@ -7,7 +7,8 @@ import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 import ru.cft.drozdetskiy.statistics.StatisticsFactoryBuilder;
 import ru.cft.drozdetskiy.supplier.Supplier;
 import ru.cft.drozdetskiy.supplier.impl.FileStringSupplier;
-import ru.cft.drozdetskiy.writer.FileWriter;
+import ru.cft.drozdetskiy.writer.WriterFromBuffer;
+import ru.cft.drozdetskiy.writer.impl.FileWriterFromBuffer;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -89,7 +90,7 @@ public class FilesFilter {
 
     private static <T> void writeFileFromBuffer(Path path, Buffer<T> buffer, boolean isAppend) {
         if (buffer.isNotEmpty()) {
-            FileWriter writer = new FileWriter(path, isAppend);
+            WriterFromBuffer writer = new FileWriterFromBuffer(path, isAppend);
             writer.write(buffer);
         }
     }
