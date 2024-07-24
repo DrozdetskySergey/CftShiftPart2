@@ -27,9 +27,9 @@ public class FileWriterFromBuffer implements WriterFromBuffer {
 
     @Override
     public <T> void write(Buffer<T> buffer) {
-        try (BufferedWriter bufferWriter = Files.newBufferedWriter(file, openOptions)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(file, openOptions)) {
             while (buffer.isNotEmpty()) {
-                bufferWriter.write(String.format("%s%n", buffer.get().toString()));
+                writer.write(String.format("%s%n", buffer.get().toString()));
             }
         } catch (IOException e) {
             System.out.printf("Сбой записи в файл: %s%n", file);
