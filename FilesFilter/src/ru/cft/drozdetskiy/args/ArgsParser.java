@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static ru.cft.drozdetskiy.args.Key.*;
+import static ru.cft.drozdetskiy.args.Option.*;
 
 public class ArgsParser {
 
@@ -15,7 +15,7 @@ public class ArgsParser {
     private boolean isAppend = false;
     private final StringBuilder prefix = new StringBuilder();
     private final StringBuilder folder = new StringBuilder();
-    private final StringBuilder unknownKeys = new StringBuilder();
+    private final StringBuilder unknownOptions = new StringBuilder();
 
     public ArgsParser(String[] args) {
         List<String> arguments = decompose(filter(args));
@@ -23,25 +23,25 @@ public class ArgsParser {
         for (Iterator<String> iterator = arguments.iterator(); iterator.hasNext(); ) {
             String argument = iterator.next();
 
-            if (isNotKey(argument)) {
+            if (isNotOption(argument)) {
                 inputFiles.add(argument);
             } else {
-                char key = argument.charAt(1);
+                char option = argument.charAt(1);
 
-                if (key == APPEND_FILES.key) {
+                if (option == APPEND_FILES.option) {
                     isAppend = true;
-                } else if (key == SIMPLE_STAT.key) {
+                } else if (option == SIMPLE_STAT.option) {
                     statisticsType = StatisticsType.SIMPLE;
-                } else if (key == FULL_STAT.key) {
+                } else if (option == FULL_STAT.option) {
                     statisticsType = StatisticsType.FULL;
-                } else if (key == SET_FOLDER.key && iterator.hasNext()) {
+                } else if (option == SET_FOLDER.option && iterator.hasNext()) {
                     argument = iterator.next();
                     folder.append(argument);
-                } else if (key == SET_PREFIX.key && iterator.hasNext()) {
+                } else if (option == SET_PREFIX.option && iterator.hasNext()) {
                     argument = iterator.next();
                     prefix.append(argument);
                 } else {
-                    unknownKeys.append(key);
+                    unknownOptions.append(option);
                 }
             }
         }
@@ -67,11 +67,11 @@ public class ArgsParser {
         return folder.toString();
     }
 
-    public String getUnknownKeys() {
-        return unknownKeys.toString();
+    public String getUnknownOptions() {
+        return unknownOptions.toString();
     }
 
-    private boolean isNotKey(String string) {
+    private boolean isNotOption(String string) {
         return !string.startsWith("-");
     }
 
@@ -87,14 +87,14 @@ public class ArgsParser {
         List<String> result = new ArrayList<>();
 
         for (String s : arguments) {
-            if (isNotKey(s)) {
+            if (isNotOption(s)) {
                 result.add(s);
             } else {
                 for (int i = 1; i < s.length(); i++) {
-                    char key = s.charAt(i);
-                    result.add("-" + key);
+                    char option = s.charAt(i);
+                    result.add("-" + option);
 
-                    if ((key == SET_FOLDER.key || key == SET_PREFIX.key) && (i + 1 < s.length())) {
+                    if ((option == SET_FOLDER.option || option == SET_PREFIX.option) && (i + 1 < s.length())) {
                         result.add(s.substring(i + 1));
                         break;
                     }

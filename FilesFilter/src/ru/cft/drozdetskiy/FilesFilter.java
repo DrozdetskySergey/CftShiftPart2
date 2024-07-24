@@ -33,8 +33,8 @@ public class FilesFilter {
 
         ArgsParser argsParser = new ArgsParser(args);
 
-        if (argsParser.getUnknownKeys().length() > 0) {
-            for (char c : argsParser.getUnknownKeys().toCharArray()) {
+        if (argsParser.getUnknownOptions().length() > 0) {
+            for (char c : argsParser.getUnknownOptions().toCharArray()) {
                 System.out.printf("Не верно задана опция: -%c%n", c);
             }
 

@@ -1,6 +1,6 @@
 package ru.cft.drozdetskiy.args;
 
-enum Key {
+enum Option {
 
     SET_FOLDER('o'),
     SET_PREFIX('p'),
@@ -8,9 +8,9 @@ enum Key {
     SIMPLE_STAT('s'),
     FULL_STAT('f');
 
-    final char key;
+    final char option;
 
-    Key(char key) {
-        this.key = key;
+    Option(char option) {
+        this.option = option;
     }
 }
