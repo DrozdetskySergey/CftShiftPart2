@@ -35,7 +35,7 @@ public class FilesFilter {
 
         if (argsParser.getUnknownKeys().length() > 0) {
             for (char c : argsParser.getUnknownKeys().toCharArray()) {
-                System.out.printf("Не верная опция: %c%n", c);
+                System.out.printf("Не верно задана опция: -%c%n", c);
             }
 
             System.out.print(help);
