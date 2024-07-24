@@ -4,12 +4,12 @@ import org.apache.commons.lang3.math.NumberUtils;
 import ru.cft.drozdetskiy.buffer.Buffer;
 import ru.cft.drozdetskiy.supplier.Supplier;
 
-class Filter {
+class Separator {
 
-    public static boolean divide(Supplier<String> supplier,
-                                 Buffer<Long> longBuffer,
-                                 Buffer<Double> doubleBuffer,
-                                 Buffer<String> stringBuffer) {
+    public static boolean separate(Supplier<String> supplier,
+                                   Buffer<Long> longBuffer,
+                                   Buffer<Double> doubleBuffer,
+                                   Buffer<String> stringBuffer) {
         boolean isAdded = true;
 
         while (supplier.hasNext() && isAdded) {

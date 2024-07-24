@@ -52,8 +52,8 @@ public class FilesFilter {
             Buffer<Double> doubleBuffer = new FastBuffer<>(factory.createForDouble());
             Buffer<String> stringBuffer = new FastBuffer<>(factory.createForString());
 
-            if (!Filter.divide(supplier, longBuffer, doubleBuffer, stringBuffer)) {
-                System.out.println("Буфер не смог добавить очередную строку. Фильтрация прервана.");
+            if (!Separator.separate(supplier, longBuffer, doubleBuffer, stringBuffer)) {
+                System.out.println("Не удалось добавить в буфер очередную строку. Фильтрация прервана.");
             }
 
             String folder = prepareFolder(argsParser.getFolder());
