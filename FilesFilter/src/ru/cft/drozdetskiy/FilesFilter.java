@@ -17,13 +17,13 @@ import java.nio.file.Paths;
 public class FilesFilter {
 
     public static void main(String[] args) {
-        final String help = "FilesFilter [options] [files...]" + System.getProperty("line.separator") +
-                "options:" + System.getProperty("line.separator") +
-                "-o <путь>     Путь до файлов с результатом." + System.getProperty("line.separator") +
-                "-p <префикс>  Префикс имён файлов с результатом." + System.getProperty("line.separator") +
-                "-a            Режим записи в конец файла." + System.getProperty("line.separator") +
-                "-s            Краткая статистика." + System.getProperty("line.separator") +
-                "-f            Полная статистика." + System.getProperty("line.separator");
+        final String help = String.format("FilesFilter [options] [files...]%n" +
+                "options:%n" +
+                "-o <путь>     Путь до файлов с результатом.%n" +
+                "-p <префикс>  Префикс имён файлов с результатом.%n" +
+                "-a            Режим записи в конец файла.%n" +
+                "-s            Краткая статистика.%n" +
+                "-f            Полная статистика.%n");
 
         if (args.length == 0 || args[0].equals("-h")) {
             System.out.print(help);
