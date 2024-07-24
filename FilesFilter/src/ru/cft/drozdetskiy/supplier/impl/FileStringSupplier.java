@@ -55,7 +55,7 @@ public class FileStringSupplier implements Supplier<String> {
             try {
                 next = readers.get(index).readLine();
             } catch (IOException e) {
-                System.out.printf("Сбой чтения из файла %s%n", e.getMessage());
+                System.out.printf("Сбой чтения из файла. %s%n", e.getMessage());
             }
 
             if (next == null) {
