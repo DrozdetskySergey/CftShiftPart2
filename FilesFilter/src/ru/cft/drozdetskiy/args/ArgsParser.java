@@ -10,7 +10,7 @@ import static ru.cft.drozdetskiy.args.Option.*;
 
 public class ArgsParser {
 
-    private final List<String> inputFiles = new ArrayList<>();
+    private final List<String> files = new ArrayList<>();
     private StatisticsType statisticsType = StatisticsType.SIMPLE;
     private boolean isAppend = false;
     private final StringBuilder prefix = new StringBuilder();
@@ -24,7 +24,7 @@ public class ArgsParser {
             String argument = iterator.next();
 
             if (isNotOption(argument)) {
-                inputFiles.add(argument);
+                files.add(argument);
             } else {
                 char option = argument.charAt(1);
 
@@ -35,11 +35,9 @@ public class ArgsParser {
                 } else if (option == FULL_STAT.option) {
                     statisticsType = StatisticsType.FULL;
                 } else if (option == SET_FOLDER.option && iterator.hasNext()) {
-                    argument = iterator.next();
-                    folder.append(argument);
+                    folder.append(iterator.next());
                 } else if (option == SET_PREFIX.option && iterator.hasNext()) {
-                    argument = iterator.next();
-                    prefix.append(argument);
+                    prefix.append(iterator.next());
                 } else {
                     unknownOptions.append(option);
                 }
@@ -47,8 +45,8 @@ public class ArgsParser {
         }
     }
 
-    public List<String> getInputFiles() {
-        return inputFiles;
+    public List<String> getFiles() {
+        return files;
     }
 
     public StatisticsType getStatisticsType() {

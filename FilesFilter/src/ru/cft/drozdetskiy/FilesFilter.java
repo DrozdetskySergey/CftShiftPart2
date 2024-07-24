@@ -39,7 +39,7 @@ public class FilesFilter {
             }
 
             System.out.print(help);
-        } else if (argsParser.getInputFiles().size() == 0) {
+        } else if (argsParser.getFiles().size() == 0) {
             System.out.printf("Не заданы файлы для фильтрации.%n%s", help);
         } else {
             handleFiles(argsParser);
@@ -47,7 +47,7 @@ public class FilesFilter {
     }
 
     private static void handleFiles(ArgsParser argsParser) {
-        try (Supplier<String> supplier = new FileStringSupplier(argsParser.getInputFiles())) {
+        try (Supplier<String> supplier = new FileStringSupplier(argsParser.getFiles())) {
             StatisticsFactory factory = StatisticsFactoryBuilder.build(argsParser.getStatisticsType());
             Buffer<Long> longBuffer = new FastBuffer<>(factory.createForLong());
             Buffer<Double> doubleBuffer = new FastBuffer<>(factory.createForDouble());
