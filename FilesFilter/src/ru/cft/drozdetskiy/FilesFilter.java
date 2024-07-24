@@ -59,12 +59,9 @@ public class FilesFilter {
 
             String folder = prepareFolder(argsParser.getFolder());
 
-            writeFileFromBuffer(Paths.get(folder, argsParser.getPrefix() + "integers.txt"), longBuffer, argsParser.isAppend());
-            System.out.print(longBuffer.getStatistics());
-            writeFileFromBuffer(Paths.get(folder, argsParser.getPrefix() + "floats.txt"), doubleBuffer, argsParser.isAppend());
-            System.out.print(doubleBuffer.getStatistics());
-            writeFileFromBuffer(Paths.get(folder, argsParser.getPrefix() + "strings.txt"), stringBuffer, argsParser.isAppend());
-            System.out.print(stringBuffer.getStatistics());
+            writeFileAndPrintStatistics(Paths.get(folder, argsParser.getPrefix() + "integers.txt"), longBuffer, argsParser.isAppend());
+            writeFileAndPrintStatistics(Paths.get(folder, argsParser.getPrefix() + "floats.txt"), doubleBuffer, argsParser.isAppend());
+            writeFileAndPrintStatistics(Paths.get(folder, argsParser.getPrefix() + "strings.txt"), stringBuffer, argsParser.isAppend());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -88,10 +85,12 @@ public class FilesFilter {
         return result.toString();
     }
 
-    private static <T> void writeFileFromBuffer(Path path, Buffer<T> buffer, boolean isAppend) {
+    private static <T> void writeFileAndPrintStatistics(Path path, Buffer<T> buffer, boolean isAppend) {
         if (buffer.isNotEmpty()) {
             WriterFromBuffer writer = new FileWriterFromBuffer(path, isAppend);
             writer.write(buffer);
         }
+
+        System.out.print(buffer.getStatistics());
     }
 }
