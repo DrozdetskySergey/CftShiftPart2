@@ -13,16 +13,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Main {
+public class FilesFilter {
 
     public static void main(String[] args) {
-        final String help = "FilesFilter [options] [files...]\n" +
-                "options:\n" +
-                "-o <путь>     Путь до файлов с результатом.\n" +
-                "-p <префикс>  Префикс имён файлов с результатом.\n" +
-                "-a            Режим записи в конец файла.\n" +
-                "-s            Краткая статистика.\n" +
-                "-f            Полная статистика.\n";
+        final String help = "FilesFilter [options] [files...]" + System.getProperty("line.separator") +
+                "options:" + System.getProperty("line.separator") +
+                "-o <путь>     Путь до файлов с результатом." + System.getProperty("line.separator") +
+                "-p <префикс>  Префикс имён файлов с результатом." + System.getProperty("line.separator") +
+                "-a            Режим записи в конец файла." + System.getProperty("line.separator") +
+                "-s            Краткая статистика." + System.getProperty("line.separator") +
+                "-f            Полная статистика." + System.getProperty("line.separator");
 
         if (args.length == 0 || args[0].equals("-h")) {
             System.out.print(help);
@@ -33,9 +33,13 @@ public class Main {
         ArgsParser argsParser = new ArgsParser(args);
 
         if (argsParser.getUnknownKeys().length() > 0) {
-            System.out.printf("Не верные опции: %s%n%s", argsParser.getUnknownKeys(), help);
+            for (char c : argsParser.getUnknownKeys().toCharArray()) {
+                System.out.printf("Не верная опция: %c%n", c);
+            }
+
+            System.out.print(help);
         } else if (argsParser.getInputFiles().size() == 0) {
-            System.out.printf("Не заданы файлы.%n%s", help);
+            System.out.printf("Не заданы файлы для фильтрации.%n%s", help);
         } else {
             handleFiles(argsParser);
         }
@@ -49,16 +53,16 @@ public class Main {
             Buffer<String> stringBuffer = new FastBuffer<>(factory.createForString());
 
             if (!Filter.divide(supplier, longBuffer, doubleBuffer, stringBuffer)) {
-                System.out.println("Буфер не смог обработать строку. Фильтрация прервана.");
+                System.out.println("Буфер не смог добавить очередную строку. Фильтрация прервана.");
             }
 
             String folder = prepareFolder(argsParser.getFolder());
 
-            writeFileFromBuffer(Paths.get(folder, argsParser.getPrefix(), "integers.txt"), longBuffer, argsParser.isAppend());
+            writeFileFromBuffer(Paths.get(folder, argsParser.getPrefix() + "integers.txt"), longBuffer, argsParser.isAppend());
             System.out.print(longBuffer.getStatistics());
-            writeFileFromBuffer(Paths.get(folder, argsParser.getPrefix(), "floats.txt"), doubleBuffer, argsParser.isAppend());
+            writeFileFromBuffer(Paths.get(folder, argsParser.getPrefix() + "floats.txt"), doubleBuffer, argsParser.isAppend());
             System.out.print(doubleBuffer.getStatistics());
-            writeFileFromBuffer(Paths.get(folder, argsParser.getPrefix(), "strings.txt"), stringBuffer, argsParser.isAppend());
+            writeFileFromBuffer(Paths.get(folder, argsParser.getPrefix() + "strings.txt"), stringBuffer, argsParser.isAppend());
             System.out.print(stringBuffer.getStatistics());
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,12 +71,11 @@ public class Main {
 
     private static String prepareFolder(String folder) {
         StringBuilder result = new StringBuilder(folder);
-        result.append("\\");
 
         try {
-            if (!Paths.get(result.toString()).isAbsolute()) {
+            if (!Paths.get(folder).isAbsolute()) {
                 result.setLength(0);
-                result.append(Paths.get("").toAbsolutePath().toString()).append("\\").append(folder).append("\\");
+                result.append(Paths.get("").toAbsolutePath().toString()).append("\\").append(folder);
             }
 
             Files.createDirectories(Paths.get(result.toString()));
