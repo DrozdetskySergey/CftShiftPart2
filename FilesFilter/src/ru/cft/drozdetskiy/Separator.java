@@ -2,13 +2,28 @@ package ru.cft.drozdetskiy;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import ru.cft.drozdetskiy.buffer.Buffer;
+import ru.cft.drozdetskiy.buffer.impl.FastBuffer;
+import ru.cft.drozdetskiy.statistics.StatisticsFactory;
+import ru.cft.drozdetskiy.statistics.StatisticsFactoryBuilder;
+import ru.cft.drozdetskiy.statistics.StatisticsType;
+
+import java.util.Map;
+import java.util.TreeMap;
 
 class Separator {
 
-    public static void separate(FileStringSupplier supplier,
-                                Buffer<Long> longBuffer,
-                                Buffer<Double> doubleBuffer,
-                                Buffer<String> stringBuffer) {
+    private final Buffer<Long> longBuffer;
+    private final Buffer<Double> doubleBuffer;
+    private final Buffer<String> stringBuffer;
+
+    public Separator(StatisticsType statisticsType) {
+        StatisticsFactory factory = StatisticsFactoryBuilder.build(statisticsType);
+        longBuffer = new FastBuffer<>(factory.createForLong());
+        doubleBuffer = new FastBuffer<>(factory.createForDouble());
+        stringBuffer = new FastBuffer<>(factory.createForString());
+    }
+
+    public Map<String, Buffer<?>> separate(FileStringSupplier supplier) {
         boolean isAdded = true;
 
         while (supplier.hasNext() && isAdded) {
@@ -30,9 +45,16 @@ class Separator {
         if (!isAdded) {
             System.out.println("Не удалось добавить в буфер очередную строку. Фильтрация прервана.");
         }
+
+        Map<String, Buffer<?>> result = new TreeMap<>();
+        result.put("integers", longBuffer);
+        result.put("floats", doubleBuffer);
+        result.put("strings", stringBuffer);
+
+        return result;
     }
 
-    private static boolean isDecimalSystem(String string) {
+    private boolean isDecimalSystem(String string) {
         if (string.isEmpty()) {
             return false;
         }
@@ -46,7 +68,7 @@ class Separator {
         return true;
     }
 
-    private static boolean isLongInteger(String string) {
+    private boolean isLongInteger(String string) {
         char firstSymbol = string.charAt(0);
         int i = firstSymbol == '-' || firstSymbol == '+' ? 1 : 0;
         int length = string.length();

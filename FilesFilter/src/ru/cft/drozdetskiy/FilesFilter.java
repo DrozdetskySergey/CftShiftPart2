@@ -2,9 +2,6 @@ package ru.cft.drozdetskiy;
 
 import ru.cft.drozdetskiy.args.ArgsParser;
 import ru.cft.drozdetskiy.buffer.Buffer;
-import ru.cft.drozdetskiy.buffer.impl.FastBuffer;
-import ru.cft.drozdetskiy.statistics.StatisticsFactory;
-import ru.cft.drozdetskiy.statistics.StatisticsFactoryBuilder;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,18 +41,13 @@ public class FilesFilter {
 
     private static void handleFiles(ArgsParser argsParser) {
         try (FileStringSupplier supplier = new FileStringSupplier(argsParser.getFiles())) {
-            StatisticsFactory factory = StatisticsFactoryBuilder.build(argsParser.getStatisticsType());
-            Buffer<Long> longBuffer = new FastBuffer<>(factory.createForLong());
-            Buffer<Double> doubleBuffer = new FastBuffer<>(factory.createForDouble());
-            Buffer<String> stringBuffer = new FastBuffer<>(factory.createForString());
-
-            Separator.separate(supplier, longBuffer, doubleBuffer, stringBuffer);
-
             String folder = prepareFolder(argsParser.getFolder());
+            String prefix = argsParser.getPrefix();
+            boolean isAppend = argsParser.isAppend();
+            Separator separator = new Separator(argsParser.getStatisticsType());
 
-            writeFileAndPrintStatistics(Paths.get(folder, argsParser.getPrefix() + "integers.txt"), longBuffer, argsParser.isAppend());
-            writeFileAndPrintStatistics(Paths.get(folder, argsParser.getPrefix() + "floats.txt"), doubleBuffer, argsParser.isAppend());
-            writeFileAndPrintStatistics(Paths.get(folder, argsParser.getPrefix() + "strings.txt"), stringBuffer, argsParser.isAppend());
+            separator.separate(supplier).forEach((key, value)
+                    -> writeFileAndPrintStatistics(Paths.get(folder, prefix + key + ".txt"), value, isAppend));
         } catch (Exception e) {
             e.printStackTrace();
         }
