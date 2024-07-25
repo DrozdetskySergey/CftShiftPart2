@@ -1,6 +1,5 @@
 package ru.cft.drozdetskiy;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import ru.cft.drozdetskiy.buffer.Buffer;
 import ru.cft.drozdetskiy.buffer.impl.FastBuffer;
 import ru.cft.drozdetskiy.statistics.StatisticsFactory;
@@ -32,7 +31,7 @@ class Separator {
             if (isDecimalSystem(s)) {
                 if (isLongInteger(s)) {
                     isAdded = longBuffer.add(Long.valueOf(s));
-                } else if (NumberUtils.isCreatable(s)) {
+                } else if (isClassicReal(s)) {
                     isAdded = doubleBuffer.add(Double.valueOf(s));
                 } else {
                     isAdded = stringBuffer.add(s);
@@ -102,4 +101,27 @@ class Separator {
         return result;
     }
 
+    private boolean isClassicReal(String string) {
+        char firstSymbol = string.charAt(0);
+        int shift = firstSymbol == '-' || firstSymbol == '+' ? 1 : 0;
+        int length = string.length() - shift;
+        boolean hasPoint = false;
+        boolean result = true;
+
+        for (int i = shift; (i < length + shift) && result; i++) {
+            char symbol = string.charAt(i);
+
+            if (symbol == '.') {
+                if (hasPoint || length == 1) {
+                    result = false;
+                } else {
+                    hasPoint = true;
+                }
+            } else if (symbol < '0' || symbol > '9') {
+                result = false;
+            }
+        }
+
+        return result;
+    }
 }
