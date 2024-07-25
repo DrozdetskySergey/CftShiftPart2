@@ -70,31 +70,36 @@ class Separator {
 
     private boolean isLongInteger(String string) {
         char firstSymbol = string.charAt(0);
-        int i = firstSymbol == '-' || firstSymbol == '+' ? 1 : 0;
-        int length = string.length();
+        int shift = firstSymbol == '-' || firstSymbol == '+' ? 1 : 0;
+        int length = string.length() - shift;
         boolean isNeededDeepVerification = false;
+        boolean result = true;
 
-        if (length - i < 1 || length - i > 19) {
-            return false;
-        } else if (length - i == 19 && string.charAt(i) == '9') {
+        if (length < 1 || length > 19) {
+            result = false;
+        } else if (length == 19 && string.charAt(shift) == '9') {
             isNeededDeepVerification = true;
         }
 
-        for (; i < length; i++) {
+        for (int i = shift; (i < length + shift) && result; i++) {
             char symbol = string.charAt(i);
 
             if (symbol < '0' || symbol > '9') {
-                return false;
+                result = false;
+                break;
             }
         }
 
-        if (isNeededDeepVerification) {
+        if (isNeededDeepVerification && result) {
             String digits = firstSymbol == '-' || firstSymbol == '+' ? string.substring(1) : string;
 
-            return (firstSymbol != '-' || digits.compareTo("9223372036854775808") <= 0) &&
-                    (firstSymbol == '-' || digits.compareTo("9223372036854775807") <= 0);
+            if ((firstSymbol == '-' && digits.compareTo("9223372036854775808") > 0) ||
+                    (firstSymbol != '-' && digits.compareTo("9223372036854775807") > 0)) {
+                result = false;
+            }
         }
 
-        return true;
+        return result;
     }
+
 }
