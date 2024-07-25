@@ -5,10 +5,6 @@ import ru.cft.drozdetskiy.buffer.Buffer;
 import ru.cft.drozdetskiy.buffer.impl.FastBuffer;
 import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 import ru.cft.drozdetskiy.statistics.StatisticsFactoryBuilder;
-import ru.cft.drozdetskiy.supplier.Supplier;
-import ru.cft.drozdetskiy.supplier.impl.FileStringSupplier;
-import ru.cft.drozdetskiy.writer.WriterFromBuffer;
-import ru.cft.drozdetskiy.writer.impl.FileWriterFromBuffer;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -47,15 +43,13 @@ public class FilesFilter {
     }
 
     private static void handleFiles(ArgsParser argsParser) {
-        try (Supplier<String> supplier = new FileStringSupplier(argsParser.getFiles())) {
+        try (FileStringSupplier supplier = new FileStringSupplier(argsParser.getFiles())) {
             StatisticsFactory factory = StatisticsFactoryBuilder.build(argsParser.getStatisticsType());
             Buffer<Long> longBuffer = new FastBuffer<>(factory.createForLong());
             Buffer<Double> doubleBuffer = new FastBuffer<>(factory.createForDouble());
             Buffer<String> stringBuffer = new FastBuffer<>(factory.createForString());
 
-            if (!Separator.separate(supplier, longBuffer, doubleBuffer, stringBuffer)) {
-                System.out.println("Не удалось добавить в буфер очередную строку. Фильтрация прервана.");
-            }
+            Separator.separate(supplier, longBuffer, doubleBuffer, stringBuffer);
 
             String folder = prepareFolder(argsParser.getFolder());
 
@@ -87,7 +81,7 @@ public class FilesFilter {
 
     private static <T> void writeFileAndPrintStatistics(Path path, Buffer<T> buffer, boolean isAppend) {
         if (buffer.isNotEmpty()) {
-            WriterFromBuffer writer = new FileWriterFromBuffer(path, isAppend);
+            FileWriterFromBuffer writer = new FileWriterFromBuffer(path, isAppend);
             writer.write(buffer);
         }
 

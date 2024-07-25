@@ -1,6 +1,4 @@
-package ru.cft.drozdetskiy.supplier.impl;
-
-import ru.cft.drozdetskiy.supplier.Supplier;
+package ru.cft.drozdetskiy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,7 +7,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileStringSupplier implements Supplier<String> {
+class FileStringSupplier implements AutoCloseable {
 
     private final List<BufferedReader> readers = new ArrayList<>();
     private int index;
@@ -28,7 +26,6 @@ public class FileStringSupplier implements Supplier<String> {
         updateNext();
     }
 
-    @Override
     public String next() {
         String result = next;
         updateNext();
@@ -36,7 +33,6 @@ public class FileStringSupplier implements Supplier<String> {
         return result;
     }
 
-    @Override
     public boolean hasNext() {
         return next != null;
     }

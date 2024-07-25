@@ -2,14 +2,13 @@ package ru.cft.drozdetskiy;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import ru.cft.drozdetskiy.buffer.Buffer;
-import ru.cft.drozdetskiy.supplier.Supplier;
 
 class Separator {
 
-    public static boolean separate(Supplier<String> supplier,
-                                   Buffer<Long> longBuffer,
-                                   Buffer<Double> doubleBuffer,
-                                   Buffer<String> stringBuffer) {
+    public static void separate(FileStringSupplier supplier,
+                                Buffer<Long> longBuffer,
+                                Buffer<Double> doubleBuffer,
+                                Buffer<String> stringBuffer) {
         boolean isAdded = true;
 
         while (supplier.hasNext() && isAdded) {
@@ -28,7 +27,9 @@ class Separator {
             }
         }
 
-        return isAdded;
+        if (!isAdded) {
+            System.out.println("Не удалось добавить в буфер очередную строку. Фильтрация прервана.");
+        }
     }
 
     private static boolean isDecimalSystem(String string) {
