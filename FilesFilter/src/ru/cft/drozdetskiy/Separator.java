@@ -31,8 +31,9 @@ class Separator {
             if (isDecimalSystem(s)) {
                 if (isLongInteger(s)) {
                     isAdded = longBuffer.add(Long.valueOf(s));
-                } else if (isClassicReal(s)) {
-                    isAdded = doubleBuffer.add(Double.valueOf(s));
+                } else if (isClassicReal(s) || isExponentialNotation(s)) {
+                    double number = Double.parseDouble(s);
+                    isAdded = Double.isFinite(number) ? doubleBuffer.add(number) : stringBuffer.add(s);
                 } else {
                     isAdded = stringBuffer.add(s);
                 }
@@ -68,11 +69,11 @@ class Separator {
     }
 
     private boolean isLongInteger(String string) {
+        boolean result = true;
         char firstSymbol = string.charAt(0);
         int shift = firstSymbol == '-' || firstSymbol == '+' ? 1 : 0;
         int length = string.length() - shift;
         boolean isNeededDeepVerification = false;
-        boolean result = true;
 
         if (length < 1 || length > 19) {
             result = false;
@@ -102,11 +103,11 @@ class Separator {
     }
 
     private boolean isClassicReal(String string) {
+        boolean result = true;
         char firstSymbol = string.charAt(0);
         int shift = firstSymbol == '-' || firstSymbol == '+' ? 1 : 0;
         int length = string.length() - shift;
         boolean hasPoint = false;
-        boolean result = true;
 
         for (int i = shift; (i < length + shift) && result; i++) {
             char symbol = string.charAt(i);
@@ -123,5 +124,22 @@ class Separator {
         }
 
         return result;
+    }
+
+    private boolean isExponentialNotation(String string) {
+        int length = string.length();
+        int expIndex = 0;
+
+        for (int i = 1; i < length - 1; i++) {
+            char symbol = string.charAt(i);
+
+            if (symbol == 'e' || symbol == 'E') {
+                expIndex = i;
+                break;
+            }
+        }
+
+        return expIndex != 0 && isClassicReal(string.substring(0, expIndex)) &&
+                isLongInteger(string.substring(expIndex + 1));
     }
 }
