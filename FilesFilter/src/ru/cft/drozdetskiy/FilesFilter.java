@@ -73,8 +73,8 @@ public class FilesFilter {
 
     private static <T> void writeFileAndPrintStatistics(Path path, Buffer<T> buffer, boolean isAppend) {
         if (buffer.isNotEmpty()) {
-            FileWriterFromBuffer writer = new FileWriterFromBuffer(path, isAppend);
-            writer.write(buffer);
+            FileWriterFromBuffer writer = new FileWriterFromBuffer(path);
+            writer.write(buffer, isAppend);
         }
 
         System.out.print(buffer.getStatistics());

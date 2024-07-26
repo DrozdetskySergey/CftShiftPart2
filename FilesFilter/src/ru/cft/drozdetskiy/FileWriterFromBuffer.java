@@ -17,14 +17,14 @@ class FileWriterFromBuffer {
             {StandardOpenOption.CREATE, StandardOpenOption.APPEND};
 
     private final Path file;
-    private final OpenOption[] openOptions;
 
-    public FileWriterFromBuffer(Path file, boolean isAppend) {
+    public FileWriterFromBuffer(Path file) {
         this.file = file;
-        openOptions = isAppend ? APPEND_OPTIONS : WRITE_OPTIONS;
     }
 
-    public <T> void write(Buffer<T> buffer) {
+    public <T> void write(Buffer<T> buffer, boolean isAppend) {
+        OpenOption[] openOptions = isAppend ? APPEND_OPTIONS : WRITE_OPTIONS;
+
         try (BufferedWriter writer = Files.newBufferedWriter(file, openOptions)) {
             while (buffer.isNotEmpty()) {
                 writer.write(String.format("%s%n", buffer.get().toString()));
