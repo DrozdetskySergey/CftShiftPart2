@@ -6,6 +6,7 @@ import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 import ru.cft.drozdetskiy.statistics.StatisticsFactoryBuilder;
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -22,11 +23,11 @@ class Separator {
         stringBuffer = new FastBuffer<>(factory.createForString());
     }
 
-    public Map<String, Buffer<?>> separate(FileStringSupplier supplier) {
+    public Map<String, Buffer<?>> separate(Iterator<String> iterator) {
         boolean isAdded = true;
 
-        while (supplier.hasNext() && isAdded) {
-            String s = supplier.next();
+        while (iterator.hasNext() && isAdded) {
+            String s = iterator.next();
 
             if (isDecimalSystem(s)) {
                 if (isLongInteger(s)) {

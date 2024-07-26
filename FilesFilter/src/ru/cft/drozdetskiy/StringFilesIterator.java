@@ -5,15 +5,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-class FileStringSupplier implements AutoCloseable {
+class StringFilesIterator implements Iterator<String>, AutoCloseable {
 
     private final List<BufferedReader> readers = new ArrayList<>();
     private int index;
     private String next;
 
-    public FileStringSupplier(List<String> files) {
+    public StringFilesIterator(List<String> files) {
         for (String s : files) {
             try {
                 BufferedReader reader = Files.newBufferedReader(Paths.get(s));
@@ -26,6 +27,7 @@ class FileStringSupplier implements AutoCloseable {
         updateNext();
     }
 
+    @Override
     public String next() {
         String result = next;
         updateNext();
@@ -33,6 +35,7 @@ class FileStringSupplier implements AutoCloseable {
         return result;
     }
 
+    @Override
     public boolean hasNext() {
         return next != null;
     }

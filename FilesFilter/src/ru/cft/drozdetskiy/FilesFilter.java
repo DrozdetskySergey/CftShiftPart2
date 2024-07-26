@@ -40,13 +40,13 @@ public class FilesFilter {
     }
 
     private static void handleFiles(ArgsParser argsParser) {
-        try (FileStringSupplier supplier = new FileStringSupplier(argsParser.getFiles())) {
+        try (StringFilesIterator iterator = new StringFilesIterator(argsParser.getFiles())) {
             String folder = prepareFolder(argsParser.getFolder());
             String prefix = argsParser.getPrefix();
             boolean isAppend = argsParser.isAppend();
             Separator separator = new Separator(argsParser.getStatisticsType());
 
-            separator.separate(supplier).forEach((key, value)
+            separator.separate(iterator).forEach((key, value)
                     -> writeFileAndPrintStatistics(Paths.get(folder, prefix + key + ".txt"), value, isAppend));
         } catch (Exception e) {
             e.printStackTrace();
