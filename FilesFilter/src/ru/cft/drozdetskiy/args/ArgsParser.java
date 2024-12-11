@@ -28,15 +28,15 @@ public class ArgsParser {
             } else {
                 char option = argument.charAt(1);
 
-                if (option == APPEND_FILES.option) {
+                if (option == APPEND_FILES.symbol) {
                     isAppend = true;
-                } else if (option == SIMPLE_STAT.option) {
+                } else if (option == SIMPLE_STAT.symbol) {
                     statisticsType = StatisticsType.SIMPLE;
-                } else if (option == FULL_STAT.option) {
+                } else if (option == FULL_STAT.symbol) {
                     statisticsType = StatisticsType.FULL;
-                } else if (option == SET_FOLDER.option && iterator.hasNext()) {
+                } else if (option == SET_FOLDER.symbol && iterator.hasNext()) {
                     folder.append(iterator.next());
-                } else if (option == SET_PREFIX.option && iterator.hasNext()) {
+                } else if (option == SET_PREFIX.symbol && iterator.hasNext()) {
                     prefix.append(iterator.next());
                 } else {
                     unknownOptions.append(option);
@@ -89,10 +89,10 @@ public class ArgsParser {
                 result.add(s);
             } else {
                 for (int i = 1; i < s.length(); i++) {
-                    char option = s.charAt(i);
-                    result.add("-" + option);
+                    char symbol = s.charAt(i);
+                    result.add("-" + symbol);
 
-                    if ((option == SET_FOLDER.option || option == SET_PREFIX.option) && (i + 1 < s.length())) {
+                    if ((symbol == SET_FOLDER.symbol || symbol == SET_PREFIX.symbol) && (i + 1 < s.length())) {
                         result.add(s.substring(i + 1));
                         break;
                     }

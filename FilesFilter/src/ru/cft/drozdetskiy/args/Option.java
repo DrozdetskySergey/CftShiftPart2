@@ -8,9 +8,9 @@ enum Option {
     SIMPLE_STAT('s'),
     FULL_STAT('f');
 
-    final char option;
+    final char symbol;
 
-    Option(char option) {
-        this.option = option;
+    Option(char symbol) {
+        this.symbol = symbol;
     }
 }
