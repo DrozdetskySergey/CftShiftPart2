@@ -8,7 +8,7 @@ public final class ArgumentsDTO {
 
     private final String prefix;
     private final String folder;
-    private final String unknownOptions;
+    private final String wrongArguments;
     private final StatisticsType statisticsType;
     private final boolean isAppend;
     private final List<String> files;
@@ -16,7 +16,7 @@ public final class ArgumentsDTO {
     private ArgumentsDTO(Builder builder) {
         this.prefix = builder.prefix == null ? "" : builder.prefix;
         this.folder = builder.folder == null ? "" : builder.folder;
-        this.unknownOptions = builder.unknownOptions == null ? "" : builder.unknownOptions;
+        this.wrongArguments = builder.wrongArguments == null ? "" : builder.wrongArguments;
         this.statisticsType = builder.statisticsType == null ? StatisticsType.SIMPLE : builder.statisticsType;
         this.isAppend = builder.isAppend;
         this.files = builder.files == null ? List.of() : List.copyOf(builder.files);
@@ -30,8 +30,8 @@ public final class ArgumentsDTO {
         return folder;
     }
 
-    public String getUnknownOptions() {
-        return unknownOptions;
+    public String getWrongArguments() {
+        return wrongArguments;
     }
 
     public List<String> getFiles() {
@@ -50,7 +50,7 @@ public final class ArgumentsDTO {
 
         private String prefix;
         private String folder;
-        private String unknownOptions;
+        private String wrongArguments;
         private StatisticsType statisticsType;
         private boolean isAppend;
         private List<String> files;
@@ -67,8 +67,8 @@ public final class ArgumentsDTO {
             return this;
         }
 
-        public Builder unknownOptions(String unknownOptions) {
-            this.unknownOptions = unknownOptions;
+        public Builder wrongArguments(String wrongArguments) {
+            this.wrongArguments = wrongArguments;
 
             return this;
         }
