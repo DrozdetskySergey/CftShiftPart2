@@ -1,6 +1,7 @@
 package ru.cft.drozdetskiy;
 
-import ru.cft.drozdetskiy.args.ArgsParser;
+import ru.cft.drozdetskiy.args.ArgumentsDTO;
+import ru.cft.drozdetskiy.args.ArgumentsParser;
 import ru.cft.drozdetskiy.buffer.Buffer;
 
 import java.nio.file.Files;
@@ -24,27 +25,27 @@ public class FilesFilter {
             return;
         }
 
-        ArgsParser argsParser = new ArgsParser(args);
+        ArgumentsDTO dto = ArgumentsParser.parse(args);
 
-        if (argsParser.getUnknownOptions().length() > 0) {
-            for (char c : argsParser.getUnknownOptions().toCharArray()) {
+        if (dto.getWrongArguments().length() > 0) {
+            for (char c : dto.getWrongArguments().toCharArray()) {
                 System.out.printf("Не верно задана опция: -%c%n", c);
             }
 
             System.out.print(help);
-        } else if (argsParser.getFiles().size() == 0) {
+        } else if (dto.getFiles().size() == 0) {
             System.out.printf("Не заданы файлы для фильтрации.%n%s", help);
         } else {
-            handleFiles(argsParser);
+            handleFiles(dto);
         }
     }
 
-    private static void handleFiles(ArgsParser argsParser) {
-        try (StringFilesIterator iterator = new StringFilesIterator(argsParser.getFiles())) {
-            String folder = prepareFolder(argsParser.getFolder());
-            String prefix = argsParser.getPrefix();
-            boolean isAppend = argsParser.isAppend();
-            Separator separator = new Separator(argsParser.getStatisticsType());
+    private static void handleFiles(ArgumentsDTO dto) {
+        try (StringFilesIterator iterator = new StringFilesIterator(dto.getFiles())) {
+            String folder = prepareFolder(dto.getFolder());
+            String prefix = dto.getPrefix();
+            boolean isAppend = dto.isAppend();
+            Separator separator = new Separator(dto.getStatisticsType());
 
             separator.separate(iterator).forEach((key, value)
                     -> writeFileAndPrintStatistics(Paths.get(folder, prefix + key + ".txt"), value, isAppend));
