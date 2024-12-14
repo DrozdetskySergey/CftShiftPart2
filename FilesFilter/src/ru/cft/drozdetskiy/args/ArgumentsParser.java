@@ -8,16 +8,15 @@ import java.util.stream.Collectors;
 
 import static ru.cft.drozdetskiy.args.Option.*;
 
-public class ArgsParser {
+public final class ArgumentsParser {
 
-    private final List<String> files = new ArrayList<>();
-    private StatisticsType statisticsType = StatisticsType.SIMPLE;
-    private boolean isAppend = false;
-    private final StringBuilder prefix = new StringBuilder();
-    private final StringBuilder folder = new StringBuilder();
-    private final StringBuilder unknownOptions = new StringBuilder();
-
-    public ArgsParser(String[] args) {
+    public static ArgumentsDTO parse(String[] args) {
+        StringBuilder prefix = new StringBuilder();
+        StringBuilder folder = new StringBuilder();
+        StringBuilder wrongArguments = new StringBuilder();
+        StatisticsType statisticsType = StatisticsType.SIMPLE;
+        boolean isAppend = false;
+        List<String> files = new ArrayList<>();
         List<String> arguments = decompose(filter(args));
 
         for (Iterator<String> iterator = arguments.iterator(); iterator.hasNext(); ) {
@@ -26,54 +25,39 @@ public class ArgsParser {
             if (isNotOption(argument)) {
                 files.add(argument);
             } else {
-                char option = argument.charAt(1);
+                char symbol = argument.charAt(1);
 
-                if (option == APPEND_FILES.symbol) {
+                if (symbol == APPEND_FILES.symbol) {
                     isAppend = true;
-                } else if (option == SIMPLE_STAT.symbol) {
+                } else if (symbol == SIMPLE_STAT.symbol) {
                     statisticsType = StatisticsType.SIMPLE;
-                } else if (option == FULL_STAT.symbol) {
+                } else if (symbol == FULL_STAT.symbol) {
                     statisticsType = StatisticsType.FULL;
-                } else if (option == SET_FOLDER.symbol && iterator.hasNext()) {
+                } else if (symbol == SET_FOLDER.symbol && iterator.hasNext()) {
                     folder.append(iterator.next());
-                } else if (option == SET_PREFIX.symbol && iterator.hasNext()) {
+                } else if (symbol == SET_PREFIX.symbol && iterator.hasNext()) {
                     prefix.append(iterator.next());
                 } else {
-                    unknownOptions.append(option);
+                    wrongArguments.append(symbol);
                 }
             }
         }
+
+        return new ArgumentsDTO.Builder()
+                .prefix(prefix.toString())
+                .folder(folder.toString())
+                .wrongArguments(wrongArguments.toString())
+                .statisticsType(statisticsType)
+                .isAppend(isAppend)
+                .files(files)
+                .build();
     }
 
-    public List<String> getFiles() {
-        return files;
-    }
-
-    public StatisticsType getStatisticsType() {
-        return statisticsType;
-    }
-
-    public boolean isAppend() {
-        return isAppend;
-    }
-
-    public String getPrefix() {
-        return prefix.toString();
-    }
-
-    public String getFolder() {
-        return folder.toString();
-    }
-
-    public String getUnknownOptions() {
-        return unknownOptions.toString();
-    }
-
-    private boolean isNotOption(String string) {
+    private static boolean isNotOption(String string) {
         return !string.startsWith("-");
     }
 
-    private List<String> filter(String[] args) {
+    private static List<String> filter(String[] args) {
         return Arrays.stream(args)
                 .filter(Objects::nonNull)
                 .filter(Predicate.not(String::isBlank))
@@ -81,7 +65,7 @@ public class ArgsParser {
                 .collect(Collectors.toList());
     }
 
-    private List<String> decompose(List<String> arguments) {
+    private static List<String> decompose(List<String> arguments) {
         List<String> result = new ArrayList<>();
 
         for (String s : arguments) {
