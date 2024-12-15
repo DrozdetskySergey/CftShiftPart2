@@ -1,56 +1,107 @@
 package ru.cft.drozdetskiy;
 
-import ru.cft.drozdetskiy.buffer.Buffer;
-import ru.cft.drozdetskiy.buffer.impl.FastBuffer;
+import ru.cft.drozdetskiy.statistics.Statistics;
 import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 import ru.cft.drozdetskiy.statistics.StatisticsFactoryBuilder;
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.List;
 
-class Separator {
+final class Separator {
 
-    private final Buffer<Long> longBuffer;
-    private final Buffer<Double> doubleBuffer;
-    private final Buffer<String> stringBuffer;
+    private final Writer longWriter;
+    private final Writer doubleWriter;
+    private final Writer stringWriter;
 
-    public Separator(StatisticsType statisticsType) {
-        StatisticsFactory factory = StatisticsFactoryBuilder.build(statisticsType);
-        longBuffer = new FastBuffer<>(factory.createForLong());
-        doubleBuffer = new FastBuffer<>(factory.createForDouble());
-        stringBuffer = new FastBuffer<>(factory.createForString());
+    private Separator(Builder builder) {
+        if (builder.longWriter == null || builder.doubleWriter == null || builder.stringWriter == null) {
+            throw new IllegalArgumentException("Incorrect Separator class build (Writer == null).");
+        }
+
+        this.longWriter = builder.longWriter;
+        this.doubleWriter = builder.doubleWriter;
+        this.stringWriter = builder.stringWriter;
     }
 
-    public Map<String, Buffer<?>> separate(Iterator<String> iterator) {
-        boolean isAdded = true;
+    public static class Builder {
+        private Writer longWriter;
+        private Writer doubleWriter;
+        private Writer stringWriter;
 
-        while (iterator.hasNext() && isAdded) {
-            String s = iterator.next();
+        public Builder longWriter(Writer writer) {
+            this.longWriter = writer;
 
-            if (isDecimalSystem(s)) {
-                if (isLongInteger(s)) {
-                    isAdded = longBuffer.add(Long.valueOf(s));
-                } else if (isClassicReal(s) || isExponentialNotation(s)) {
-                    double number = Double.parseDouble(s);
-                    isAdded = Double.isFinite(number) ? doubleBuffer.add(number) : stringBuffer.add(s);
+            return this;
+        }
+
+        public Builder doubleWriter(Writer writer) {
+            this.doubleWriter = writer;
+
+            return this;
+        }
+
+        public Builder stringWriter(Writer writer) {
+            this.stringWriter = writer;
+
+            return this;
+        }
+
+        public Separator build() {
+
+            return new Separator(this);
+        }
+    }
+
+    public List<Statistics<?>> separate(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
+        StatisticsFactory factory = StatisticsFactoryBuilder.build(statisticsType);
+        Statistics<Long> longsStatistics = factory.createForLong();
+        Statistics<Double> doublesStatistics = factory.createForDouble();
+        Statistics<String> stringsStatistics = factory.createForString();
+        List<Statistics<?>> result = new ArrayList<>(3);
+        result.add(longsStatistics);
+        result.add(doublesStatistics);
+        result.add(stringsStatistics);
+
+        while (iterator.hasNext()) {
+            String string = iterator.next();
+            ContentType type = getContentType(string);
+
+            if (type == ContentType.LONG) {
+                longWriter.append(string).append(System.lineSeparator());
+                longsStatistics.include(Long.valueOf(string));
+            } else if (type == ContentType.DOUBLE) {
+                double number = Double.parseDouble(string);
+
+                if (Double.isFinite(number)) {
+                    doubleWriter.append(string).append(System.lineSeparator());
+                    doublesStatistics.include(number);
                 } else {
-                    isAdded = stringBuffer.add(s);
+                    stringWriter.append(string).append(System.lineSeparator());
+                    stringsStatistics.include(string);
                 }
             } else {
-                isAdded = stringBuffer.add(s);
+                stringWriter.append(string).append(System.lineSeparator());
+                stringsStatistics.include(string);
             }
         }
 
-        if (!isAdded) {
-            System.out.println("Не удалось добавить в буфер очередную строку. Фильтрация прервана.");
-        }
+        return result;
+    }
 
-        Map<String, Buffer<?>> result = new TreeMap<>();
-        result.put("integers", longBuffer);
-        result.put("floats", doubleBuffer);
-        result.put("strings", stringBuffer);
+    private ContentType getContentType(String string) {
+        ContentType result = ContentType.STRING;
+
+        if (isDecimalSystem(string)) {
+            if (isLongInteger(string)) {
+                result = ContentType.LONG;
+            } else if (isClassicReal(string) || isExponentialNotation(string)) {
+                result = ContentType.DOUBLE;
+            }
+        }
 
         return result;
     }
