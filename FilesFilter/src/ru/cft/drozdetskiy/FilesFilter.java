@@ -2,11 +2,10 @@ package ru.cft.drozdetskiy;
 
 import ru.cft.drozdetskiy.args.ArgumentsDTO;
 import ru.cft.drozdetskiy.args.ArgumentsParser;
-import ru.cft.drozdetskiy.buffer.Buffer;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.*;
 
 public class FilesFilter {
 
@@ -27,28 +26,47 @@ public class FilesFilter {
 
         ArgumentsDTO dto = ArgumentsParser.parse(args);
 
-        if (dto.getWrongArguments().length() > 0) {
+        if (dto.getWrongArguments().isEmpty()) {
+            if (dto.getFiles().isEmpty()) {
+                System.out.printf("Не заданы файлы для фильтрации.%n%s", help);
+            } else {
+                handleFiles(dto);
+            }
+        } else {
             for (char c : dto.getWrongArguments().toCharArray()) {
                 System.out.printf("Не верно задана опция: -%c%n", c);
             }
 
             System.out.print(help);
-        } else if (dto.getFiles().size() == 0) {
-            System.out.printf("Не заданы файлы для фильтрации.%n%s", help);
-        } else {
-            handleFiles(dto);
         }
     }
 
     private static void handleFiles(ArgumentsDTO dto) {
-        try (StringFilesIterator iterator = new StringFilesIterator(dto.getFiles())) {
-            String folder = prepareFolder(dto.getFolder());
-            String prefix = dto.getPrefix();
-            boolean isAppend = dto.isAppend();
-            Separator separator = new Separator(dto.getStatisticsType());
+        final OpenOption[] writeOptions =
+                {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
+        final OpenOption[] appendOptions =
+                {StandardOpenOption.CREATE, StandardOpenOption.APPEND};
+        final OpenOption[] openOptions = dto.isAppend() ? appendOptions : writeOptions;
+        final String folder = prepareFolder(dto.getFolder());
+        final String prefix = dto.getPrefix();
+        final Path fileWithLong = Paths.get(folder, prefix + "integers.txt");
+        final Path fileWithDouble = Paths.get(folder, prefix + "floats.txt");
+        final Path fileWithString = Paths.get(folder, prefix + "strings.txt");
 
-            separator.separate(iterator).forEach((key, value)
-                    -> writeFileAndPrintStatistics(Paths.get(folder, prefix + key + ".txt"), value, isAppend));
+        try (Writer longWriter = Files.newBufferedWriter(fileWithLong, openOptions);
+             Writer doubleWriter = Files.newBufferedWriter(fileWithDouble, openOptions);
+             Writer stringWriter = Files.newBufferedWriter(fileWithString, openOptions);
+             StringFilesIterator iterator = new StringFilesIterator(dto.getFiles())) {
+
+            Separator separator = new Separator.Builder()
+                    .longWriter(longWriter)
+                    .doubleWriter(doubleWriter)
+                    .stringWriter(stringWriter)
+                    .build();
+            separator.separate(iterator, dto.getStatisticsType())
+                    .forEach(System.out::println);
+        } catch (IOException e) {
+            System.out.printf("Сбой записи в файл. %s%n", e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,18 +84,9 @@ public class FilesFilter {
             Files.createDirectories(Paths.get(result.toString()));
         } catch (Exception e) {
             result.setLength(0);
-            System.out.printf("Задана не корректная папка: %s%n", folder);
+            System.out.printf("Задана не корректный путь: %s%n", folder);
         }
 
         return result.toString();
-    }
-
-    private static <T> void writeFileAndPrintStatistics(Path path, Buffer<T> buffer, boolean isAppend) {
-        if (buffer.isNotEmpty()) {
-            FileWriterFromBuffer writer = new FileWriterFromBuffer(path);
-            writer.write(buffer, isAppend);
-        }
-
-        System.out.print(buffer.getStatistics());
     }
 }
