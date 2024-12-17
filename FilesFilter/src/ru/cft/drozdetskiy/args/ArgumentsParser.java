@@ -10,6 +10,9 @@ import static ru.cft.drozdetskiy.args.Option.*;
 
 public final class ArgumentsParser {
 
+    private ArgumentsParser() {
+    }
+
     public static ArgumentsDTO parse(String[] args) {
         StringBuilder prefix = new StringBuilder();
         StringBuilder folder = new StringBuilder();

@@ -92,7 +92,6 @@ public final class ArgumentsDTO {
         }
 
         public ArgumentsDTO build() {
-
             return new ArgumentsDTO(this);
         }
     }
