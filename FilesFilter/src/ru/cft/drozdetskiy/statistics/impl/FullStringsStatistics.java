@@ -6,7 +6,7 @@ public class FullStringsStatistics implements Statistics<String> {
 
     private int minLength = Integer.MAX_VALUE;
     private int maxLength = 0;
-    private int count;
+    private long count = 0;
 
     @Override
     public void include(String value) {

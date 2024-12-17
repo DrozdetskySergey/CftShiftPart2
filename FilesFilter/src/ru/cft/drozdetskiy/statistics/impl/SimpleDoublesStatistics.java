@@ -4,7 +4,7 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 
 class SimpleDoublesStatistics implements Statistics<Double> {
 
-    private int count;
+    private long count = 0;
 
     @Override
     public void include(Double value) {

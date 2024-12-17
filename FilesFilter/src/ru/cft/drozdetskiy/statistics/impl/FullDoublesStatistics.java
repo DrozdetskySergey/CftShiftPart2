@@ -2,12 +2,15 @@ package ru.cft.drozdetskiy.statistics.impl;
 
 import ru.cft.drozdetskiy.statistics.Statistics;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 class FullDoublesStatistics implements Statistics<Double> {
 
     private double min = Double.MAX_VALUE;
     private double max = Double.MIN_VALUE;
-    private double sum = 0;
-    private int count;
+    private BigDecimal sum = BigDecimal.ZERO;
+    private long count = 0;
 
     @Override
     public void include(Double value) {
@@ -21,7 +24,7 @@ class FullDoublesStatistics implements Statistics<Double> {
             max = number;
         }
 
-        sum += number;
+        sum = sum.add(BigDecimal.valueOf(number));
         count++;
     }
 
@@ -30,11 +33,12 @@ class FullDoublesStatistics implements Statistics<Double> {
         StringBuilder result = new StringBuilder(String.format("Количество вещественных чисел = %d%n", count));
 
         if (count > 0) {
-            double average = sum / count;
+            sum = sum.setScale(16, RoundingMode.DOWN);
+            BigDecimal average = sum.divide(BigDecimal.valueOf(count), RoundingMode.DOWN);
             result.append(String.format("| Минимальное значение = %e%n", min));
             result.append(String.format("| Максимальное значение = %e%n", max));
-            result.append(String.format("| Среднее арифметическое значение = %e%n", average));
-            result.append(String.format("| Сумма всех элементов = %e%n", sum));
+            result.append(String.format("| Среднее арифметическое значение = %s%n", average));
+            result.append(String.format("| Сумма всех элементов = %s%n", sum));
         }
 
         return result.toString();

@@ -2,14 +2,15 @@ package ru.cft.drozdetskiy.statistics.impl;
 
 import ru.cft.drozdetskiy.statistics.Statistics;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 class FullLongsStatistics implements Statistics<Long> {
 
     private long min = Long.MAX_VALUE;
     private long max = Long.MIN_VALUE;
-    private BigInteger sum = BigInteger.ZERO;
-    private int count;
+    private BigDecimal sum = BigDecimal.ZERO;
+    private long count = 0;
 
     @Override
     public void include(Long value) {
@@ -23,7 +24,7 @@ class FullLongsStatistics implements Statistics<Long> {
             max = number;
         }
 
-        sum = sum.add(BigInteger.valueOf(value));
+        sum = sum.add(BigDecimal.valueOf(number));
         count++;
     }
 
@@ -32,11 +33,13 @@ class FullLongsStatistics implements Statistics<Long> {
         StringBuilder result = new StringBuilder(String.format("Количество целых чисел = %d%n", count));
 
         if (count > 0) {
-            long average = (sum.divide(BigInteger.valueOf(count))).longValue();
+            BigDecimal average = sum.setScale(6, RoundingMode.DOWN)
+                    .divide(BigDecimal.valueOf(count), RoundingMode.DOWN);
+            sum = sum.setScale(0, RoundingMode.DOWN);
             result.append(String.format("| Минимальное значение = %d%n", min));
             result.append(String.format("| Максимальное значение = %d%n", max));
-            result.append(String.format("| Среднее арифметическое значение = %d%n", average));
-            result.append(String.format("| Сумма всех элементов = %s%n", sum.toString()));
+            result.append(String.format("| Среднее арифметическое значение = %s%n", average));
+            result.append(String.format("| Сумма всех элементов = %s%n", sum));
         }
 
         return result.toString();

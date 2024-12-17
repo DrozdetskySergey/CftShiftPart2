@@ -4,7 +4,7 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 
 class SimpleLongsStatistics implements Statistics<Long> {
 
-    private int count;
+    private long count = 0;
 
     @Override
     public void include(Long value) {

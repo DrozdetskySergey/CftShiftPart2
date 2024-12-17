@@ -4,7 +4,7 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 
 class SimpleStringsStatistics implements Statistics<String> {
 
-    private int count;
+    private long count = 0;
 
     @Override
     public void include(String value) {
