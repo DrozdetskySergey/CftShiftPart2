@@ -14,12 +14,12 @@ public final class ArgumentsDTO {
     private final List<String> files;
 
     private ArgumentsDTO(Builder builder) {
-        this.prefix = builder.prefix == null ? "" : builder.prefix;
-        this.folder = builder.folder == null ? "" : builder.folder;
-        this.wrongArguments = builder.wrongArguments == null ? "" : builder.wrongArguments;
-        this.statisticsType = builder.statisticsType == null ? StatisticsType.SIMPLE : builder.statisticsType;
-        this.isAppend = builder.isAppend;
-        this.files = builder.files == null ? List.of() : List.copyOf(builder.files);
+        prefix = builder.prefix == null ? "" : builder.prefix;
+        folder = builder.folder == null ? "" : builder.folder;
+        wrongArguments = builder.wrongArguments == null ? "" : builder.wrongArguments;
+        statisticsType = builder.statisticsType == null ? StatisticsType.SIMPLE : builder.statisticsType;
+        isAppend = builder.isAppend;
+        files = builder.files == null ? List.of() : List.copyOf(builder.files);
     }
 
     public String getPrefix() {
