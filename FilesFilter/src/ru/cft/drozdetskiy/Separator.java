@@ -19,12 +19,12 @@ final class Separator {
 
     private Separator(Builder builder) {
         if (builder.longWriter == null || builder.doubleWriter == null || builder.stringWriter == null) {
-            throw new IllegalArgumentException("Incorrect Separator class build (Writer == null).");
+            throw new IllegalArgumentException("Incorrect build of the Separator class (Writer is null).");
         }
 
-        this.longWriter = builder.longWriter;
-        this.doubleWriter = builder.doubleWriter;
-        this.stringWriter = builder.stringWriter;
+        longWriter = builder.longWriter;
+        doubleWriter = builder.doubleWriter;
+        stringWriter = builder.stringWriter;
     }
 
     public static class Builder {
