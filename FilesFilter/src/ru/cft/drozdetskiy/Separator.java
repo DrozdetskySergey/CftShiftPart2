@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static ru.cft.drozdetskiy.ContentType.*;
+
 final class Separator {
 
     private final LazyWriter longWriter;
@@ -68,10 +70,10 @@ final class Separator {
             String string = iterator.next();
             ContentType type = getContentType(string);
 
-            if (type == ContentType.LONG) {
+            if (type == LONG) {
                 longWriter.append(string).append(System.lineSeparator());
                 longsStatistics.include(Long.valueOf(string));
-            } else if (type == ContentType.DOUBLE) {
+            } else if (type == DOUBLE) {
                 double number = Double.parseDouble(string);
 
                 if (Double.isFinite(number)) {
@@ -91,105 +93,38 @@ final class Separator {
     }
 
     private ContentType getContentType(String string) {
-        ContentType result = ContentType.STRING;
-
-        if (isDecimalSystem(string)) {
-            if (isLongInteger(string)) {
-                result = ContentType.LONG;
-            } else if (isClassicReal(string) || isExponentialNotation(string)) {
-                result = ContentType.DOUBLE;
-            }
-        }
-
-        return result;
-    }
-
-    private boolean isDecimalSystem(String string) {
         if (string.isEmpty()) {
-            return false;
+            return STRING;
         }
 
-        for (char c : string.toCharArray()) {
-            if ((c < '0' || c > '9') && c != '.' && c != '-' && c != '+' && c != 'e' && c != 'E') {
-                return false;
-            }
-        }
+        ContentType result = LONG;
+        char[] symbols = string.toCharArray();
+        int firstIndex = symbols[0] == '+' || symbols[0] == '-' ? 1 : 0;
 
-        return true;
-    }
-
-    private boolean isLongInteger(String string) {
-        boolean result = true;
-        char firstSymbol = string.charAt(0);
-        int shift = firstSymbol == '-' || firstSymbol == '+' ? 1 : 0;
-        int length = string.length() - shift;
-        boolean isNeededDeepVerification = false;
-
-        if (length < 1 || length > 19) {
-            result = false;
-        } else if (length == 19 && string.charAt(shift) == '9') {
-            isNeededDeepVerification = true;
-        }
-
-        for (int i = shift; (i < length + shift) && result; i++) {
-            char symbol = string.charAt(i);
-
-            if (symbol < '0' || symbol > '9') {
-                result = false;
+        for (int i = firstIndex; result != STRING && i < symbols.length; i++) {
+            if (result == LONG && symbols[i] == '.') {
+                result = DOUBLE;
+            } else if (firstIndex < i && i < symbols.length - 1 && (symbols[i] == 'e' || symbols[i] == 'E')) {
+                result = getContentType(string.substring(i + 1)) == LONG ? DOUBLE : STRING;
                 break;
+            } else if (symbols[i] < '0' || symbols[i] > '9') {
+                result = STRING;
             }
         }
 
-        if (isNeededDeepVerification && result) {
-            String digits = firstSymbol == '-' || firstSymbol == '+' ? string.substring(1) : string;
+        if (result == LONG) {
+            if (symbols.length > firstIndex + 19) {
+                result = DOUBLE;
+            } else if (symbols.length == firstIndex + 19 && symbols[firstIndex] == '9') {
+                String digits = firstIndex == 1 ? string.substring(1) : string;
 
-            if ((firstSymbol == '-' && digits.compareTo("9223372036854775808") > 0) ||
-                    (firstSymbol != '-' && digits.compareTo("9223372036854775807") > 0)) {
-                result = false;
-            }
-        }
-
-        return result;
-    }
-
-    private boolean isClassicReal(String string) {
-        boolean result = true;
-        char firstSymbol = string.charAt(0);
-        int shift = firstSymbol == '-' || firstSymbol == '+' ? 1 : 0;
-        int length = string.length() - shift;
-        boolean hasPoint = false;
-
-        for (int i = shift; (i < length + shift) && result; i++) {
-            char symbol = string.charAt(i);
-
-            if (symbol == '.') {
-                if (hasPoint || length == 1) {
-                    result = false;
-                } else {
-                    hasPoint = true;
+                if ((symbols[0] == '-' && digits.compareTo("9223372036854775808") > 0) ||
+                        (symbols[0] != '-' && digits.compareTo("9223372036854775807") > 0)) {
+                    result = DOUBLE;
                 }
-            } else if (symbol < '0' || symbol > '9') {
-                result = false;
             }
         }
 
         return result;
-    }
-
-    private boolean isExponentialNotation(String string) {
-        int length = string.length();
-        int expIndex = 0;
-
-        for (int i = 1; i < length - 1; i++) {
-            char symbol = string.charAt(i);
-
-            if (symbol == 'e' || symbol == 'E') {
-                expIndex = i;
-                break;
-            }
-        }
-
-        return expIndex != 0 && isClassicReal(string.substring(0, expIndex)) &&
-                isLongInteger(string.substring(expIndex + 1));
     }
 }
