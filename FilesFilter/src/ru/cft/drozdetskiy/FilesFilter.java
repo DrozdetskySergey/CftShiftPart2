@@ -63,7 +63,7 @@ public class FilesFilter {
         } catch (IOException e) {
             System.out.printf("Сбой записи/чтения файла. %s%n", e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.printf("Что-то пошло не так! %s%n", e.getMessage());
         }
     }
 
