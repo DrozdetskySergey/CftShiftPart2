@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-class StringFilesIterator implements Iterator<String>, AutoCloseable {
+final class StringFilesIterator implements Iterator<String>, AutoCloseable {
 
     private final List<BufferedReader> readers = new ArrayList<>();
     private int index;
@@ -74,7 +74,7 @@ class StringFilesIterator implements Iterator<String>, AutoCloseable {
             try {
                 reader.close();
             } catch (IOException e) {
-                System.out.printf("Сбой закрытия потока чтения из файла %s%n", e.getMessage());
+                System.out.printf("Сбой закрытия потока чтения файла %s%n", e.getMessage());
             }
         }
     }
