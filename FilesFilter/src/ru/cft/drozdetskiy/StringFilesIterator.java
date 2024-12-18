@@ -74,7 +74,7 @@ final class StringFilesIterator implements Iterator<String>, AutoCloseable {
             try {
                 reader.close();
             } catch (IOException e) {
-                System.out.printf("Сбой закрытия потока чтения файла %s%n", e.getMessage());
+                System.out.printf("Сбой закрытия потока чтения файла. %s%n", e.getMessage());
             }
         }
     }
