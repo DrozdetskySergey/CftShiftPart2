@@ -4,8 +4,9 @@ import ru.cft.drozdetskiy.args.ArgumentsDTO;
 import ru.cft.drozdetskiy.args.ArgumentsParser;
 
 import java.io.IOException;
-import java.io.Writer;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FilesFilter {
 
@@ -42,20 +43,14 @@ public class FilesFilter {
     }
 
     private static void handleFiles(ArgumentsDTO dto) {
-        final OpenOption[] writeOptions =
-                {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
-        final OpenOption[] appendOptions =
-                {StandardOpenOption.CREATE, StandardOpenOption.APPEND};
-        final OpenOption[] openOptions = dto.isAppend() ? appendOptions : writeOptions;
-        final String folder = prepareFolder(dto.getFolder());
-        final String prefix = dto.getPrefix();
-        final Path fileWithLong = Paths.get(folder, prefix + "integers.txt");
-        final Path fileWithDouble = Paths.get(folder, prefix + "floats.txt");
-        final Path fileWithString = Paths.get(folder, prefix + "strings.txt");
+        String folder = prepareFolder(dto.getFolder());
+        Path fileWithLong = Paths.get(folder, dto.getPrefix() + "integers.txt");
+        Path fileWithDouble = Paths.get(folder, dto.getPrefix() + "floats.txt");
+        Path fileWithString = Paths.get(folder, dto.getPrefix() + "strings.txt");
 
-        try (Writer longWriter = Files.newBufferedWriter(fileWithLong, openOptions);
-             Writer doubleWriter = Files.newBufferedWriter(fileWithDouble, openOptions);
-             Writer stringWriter = Files.newBufferedWriter(fileWithString, openOptions);
+        try (LazyWriter longWriter = new LazyWriter(fileWithLong, dto.isAppend());
+             LazyWriter doubleWriter = new LazyWriter(fileWithDouble, dto.isAppend());
+             LazyWriter stringWriter = new LazyWriter(fileWithString, dto.isAppend());
              StringFilesIterator iterator = new StringFilesIterator(dto.getFiles())) {
 
             Separator separator = new Separator.Builder()
@@ -66,7 +61,7 @@ public class FilesFilter {
             separator.separate(iterator, dto.getStatisticsType())
                     .forEach(System.out::println);
         } catch (IOException e) {
-            System.out.printf("Сбой записи в файл. %s%n", e.getMessage());
+            System.out.printf("Сбой записи/чтения файла. %s%n", e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }

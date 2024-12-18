@@ -6,20 +6,19 @@ import ru.cft.drozdetskiy.statistics.StatisticsFactoryBuilder;
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 final class Separator {
 
-    private final Writer longWriter;
-    private final Writer doubleWriter;
-    private final Writer stringWriter;
+    private final LazyWriter longWriter;
+    private final LazyWriter doubleWriter;
+    private final LazyWriter stringWriter;
 
     private Separator(Builder builder) {
         if (builder.longWriter == null || builder.doubleWriter == null || builder.stringWriter == null) {
-            throw new IllegalArgumentException("Incorrect build of the Separator class (Writer is null).");
+            throw new IllegalArgumentException("Incorrect build of the Separator class (LazyWriter is null).");
         }
 
         longWriter = builder.longWriter;
@@ -28,30 +27,29 @@ final class Separator {
     }
 
     public static class Builder {
-        private Writer longWriter;
-        private Writer doubleWriter;
-        private Writer stringWriter;
+        private LazyWriter longWriter;
+        private LazyWriter doubleWriter;
+        private LazyWriter stringWriter;
 
-        public Builder longWriter(Writer writer) {
+        public Builder longWriter(LazyWriter writer) {
             this.longWriter = writer;
 
             return this;
         }
 
-        public Builder doubleWriter(Writer writer) {
+        public Builder doubleWriter(LazyWriter writer) {
             this.doubleWriter = writer;
 
             return this;
         }
 
-        public Builder stringWriter(Writer writer) {
+        public Builder stringWriter(LazyWriter writer) {
             this.stringWriter = writer;
 
             return this;
         }
 
         public Separator build() {
-
             return new Separator(this);
         }
     }
