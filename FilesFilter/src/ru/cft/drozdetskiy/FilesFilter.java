@@ -44,13 +44,13 @@ public final class FilesFilter {
 
     private static void handleFiles(ArgumentsDTO dto) {
         String folder = prepareFolder(dto.getFolder());
-        Path fileWithLong = Paths.get(folder, dto.getPrefix() + "integers.txt");
-        Path fileWithDouble = Paths.get(folder, dto.getPrefix() + "floats.txt");
-        Path fileWithString = Paths.get(folder, dto.getPrefix() + "strings.txt");
+        Path fileWithLongs = Paths.get(folder, dto.getPrefix() + "integers.txt");
+        Path fileWithDoubles = Paths.get(folder, dto.getPrefix() + "floats.txt");
+        Path fileWithStrings = Paths.get(folder, dto.getPrefix() + "strings.txt");
 
-        try (LazyWriter longWriter = new LazyWriter(fileWithLong, dto.isAppend());
-             LazyWriter doubleWriter = new LazyWriter(fileWithDouble, dto.isAppend());
-             LazyWriter stringWriter = new LazyWriter(fileWithString, dto.isAppend());
+        try (LazyWriter longWriter = new LazyWriter(fileWithLongs, dto.isAppend());
+             LazyWriter doubleWriter = new LazyWriter(fileWithDoubles, dto.isAppend());
+             LazyWriter stringWriter = new LazyWriter(fileWithStrings, dto.isAppend());
              StringFilesIterator iterator = new StringFilesIterator(dto.getFiles())) {
 
             Separator separator = new Separator.Builder()
@@ -58,8 +58,7 @@ public final class FilesFilter {
                     .doubleWriter(doubleWriter)
                     .stringWriter(stringWriter)
                     .build();
-            separator.separate(iterator, dto.getStatisticsType())
-                    .forEach(System.out::println);
+            separator.separate(iterator, dto.getStatisticsType()).forEach(System.out::println);
         } catch (IOException e) {
             System.out.printf("Сбой записи/чтения файла. %s%n", e.getMessage());
         } catch (Exception e) {
