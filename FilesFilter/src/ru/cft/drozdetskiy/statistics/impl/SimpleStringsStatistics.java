@@ -2,7 +2,7 @@ package ru.cft.drozdetskiy.statistics.impl;
 
 import ru.cft.drozdetskiy.statistics.Statistics;
 
-class SimpleStringsStatistics implements Statistics<String> {
+final class SimpleStringsStatistics implements Statistics<String> {
 
     private long count = 0;
 

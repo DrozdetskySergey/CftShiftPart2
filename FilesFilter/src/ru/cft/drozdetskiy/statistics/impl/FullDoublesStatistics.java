@@ -5,7 +5,7 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-class FullDoublesStatistics implements Statistics<Double> {
+final class FullDoublesStatistics implements Statistics<Double> {
 
     private double min = Double.MAX_VALUE;
     private double max = Double.MIN_VALUE;

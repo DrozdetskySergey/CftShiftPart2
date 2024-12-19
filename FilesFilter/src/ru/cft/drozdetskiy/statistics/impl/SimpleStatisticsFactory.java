@@ -3,7 +3,7 @@ package ru.cft.drozdetskiy.statistics.impl;
 import ru.cft.drozdetskiy.statistics.Statistics;
 import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 
-public class SimpleStatisticsFactory implements StatisticsFactory {
+final public class SimpleStatisticsFactory implements StatisticsFactory {
 
     @Override
     public Statistics<Long> createForLong() {

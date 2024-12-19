@@ -2,7 +2,7 @@ package ru.cft.drozdetskiy.statistics.impl;
 
 import ru.cft.drozdetskiy.statistics.Statistics;
 
-public class FullStringsStatistics implements Statistics<String> {
+final public class FullStringsStatistics implements Statistics<String> {
 
     private int minLength = Integer.MAX_VALUE;
     private int maxLength = 0;

@@ -5,7 +5,7 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-class FullLongsStatistics implements Statistics<Long> {
+final class FullLongsStatistics implements Statistics<Long> {
 
     private long min = Long.MAX_VALUE;
     private long max = Long.MIN_VALUE;

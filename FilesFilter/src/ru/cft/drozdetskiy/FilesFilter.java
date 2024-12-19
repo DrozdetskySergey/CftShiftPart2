@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class FilesFilter {
+public final class FilesFilter {
 
     public static void main(String[] args) {
         final String help = String.format("FilesFilter [options] [files...]%n" +
