@@ -20,7 +20,7 @@ final class Separator {
 
     private Separator(Builder builder) {
         if (builder.longWriter == null || builder.doubleWriter == null || builder.stringWriter == null) {
-            throw new IllegalArgumentException("Incorrect build of the Separator class (LazyWriter is null).");
+            throw new IllegalArgumentException("Неверное конструирование класса Separator (writer = null).");
         }
 
         longWriter = builder.longWriter;
@@ -71,21 +71,21 @@ final class Separator {
             ContentType type = getContentType(string);
 
             if (type == LONG) {
-                longWriter.append(string).append(System.lineSeparator());
                 longsStatistics.include(Long.valueOf(string));
+                longWriter.append(string).append(System.lineSeparator());
             } else if (type == DOUBLE) {
                 double number = Double.parseDouble(string);
 
                 if (Double.isFinite(number)) {
-                    doubleWriter.append(string).append(System.lineSeparator());
                     doublesStatistics.include(number);
+                    doubleWriter.append(string).append(System.lineSeparator());
                 } else {
-                    stringWriter.append(string).append(System.lineSeparator());
                     stringsStatistics.include(string);
+                    stringWriter.append(string).append(System.lineSeparator());
                 }
-            } else {
-                stringWriter.append(string).append(System.lineSeparator());
+            } else if (type == STRING) {
                 stringsStatistics.include(string);
+                stringWriter.append(string).append(System.lineSeparator());
             }
         }
 
@@ -94,18 +94,19 @@ final class Separator {
 
     private ContentType getContentType(String string) {
         if (string.isEmpty()) {
-            return STRING;
+            return EMPTY;
         }
 
-        ContentType result = LONG;
         char[] symbols = string.toCharArray();
         int firstIndex = symbols[0] == '+' || symbols[0] == '-' ? 1 : 0;
+        ContentType result = firstIndex == symbols.length ? STRING : LONG;
 
         for (int i = firstIndex; result != STRING && i < symbols.length; i++) {
-            if (result == LONG && symbols[i] == '.') {
+            if (symbols[i] == '.' && result == LONG) {
                 result = DOUBLE;
-            } else if (firstIndex < i && i < symbols.length - 1 && (symbols[i] == 'e' || symbols[i] == 'E')) {
-                result = getContentType(string.substring(i + 1)) == LONG ? DOUBLE : STRING;
+            } else if ((symbols[i] == 'e' || symbols[i] == 'E')
+                    && ((result == LONG && firstIndex < i) || (result == DOUBLE && firstIndex + 1 < i))) {
+                result = isIntegerNumeric(string.substring(i + 1)) ? DOUBLE : STRING;
                 break;
             } else if (symbols[i] < '0' || symbols[i] > '9') {
                 result = STRING;
@@ -123,6 +124,22 @@ final class Separator {
                     result = DOUBLE;
                 }
             }
+        }
+
+        return result;
+    }
+
+    private boolean isIntegerNumeric(String string) {
+        if (string.isEmpty()) {
+            return false;
+        }
+
+        char[] symbols = string.toCharArray();
+        int firstIndex = symbols[0] == '+' || symbols[0] == '-' ? 1 : 0;
+        boolean result = firstIndex < symbols.length;
+
+        for (int i = firstIndex; result && i < symbols.length; i++) {
+            result = symbols[i] >= '0' && symbols[i] <= '9';
         }
 
         return result;

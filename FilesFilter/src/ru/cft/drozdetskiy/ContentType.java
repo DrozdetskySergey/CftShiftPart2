@@ -1,5 +1,5 @@
 package ru.cft.drozdetskiy;
 
 enum ContentType {
-    LONG, DOUBLE, STRING
+    EMPTY, LONG, DOUBLE, STRING
 }
