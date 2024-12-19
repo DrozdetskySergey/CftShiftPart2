@@ -10,11 +10,13 @@ import java.util.List;
 
 final class StringFilesIterator implements Iterator<String>, AutoCloseable {
 
-    private final List<BufferedReader> readers = new ArrayList<>();
+    private final List<BufferedReader> readers;
     private int index;
     private String next;
 
     public StringFilesIterator(List<String> files) {
+        readers = new ArrayList<>(files.size());
+
         for (String s : files) {
             try {
                 BufferedReader reader = Files.newBufferedReader(Paths.get(s));
