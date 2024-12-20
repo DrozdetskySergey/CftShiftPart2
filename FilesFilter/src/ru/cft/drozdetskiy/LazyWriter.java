@@ -26,10 +26,7 @@ final class LazyWriter implements Appendable, AutoCloseable {
 
     @Override
     public Appendable append(CharSequence chars) throws IOException {
-        if (writer == null) {
-            writer = Files.newBufferedWriter(file, openOptions);
-        }
-
+        enableWriter();
         writer.append(chars);
 
         return this;
@@ -37,10 +34,7 @@ final class LazyWriter implements Appendable, AutoCloseable {
 
     @Override
     public Appendable append(CharSequence chars, int start, int end) throws IOException {
-        if (writer == null) {
-            writer = Files.newBufferedWriter(file, openOptions);
-        }
-
+        enableWriter();
         writer.append(chars, start, end);
 
         return this;
@@ -48,10 +42,7 @@ final class LazyWriter implements Appendable, AutoCloseable {
 
     @Override
     public Appendable append(char c) throws IOException {
-        if (writer == null) {
-            writer = Files.newBufferedWriter(file, openOptions);
-        }
-
+        enableWriter();
         writer.append(c);
 
         return this;
@@ -65,6 +56,12 @@ final class LazyWriter implements Appendable, AutoCloseable {
             } catch (IOException e) {
                 System.out.printf("Сбой закрытия потока записи файла %s%n", e.getMessage());
             }
+        }
+    }
+
+    private void enableWriter() throws IOException {
+        if (writer == null) {
+            writer = Files.newBufferedWriter(file, openOptions);
         }
     }
 }
