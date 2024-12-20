@@ -17,6 +17,9 @@ final class Separator {
     private final Appendable longAppender;
     private final Appendable doubleAppender;
     private final Appendable stringAppender;
+    Statistics<Long> longsStatistics;
+    Statistics<Double> doublesStatistics;
+    Statistics<String> stringsStatistics;
 
     private Separator(Builder builder) {
         if (builder.longAppender == null || builder.doubleAppender == null || builder.stringAppender == null) {
@@ -58,9 +61,9 @@ final class Separator {
 
     public List<Statistics<?>> separate(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
         StatisticsFactory factory = StatisticsFactoryBuilder.build(statisticsType);
-        Statistics<Long> longsStatistics = factory.createForLong();
-        Statistics<Double> doublesStatistics = factory.createForDouble();
-        Statistics<String> stringsStatistics = factory.createForString();
+        longsStatistics = factory.createForLong();
+        doublesStatistics = factory.createForDouble();
+        stringsStatistics = factory.createForString();
         List<Statistics<?>> result = new ArrayList<>(3);
         result.add(longsStatistics);
         result.add(doublesStatistics);
@@ -68,28 +71,42 @@ final class Separator {
 
         while (iterator.hasNext()) {
             String string = iterator.next();
-            ContentType type = getContentType(string);
 
-            if (type == LONG) {
-                longsStatistics.include(Long.valueOf(string));
-                longAppender.append(string).append(System.lineSeparator());
-            } else if (type == DOUBLE) {
-                double number = Double.parseDouble(string);
-
-                if (Double.isFinite(number)) {
-                    doublesStatistics.include(number);
-                    doubleAppender.append(string).append(System.lineSeparator());
-                } else {
-                    stringsStatistics.include(string);
-                    stringAppender.append(string).append(System.lineSeparator());
-                }
-            } else if (type == STRING) {
-                stringsStatistics.include(string);
-                stringAppender.append(string).append(System.lineSeparator());
+            switch (getContentType(string)) {
+                case LONG:
+                    handleLongContent(string);
+                    break;
+                case DOUBLE:
+                    handleDoubleContent(string);
+                    break;
+                case STRING:
+                    handleStringContent(string);
+                    break;
             }
         }
 
         return result;
+    }
+
+    private void handleLongContent(String string) throws IOException {
+        longsStatistics.include(Long.valueOf(string));
+        longAppender.append(string).append(System.lineSeparator());
+    }
+
+    private void handleDoubleContent(String string) throws IOException {
+        double number = Double.parseDouble(string);
+
+        if (Double.isFinite(number)) {
+            doublesStatistics.include(number);
+            doubleAppender.append(string).append(System.lineSeparator());
+        } else {
+            handleStringContent(string);
+        }
+    }
+
+    private void handleStringContent(String string) throws IOException {
+        stringsStatistics.include(string);
+        stringAppender.append(string).append(System.lineSeparator());
     }
 
     private ContentType getContentType(String string) {
