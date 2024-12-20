@@ -14,39 +14,39 @@ import static ru.cft.drozdetskiy.ContentType.*;
 
 final class Separator {
 
-    private final LazyWriter longWriter;
-    private final LazyWriter doubleWriter;
-    private final LazyWriter stringWriter;
+    private final Appendable longAppender;
+    private final Appendable doubleAppender;
+    private final Appendable stringAppender;
 
     private Separator(Builder builder) {
-        if (builder.longWriter == null || builder.doubleWriter == null || builder.stringWriter == null) {
-            throw new IllegalArgumentException("Неверное конструирование класса Separator (writer = null).");
+        if (builder.longAppender == null || builder.doubleAppender == null || builder.stringAppender == null) {
+            throw new IllegalArgumentException("Неверное конструирование класса Separator (appender = null).");
         }
 
-        longWriter = builder.longWriter;
-        doubleWriter = builder.doubleWriter;
-        stringWriter = builder.stringWriter;
+        longAppender = builder.longAppender;
+        doubleAppender = builder.doubleAppender;
+        stringAppender = builder.stringAppender;
     }
 
     public static class Builder {
-        private LazyWriter longWriter;
-        private LazyWriter doubleWriter;
-        private LazyWriter stringWriter;
+        private Appendable longAppender;
+        private Appendable doubleAppender;
+        private Appendable stringAppender;
 
-        public Builder longWriter(LazyWriter writer) {
-            this.longWriter = writer;
-
-            return this;
-        }
-
-        public Builder doubleWriter(LazyWriter writer) {
-            this.doubleWriter = writer;
+        public Builder longAppender(Appendable appender) {
+            longAppender = appender;
 
             return this;
         }
 
-        public Builder stringWriter(LazyWriter writer) {
-            this.stringWriter = writer;
+        public Builder doubleAppender(Appendable appender) {
+            doubleAppender = appender;
+
+            return this;
+        }
+
+        public Builder stringAppender(Appendable appender) {
+            stringAppender = appender;
 
             return this;
         }
@@ -72,20 +72,20 @@ final class Separator {
 
             if (type == LONG) {
                 longsStatistics.include(Long.valueOf(string));
-                longWriter.append(string).append(System.lineSeparator());
+                longAppender.append(string).append(System.lineSeparator());
             } else if (type == DOUBLE) {
                 double number = Double.parseDouble(string);
 
                 if (Double.isFinite(number)) {
                     doublesStatistics.include(number);
-                    doubleWriter.append(string).append(System.lineSeparator());
+                    doubleAppender.append(string).append(System.lineSeparator());
                 } else {
                     stringsStatistics.include(string);
-                    stringWriter.append(string).append(System.lineSeparator());
+                    stringAppender.append(string).append(System.lineSeparator());
                 }
             } else if (type == STRING) {
                 stringsStatistics.include(string);
-                stringWriter.append(string).append(System.lineSeparator());
+                stringAppender.append(string).append(System.lineSeparator());
             }
         }
 

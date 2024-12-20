@@ -54,9 +54,9 @@ public final class FilesFilter {
              StringFilesIterator iterator = new StringFilesIterator(dto.getFiles())) {
 
             Separator separator = new Separator.Builder()
-                    .longWriter(longWriter)
-                    .doubleWriter(doubleWriter)
-                    .stringWriter(stringWriter)
+                    .longAppender(longWriter)
+                    .doubleAppender(doubleWriter)
+                    .stringAppender(stringWriter)
                     .build();
             separator.separate(iterator, dto.getStatisticsType()).forEach(System.out::println);
         } catch (IOException e) {
