@@ -25,7 +25,7 @@ public final class FilesFilter {
             return;
         }
 
-        ArgumentsDTO dto = ArgumentsParser.parse(args);
+        var dto = ArgumentsParser.parse(args);
 
         if (dto.getWrongArguments().isEmpty()) {
             if (dto.getFiles().isEmpty()) {
@@ -48,12 +48,12 @@ public final class FilesFilter {
         Path fileWithDoubles = Paths.get(folder, dto.getPrefix() + "floats.txt");
         Path fileWithStrings = Paths.get(folder, dto.getPrefix() + "strings.txt");
 
-        try (LazyWriter longWriter = new LazyWriter(fileWithLongs, dto.isAppend());
-             LazyWriter doubleWriter = new LazyWriter(fileWithDoubles, dto.isAppend());
-             LazyWriter stringWriter = new LazyWriter(fileWithStrings, dto.isAppend());
-             StringFilesIterator iterator = new StringFilesIterator(dto.getFiles())) {
+        try (var longWriter = new LazyWriter(fileWithLongs, dto.isAppend());
+             var doubleWriter = new LazyWriter(fileWithDoubles, dto.isAppend());
+             var stringWriter = new LazyWriter(fileWithStrings, dto.isAppend());
+             var iterator = new StringFilesIterator(dto.getFiles())) {
 
-            Separator separator = new Separator.Builder()
+            var separator = new Separator.Builder()
                     .longAppender(longWriter)
                     .doubleAppender(doubleWriter)
                     .stringAppender(stringWriter)
