@@ -25,7 +25,7 @@ public final class FilesFilter {
             return;
         }
 
-        var dto = ArgumentsParser.parse(args);
+        ArgumentsDTO dto = ArgumentsParser.parse(args);
 
         if (dto.getWrongArguments().isEmpty()) {
             if (dto.getFiles().isEmpty()) {
