@@ -7,7 +7,7 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-final class LazyWriter implements AutoCloseable {
+final class LazyWriter implements Appendable, AutoCloseable {
 
     private static final OpenOption[] WRITE_OPTIONS =
             {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
@@ -24,12 +24,35 @@ final class LazyWriter implements AutoCloseable {
         writer = null;
     }
 
-    public LazyWriter append(CharSequence chars) throws IOException {
+    @Override
+    public Appendable append(CharSequence chars) throws IOException {
         if (writer == null) {
             writer = Files.newBufferedWriter(file, openOptions);
         }
 
         writer.append(chars);
+
+        return this;
+    }
+
+    @Override
+    public Appendable append(CharSequence chars, int start, int end) throws IOException {
+        if (writer == null) {
+            writer = Files.newBufferedWriter(file, openOptions);
+        }
+
+        writer.append(chars, start, end);
+
+        return this;
+    }
+
+    @Override
+    public Appendable append(char c) throws IOException {
+        if (writer == null) {
+            writer = Files.newBufferedWriter(file, openOptions);
+        }
+
+        writer.append(c);
 
         return this;
     }
