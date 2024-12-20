@@ -82,6 +82,8 @@ final class Separator {
                 case STRING:
                     handleStringContent(string);
                     break;
+                default:
+                    break;
             }
         }
 
