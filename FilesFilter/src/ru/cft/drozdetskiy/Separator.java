@@ -17,9 +17,9 @@ final class Separator {
     private final Appendable longAppender;
     private final Appendable doubleAppender;
     private final Appendable stringAppender;
-    Statistics<Long> longsStatistics;
-    Statistics<Double> doublesStatistics;
-    Statistics<String> stringsStatistics;
+    private Statistics<Long> longsStatistics;
+    private Statistics<Double> doublesStatistics;
+    private Statistics<String> stringsStatistics;
 
     private Separator(Builder builder) {
         if (builder.longAppender == null || builder.doubleAppender == null || builder.stringAppender == null) {
@@ -64,10 +64,10 @@ final class Separator {
         longsStatistics = factory.createForLong();
         doublesStatistics = factory.createForDouble();
         stringsStatistics = factory.createForString();
-        List<Statistics<?>> result = new ArrayList<>(3);
-        result.add(longsStatistics);
-        result.add(doublesStatistics);
-        result.add(stringsStatistics);
+        List<Statistics<?>> statisticsList = new ArrayList<>(3);
+        statisticsList.add(longsStatistics);
+        statisticsList.add(doublesStatistics);
+        statisticsList.add(stringsStatistics);
 
         while (iterator.hasNext()) {
             String string = iterator.next();
@@ -87,7 +87,7 @@ final class Separator {
             }
         }
 
-        return result;
+        return List.copyOf(statisticsList);
     }
 
     private void handleLongContent(String string) throws IOException {
