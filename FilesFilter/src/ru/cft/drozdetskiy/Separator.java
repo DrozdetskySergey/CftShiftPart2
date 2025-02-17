@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import static ru.cft.drozdetskiy.ContentType.*;
 
@@ -22,13 +23,9 @@ final class Separator {
     private Statistics<String> stringsStatistics;
 
     private Separator(Builder builder) {
-        if (builder.longAppender == null || builder.doubleAppender == null || builder.stringAppender == null) {
-            throw new IllegalArgumentException("Неверное конструирование класса Separator (appender = null).");
-        }
-
-        longAppender = builder.longAppender;
-        doubleAppender = builder.doubleAppender;
-        stringAppender = builder.stringAppender;
+        longAppender = Objects.requireNonNull(builder.longAppender, "Separator.longAppender = null");
+        doubleAppender = Objects.requireNonNull(builder.doubleAppender, "Separator.doubleAppender = null");
+        stringAppender = Objects.requireNonNull(builder.stringAppender, "Separator.stringAppender = null");
     }
 
     public static class Builder {
