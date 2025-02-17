@@ -21,29 +21,25 @@ final class LazyWriter implements Appendable, AutoCloseable {
     public LazyWriter(Path file, boolean isAppend) {
         this.file = file;
         openOptions = isAppend ? APPEND_OPTIONS : WRITE_OPTIONS;
-        writer = null;
     }
 
     @Override
     public Appendable append(CharSequence chars) throws IOException {
-        enableWriter();
-        writer.append(chars);
+        getWriter().append(chars);
 
         return this;
     }
 
     @Override
     public Appendable append(CharSequence chars, int start, int end) throws IOException {
-        enableWriter();
-        writer.append(chars, start, end);
+        getWriter().append(chars, start, end);
 
         return this;
     }
 
     @Override
     public Appendable append(char c) throws IOException {
-        enableWriter();
-        writer.append(c);
+        getWriter().append(c);
 
         return this;
     }
@@ -59,9 +55,11 @@ final class LazyWriter implements Appendable, AutoCloseable {
         }
     }
 
-    private void enableWriter() throws IOException {
+    private Writer getWriter() throws IOException {
         if (writer == null) {
             writer = Files.newBufferedWriter(file, openOptions);
         }
+
+        return writer;
     }
 }
