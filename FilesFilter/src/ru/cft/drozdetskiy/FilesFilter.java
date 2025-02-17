@@ -51,7 +51,7 @@ public final class FilesFilter {
         try (var longWriter = new LazyWriter(fileWithLongs, dto.isAppend());
              var doubleWriter = new LazyWriter(fileWithDoubles, dto.isAppend());
              var stringWriter = new LazyWriter(fileWithStrings, dto.isAppend());
-             var iterator = new StringFilesIterator(dto.getFiles())) {
+             var iterator = new FilesIterator(dto.getFiles())) {
 
             var separator = new Separator.Builder()
                     .longAppender(longWriter)

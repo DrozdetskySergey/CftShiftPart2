@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-final class StringFilesIterator implements Iterator<String>, AutoCloseable {
+final class FilesIterator implements Iterator<String>, AutoCloseable {
 
     private final List<BufferedReader> readers;
     private int index;
     private String next;
 
-    public StringFilesIterator(List<String> files) {
+    public FilesIterator(List<String> files) {
         readers = new ArrayList<>(files.size());
 
         for (String s : files) {
