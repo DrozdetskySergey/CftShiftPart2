@@ -16,7 +16,6 @@ public final class ArgumentsParser {
     public static ArgumentsDTO parse(String[] args) {
         StringBuilder prefix = new StringBuilder();
         StringBuilder folder = new StringBuilder();
-        StringBuilder wrongArguments = new StringBuilder();
         StatisticsType statisticsType = StatisticsType.SIMPLE;
         boolean isAppend = false;
         List<String> files = new ArrayList<>();
@@ -41,7 +40,7 @@ public final class ArgumentsParser {
                 } else if (symbol == SET_PREFIX.symbol && iterator.hasNext()) {
                     prefix.append(iterator.next());
                 } else {
-                    wrongArguments.append(symbol);
+                    throw new IllegalArgumentException(argument);
                 }
             }
         }
@@ -49,7 +48,6 @@ public final class ArgumentsParser {
         return new ArgumentsDTO.Builder()
                 .prefix(prefix.toString())
                 .folder(folder.toString())
-                .wrongArguments(wrongArguments.toString())
                 .statisticsType(statisticsType)
                 .isAppend(isAppend)
                 .files(files)

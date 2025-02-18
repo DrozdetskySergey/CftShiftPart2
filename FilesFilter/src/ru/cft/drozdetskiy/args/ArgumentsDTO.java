@@ -8,7 +8,6 @@ public final class ArgumentsDTO {
 
     private final String prefix;
     private final String folder;
-    private final String wrongArguments;
     private final StatisticsType statisticsType;
     private final boolean isAppend;
     private final List<String> files;
@@ -16,7 +15,6 @@ public final class ArgumentsDTO {
     private ArgumentsDTO(Builder builder) {
         prefix = builder.prefix == null ? "" : builder.prefix;
         folder = builder.folder == null ? "" : builder.folder;
-        wrongArguments = builder.wrongArguments == null ? "" : builder.wrongArguments;
         statisticsType = builder.statisticsType == null ? StatisticsType.SIMPLE : builder.statisticsType;
         isAppend = builder.isAppend;
         files = builder.files == null ? List.of() : List.copyOf(builder.files);
@@ -28,10 +26,6 @@ public final class ArgumentsDTO {
 
     public String getFolder() {
         return folder;
-    }
-
-    public String getWrongArguments() {
-        return wrongArguments;
     }
 
     public List<String> getFiles() {
@@ -50,7 +44,6 @@ public final class ArgumentsDTO {
 
         private String prefix;
         private String folder;
-        private String wrongArguments;
         private StatisticsType statisticsType;
         private boolean isAppend;
         private List<String> files;
@@ -63,12 +56,6 @@ public final class ArgumentsDTO {
 
         public Builder folder(String folder) {
             this.folder = folder;
-
-            return this;
-        }
-
-        public Builder wrongArguments(String wrongArguments) {
-            this.wrongArguments = wrongArguments;
 
             return this;
         }
