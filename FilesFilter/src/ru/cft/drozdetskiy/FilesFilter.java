@@ -21,28 +21,22 @@ public final class FilesFilter {
 
         if (args.length == 0 || args[0].equals("-h")) {
             System.out.print(help);
-
-            return;
-        }
-
-        ArgumentsDTO dto = ArgumentsParser.parse(args);
-
-        if (dto.getWrongArguments().isEmpty()) {
-            if (dto.getFiles().isEmpty()) {
-                System.out.printf("Не заданы файлы для фильтрации.%n%s", help);
-            } else {
-                handleFiles(dto);
-            }
         } else {
-            for (char c : dto.getWrongArguments().toCharArray()) {
-                System.out.printf("Не верно задана опция: -%c%n", c);
+            try {
+                handleFiles(ArgumentsParser.parse(args));
+            } catch (IOException e) {
+                System.out.printf("Сбой записи/чтения данных. %s%n", e.getMessage());
+            } catch (IllegalArgumentException e) {
+                System.out.printf("Не верный аргумент: %s%n", e.getMessage());
+            } catch (RuntimeException e) {
+                System.out.printf("Что-то пошло не так! %s%n", e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            System.out.print(help);
         }
     }
 
-    private static void handleFiles(ArgumentsDTO dto) {
+    private static void handleFiles(ArgumentsDTO dto) throws IOException {
         String folder = prepareFolder(dto.getFolder());
         Path fileWithLongs = Paths.get(folder, dto.getPrefix() + "integers.txt");
         Path fileWithDoubles = Paths.get(folder, dto.getPrefix() + "floats.txt");
@@ -59,10 +53,6 @@ public final class FilesFilter {
                     .stringAppender(stringWriter)
                     .build();
             separator.separate(iterator, dto.getStatisticsType()).forEach(System.out::println);
-        } catch (IOException e) {
-            System.out.printf("Сбой записи/чтения файла. %s%n", e.getMessage());
-        } catch (Exception e) {
-            System.out.printf("Что-то пошло не так! %s%n", e.getMessage());
         }
     }
 
@@ -77,8 +67,7 @@ public final class FilesFilter {
 
             Files.createDirectories(Paths.get(result.toString()));
         } catch (Exception e) {
-            result.setLength(0);
-            System.out.printf("Задана не корректный путь: %s%n", folder);
+            throw new IllegalArgumentException("папка " + folder);
         }
 
         return result.toString();
