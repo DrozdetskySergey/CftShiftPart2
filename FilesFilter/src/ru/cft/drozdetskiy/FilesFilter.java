@@ -45,21 +45,21 @@ public final class FilesFilter {
         Path fileWithLongs = Paths.get(folder, dto.getPrefix() + "integers.txt");
         Path fileWithDoubles = Paths.get(folder, dto.getPrefix() + "floats.txt");
         Path fileWithStrings = Paths.get(folder, dto.getPrefix() + "strings.txt");
+        var longWriter = new LazyWriter(fileWithLongs, dto.isAppend());
+        var doubleWriter = new LazyWriter(fileWithDoubles, dto.isAppend());
+        var stringWriter = new LazyWriter(fileWithStrings, dto.isAppend());
+        var iterator = new FilesIterator(dto.getFiles());
 
-        try (var longWriter = new LazyWriter(fileWithLongs, dto.isAppend());
-             var doubleWriter = new LazyWriter(fileWithDoubles, dto.isAppend());
-             var stringWriter = new LazyWriter(fileWithStrings, dto.isAppend());
-             var iterator = new FilesIterator(dto.getFiles())) {
-
+        try (longWriter; doubleWriter; stringWriter; iterator) {
             Separator separator = new Separator.Builder()
                     .longAppender(longWriter)
                     .doubleAppender(doubleWriter)
                     .stringAppender(stringWriter)
                     .build();
-            Map<ContentType, Statistics<?>> statistics = separator.separate(iterator, dto.getStatisticsType());
-            System.out.println(statistics.get(LONG));
-            System.out.println(statistics.get(DOUBLE));
-            System.out.println(statistics.get(STRING));
+            Map<ContentType, Statistics<?>> statisticsMap = separator.separate(iterator, dto.getStatisticsType());
+            System.out.println(statisticsMap.get(LONG));
+            System.out.println(statisticsMap.get(DOUBLE));
+            System.out.println(statisticsMap.get(STRING));
         }
     }
 
