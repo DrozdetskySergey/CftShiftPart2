@@ -2,6 +2,7 @@ package ru.cft.drozdetskiy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -14,16 +15,16 @@ final class FilesIterator implements Iterator<String>, AutoCloseable {
     private int index;
     private String next;
 
-    public FilesIterator(List<String> files) {
+    public FilesIterator(List<String> files) throws IOException {
+        if (files.isEmpty()) {
+            throw new IllegalArgumentException("не заданы файлы (files)");
+        }
+
         readers = new ArrayList<>(files.size());
 
         for (String s : files) {
-            try {
-                BufferedReader reader = Files.newBufferedReader(Paths.get(s));
-                readers.add(reader);
-            } catch (IOException e) {
-                System.out.printf("Не удалось открыть файл для чтения: %s%n", s);
-            }
+            BufferedReader reader = Files.newBufferedReader(Paths.get(s));
+            readers.add(reader);
         }
 
         updateNext();
@@ -56,7 +57,8 @@ final class FilesIterator implements Iterator<String>, AutoCloseable {
             try {
                 next = readers.get(index).readLine();
             } catch (IOException e) {
-                System.out.printf("Сбой чтения из файла. %s%n", e.getMessage());
+                next = null;
+                System.err.printf("Сбой чтения из файла, далее игнорируется %s%n", e.getMessage());
             }
 
             if (next == null) {
@@ -71,12 +73,12 @@ final class FilesIterator implements Iterator<String>, AutoCloseable {
         }
     }
 
-    private void closeBufferedReader(BufferedReader reader) {
+    private void closeBufferedReader(Reader reader) {
         if (reader != null) {
             try {
                 reader.close();
             } catch (IOException e) {
-                System.out.printf("Сбой закрытия потока чтения файла. %s%n", e.getMessage());
+                System.err.printf("Сбой закрытия файла %s%n", e.getMessage());
             }
         }
     }
