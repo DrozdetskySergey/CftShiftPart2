@@ -45,13 +45,9 @@ final class LazyWriter implements Appendable, AutoCloseable {
     }
 
     @Override
-    public void close() {
+    public void close() throws IOException {
         if (writer != null) {
-            try {
-                writer.close();
-            } catch (IOException e) {
-                System.err.printf("Сбой закрытия файла %s%n", e.getMessage());
-            }
+            writer.close();
         }
     }
 
