@@ -28,12 +28,13 @@ public final class FilesFilter {
         } else {
             try {
                 handleFiles(ArgumentsParser.parse(args));
-            } catch (IOException e) {
-                System.out.printf("Сбой записи/чтения данных. %s%n", e.getMessage());
             } catch (IllegalArgumentException e) {
                 System.out.printf("Не верный аргумент: %s%n", e.getMessage());
+                System.out.print(help);
             } catch (RuntimeException e) {
-                System.out.printf("Что-то пошло не так! %s%n", e.getMessage());
+                System.err.printf("Что-то пошло не так! %s%n", e.getMessage());
+            } catch (IOException e) {
+                System.err.printf("Сбой записи/чтения данных. %s%n", e.getMessage());
             } catch (Exception e) {
                 e.printStackTrace();
             }
