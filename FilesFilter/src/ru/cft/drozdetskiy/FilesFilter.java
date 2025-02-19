@@ -34,7 +34,7 @@ public final class FilesFilter {
             } catch (RuntimeException e) {
                 System.err.printf("Что-то пошло не так! %s%n", e.getMessage());
             } catch (IOException e) {
-                System.err.printf("Сбой записи/чтения данных. %s%n", e.getMessage());
+                System.err.printf("Сбой записи/чтения файла %s%n", e.getMessage());
             } catch (Exception e) {
                 e.printStackTrace();
             }

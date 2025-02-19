@@ -50,7 +50,7 @@ final class LazyWriter implements Appendable, AutoCloseable {
             try {
                 writer.close();
             } catch (IOException e) {
-                System.err.printf("Сбой закрытия потока записи файла %s%n", e.getMessage());
+                System.err.printf("Сбой закрытия файла %s%n", e.getMessage());
             }
         }
     }
