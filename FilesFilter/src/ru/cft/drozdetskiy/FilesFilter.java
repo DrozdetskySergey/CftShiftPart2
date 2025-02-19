@@ -29,8 +29,7 @@ public final class FilesFilter {
             try {
                 handleFiles(ArgumentsParser.parse(args));
             } catch (IllegalArgumentException e) {
-                System.out.printf("Не верный аргумент: %s%n", e.getMessage());
-                System.out.print(help);
+                System.out.printf("Не верно задан аргумент: %s%n%n%s", e.getMessage(), help);
             } catch (RuntimeException e) {
                 System.err.printf("Что-то пошло не так! %s%n", e.getMessage());
             } catch (IOException e) {
@@ -75,7 +74,7 @@ public final class FilesFilter {
 
             Files.createDirectories(Paths.get(result.toString()));
         } catch (Exception e) {
-            throw new IllegalArgumentException("папка " + folder);
+            throw new IllegalArgumentException("путь " + folder);
         }
 
         return result.toString();
