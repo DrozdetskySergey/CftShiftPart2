@@ -2,11 +2,15 @@ package ru.cft.drozdetskiy;
 
 import ru.cft.drozdetskiy.args.ArgumentsDTO;
 import ru.cft.drozdetskiy.args.ArgumentsParser;
+import ru.cft.drozdetskiy.statistics.Statistics;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+
+import static ru.cft.drozdetskiy.ContentType.*;
 
 public final class FilesFilter {
 
@@ -47,12 +51,15 @@ public final class FilesFilter {
              var stringWriter = new LazyWriter(fileWithStrings, dto.isAppend());
              var iterator = new FilesIterator(dto.getFiles())) {
 
-            var separator = new Separator.Builder()
+            Separator separator = new Separator.Builder()
                     .longAppender(longWriter)
                     .doubleAppender(doubleWriter)
                     .stringAppender(stringWriter)
                     .build();
-            separator.separate(iterator, dto.getStatisticsType()).forEach(System.out::println);
+            Map<ContentType, Statistics<?>> statistics = separator.separate(iterator, dto.getStatisticsType());
+            System.out.println(statistics.get(LONG));
+            System.out.println(statistics.get(DOUBLE));
+            System.out.println(statistics.get(STRING));
         }
     }
 

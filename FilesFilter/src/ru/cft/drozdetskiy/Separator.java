@@ -6,9 +6,8 @@ import ru.cft.drozdetskiy.statistics.StatisticsFactoryBuilder;
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static ru.cft.drozdetskiy.ContentType.*;
@@ -56,15 +55,11 @@ final class Separator {
         }
     }
 
-    public List<Statistics<?>> separate(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
+    public Map<ContentType, Statistics<?>> separate(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
         StatisticsFactory factory = StatisticsFactoryBuilder.build(statisticsType);
         longsStatistics = factory.createForLong();
         doublesStatistics = factory.createForDouble();
         stringsStatistics = factory.createForString();
-        List<Statistics<?>> statisticsList = new ArrayList<>(3);
-        statisticsList.add(longsStatistics);
-        statisticsList.add(doublesStatistics);
-        statisticsList.add(stringsStatistics);
 
         while (iterator.hasNext()) {
             String string = iterator.next();
@@ -84,7 +79,7 @@ final class Separator {
             }
         }
 
-        return List.copyOf(statisticsList);
+        return Map.of(LONG, longsStatistics, DOUBLE, doublesStatistics, STRING, stringsStatistics);
     }
 
     private void handleLongContent(String string) throws IOException {
