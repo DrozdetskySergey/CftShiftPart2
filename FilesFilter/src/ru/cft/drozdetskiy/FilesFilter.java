@@ -6,7 +6,6 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
@@ -42,15 +41,11 @@ public final class FilesFilter {
 
     private static void handleFiles(ArgumentsDTO dto) throws IOException {
         String folder = prepareFolder(dto.getFolder());
-        Path fileWithLongs = Paths.get(folder, dto.getPrefix() + "integers.txt");
-        Path fileWithDoubles = Paths.get(folder, dto.getPrefix() + "floats.txt");
-        Path fileWithStrings = Paths.get(folder, dto.getPrefix() + "strings.txt");
-        var longWriter = new LazyWriter(fileWithLongs, dto.isAppend());
-        var doubleWriter = new LazyWriter(fileWithDoubles, dto.isAppend());
-        var stringWriter = new LazyWriter(fileWithStrings, dto.isAppend());
-        var iterator = new FilesIterator(dto.getFiles());
+        var longWriter = new LazyWriter(Paths.get(folder, dto.getPrefix() + "integers.txt"), dto.isAppend());
+        var doubleWriter = new LazyWriter(Paths.get(folder, dto.getPrefix() + "floats.txt"), dto.isAppend());
+        var stringWriter = new LazyWriter(Paths.get(folder, dto.getPrefix() + "strings.txt"), dto.isAppend());
 
-        try (longWriter; doubleWriter; stringWriter; iterator) {
+        try (longWriter; doubleWriter; stringWriter; var iterator = new FilesIterator(dto.getFiles())) {
             Separator separator = new Separator.Builder()
                     .longAppender(longWriter)
                     .doubleAppender(doubleWriter)
