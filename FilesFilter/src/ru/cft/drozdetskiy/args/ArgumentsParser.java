@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import static ru.cft.drozdetskiy.args.Option.*;
 
 /**
- * Функциональный класс. Предоставляет статичный метод parse.
+ * Функциональный класс. Предоставляет статичный метод parse. private Конструктор.
  */
 public final class ArgumentsParser {
 
@@ -21,7 +21,7 @@ public final class ArgumentsParser {
      *
      * @param args Массив строк.
      * @return DTO с нужными даннами для программы.
-     * @throws IllegalArgumentException если встречается не известная опция.
+     * @throws IllegalArgumentException если встречается неизвестная опция.
      */
     public static ArgumentsDTO parse(String[] args) {
         StringBuilder prefix = new StringBuilder();
@@ -65,10 +65,10 @@ public final class ArgumentsParser {
     }
 
     /**
-     * Проверяет строка (аргумент) это опция или нет (начинается с минуса или нет).
+     * Проверяет аргумент не может ли быть опцией {@link Option}.
      *
      * @param string Проверяемый аргумент.
-     * @return true если это не опция или false если опция.
+     * @return true если не может быть опцией.
      */
     private static boolean isNotOption(String string) {
         return !string.startsWith("-");
@@ -89,7 +89,7 @@ public final class ArgumentsParser {
     }
 
     /**
-     * Не опции копирует без изменения. Составные (слипшиеся) опции разбивает на одиночные.
+     * Не опции передаёт без изменения. Опции проверяет на слипание, разделяет на одиночные и передаёт.
      *
      * @param arguments Список аргументов.
      * @return Список аргументов без составных опций.
