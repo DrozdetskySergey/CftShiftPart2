@@ -4,12 +4,30 @@ import ru.cft.drozdetskiy.statistics.StatisticsType;
 
 import java.util.List;
 
+/**
+ * Объект для передачи данных пришедших через аргументы.
+ */
 public final class ArgumentsDTO {
 
+    /**
+     * Префикс имен файлов с результатом.
+     */
     private final String prefix;
+    /**
+     * Папка для результата.
+     */
     private final String folder;
+    /**
+     * Тип собираемой статистики.
+     */
     private final StatisticsType statisticsType;
+    /**
+     * Режим записи в конец файла если он уже существует.
+     */
     private final boolean isAppend;
+    /**
+     * Список имён входящих файлов.
+     */
     private final List<String> files;
 
     private ArgumentsDTO(Builder builder) {
@@ -40,6 +58,9 @@ public final class ArgumentsDTO {
         return isAppend;
     }
 
+    /**
+     * Встроенный статичный класс для сборки объекта класса {@link ArgumentsDTO}
+     */
     public static class Builder {
 
         private String prefix;
