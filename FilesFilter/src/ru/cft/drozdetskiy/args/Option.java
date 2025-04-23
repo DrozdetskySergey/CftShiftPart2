@@ -2,7 +2,7 @@ package ru.cft.drozdetskiy.args;
 
 enum Option {
 
-    SET_FOLDER('o'),
+    SET_DIRECTORY('o'),
     SET_PREFIX('p'),
     APPEND_FILES('a'),
     SIMPLE_STAT('s'),

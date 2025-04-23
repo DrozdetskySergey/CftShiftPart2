@@ -25,7 +25,7 @@ public final class ArgumentsParser {
      */
     public static ArgumentsDTO parse(String[] args) {
         StringBuilder prefix = new StringBuilder();
-        StringBuilder folder = new StringBuilder();
+        StringBuilder directory = new StringBuilder();
         StatisticsType statisticsType = StatisticsType.SIMPLE;
         boolean isAppend = false;
         List<String> files = new ArrayList<>();
@@ -45,8 +45,8 @@ public final class ArgumentsParser {
                     statisticsType = StatisticsType.SIMPLE;
                 } else if (symbol == FULL_STAT.symbol) {
                     statisticsType = StatisticsType.FULL;
-                } else if (symbol == SET_FOLDER.symbol && iterator.hasNext()) {
-                    folder.append(iterator.next());
+                } else if (symbol == SET_DIRECTORY.symbol && iterator.hasNext()) {
+                    directory.append(iterator.next());
                 } else if (symbol == SET_PREFIX.symbol && iterator.hasNext()) {
                     prefix.append(iterator.next());
                 } else {
@@ -57,7 +57,7 @@ public final class ArgumentsParser {
 
         return new ArgumentsDTO.Builder()
                 .prefix(prefix.toString())
-                .folder(folder.toString())
+                .directory(directory.toString())
                 .statisticsType(statisticsType)
                 .isAppend(isAppend)
                 .files(files)
@@ -105,7 +105,7 @@ public final class ArgumentsParser {
                     char symbol = s.charAt(i);
                     result.add("-" + symbol);
 
-                    if ((symbol == SET_FOLDER.symbol || symbol == SET_PREFIX.symbol) && (i + 1 < s.length())) {
+                    if ((symbol == SET_DIRECTORY.symbol || symbol == SET_PREFIX.symbol) && (i + 1 < s.length())) {
                         result.add(s.substring(i + 1));
                         break;
                     }

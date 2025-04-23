@@ -5,7 +5,7 @@ import ru.cft.drozdetskiy.statistics.StatisticsType;
 import java.util.List;
 
 /**
- * Объект для передачи данных пришедших через аргументы.
+ * Неизменяемый объект для передачи данных пришедших в аргументы программы. Создаётся через Builder.
  */
 public final class ArgumentsDTO {
 
@@ -14,9 +14,9 @@ public final class ArgumentsDTO {
      */
     private final String prefix;
     /**
-     * Папка для результата.
+     * Каталог для результата.
      */
-    private final String folder;
+    private final String directory;
     /**
      * Тип собираемой статистики.
      */
@@ -32,7 +32,7 @@ public final class ArgumentsDTO {
 
     private ArgumentsDTO(Builder builder) {
         prefix = builder.prefix == null ? "" : builder.prefix;
-        folder = builder.folder == null ? "" : builder.folder;
+        directory = builder.directory == null ? "" : builder.directory;
         statisticsType = builder.statisticsType == null ? StatisticsType.SIMPLE : builder.statisticsType;
         isAppend = builder.isAppend;
         files = builder.files == null ? List.of() : List.copyOf(builder.files);
@@ -42,8 +42,8 @@ public final class ArgumentsDTO {
         return prefix;
     }
 
-    public String getFolder() {
-        return folder;
+    public String getDirectory() {
+        return directory;
     }
 
     public List<String> getFiles() {
@@ -64,7 +64,7 @@ public final class ArgumentsDTO {
     public static class Builder {
 
         private String prefix;
-        private String folder;
+        private String directory;
         private StatisticsType statisticsType;
         private boolean isAppend;
         private List<String> files;
@@ -75,8 +75,8 @@ public final class ArgumentsDTO {
             return this;
         }
 
-        public Builder folder(String folder) {
-            this.folder = folder;
+        public Builder directory(String directory) {
+            this.directory = directory;
 
             return this;
         }

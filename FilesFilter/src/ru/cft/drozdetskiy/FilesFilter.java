@@ -6,7 +6,7 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.Map;
 
 import static ru.cft.drozdetskiy.ContentType.*;
@@ -40,10 +40,10 @@ public final class FilesFilter {
     }
 
     private static void handleFiles(ArgumentsDTO dto) throws IOException {
-        String folder = prepareFolder(dto.getFolder());
-        var longWriter = new LazyWriter(Paths.get(folder, dto.getPrefix() + "integers.txt"), dto.isAppend());
-        var doubleWriter = new LazyWriter(Paths.get(folder, dto.getPrefix() + "floats.txt"), dto.isAppend());
-        var stringWriter = new LazyWriter(Paths.get(folder, dto.getPrefix() + "strings.txt"), dto.isAppend());
+        createDirectory(Path.of(dto.getDirectory()));
+        var longWriter = new LazyWriter(Path.of(dto.getDirectory(), dto.getPrefix() + "integers.txt"), dto.isAppend());
+        var doubleWriter = new LazyWriter(Path.of(dto.getDirectory(), dto.getPrefix() + "floats.txt"), dto.isAppend());
+        var stringWriter = new LazyWriter(Path.of(dto.getDirectory(), dto.getPrefix() + "strings.txt"), dto.isAppend());
 
         try (longWriter; doubleWriter; stringWriter; var iterator = new FilesIterator(dto.getFiles())) {
             Separator separator = new Separator.Builder()
@@ -58,20 +58,11 @@ public final class FilesFilter {
         }
     }
 
-    private static String prepareFolder(String folder) {
-        StringBuilder result = new StringBuilder(folder);
-
+    private static void createDirectory(Path path) {
         try {
-            if (!Paths.get(folder).isAbsolute()) {
-                result.setLength(0);
-                result.append(Paths.get("").toAbsolutePath().toString()).append("\\").append(folder);
-            }
-
-            Files.createDirectories(Paths.get(result.toString()));
+            Files.createDirectories(path);
         } catch (Exception e) {
-            throw new IllegalArgumentException("путь " + folder);
+            throw new IllegalArgumentException("путь " + path.toString());
         }
-
-        return result.toString();
     }
 }
