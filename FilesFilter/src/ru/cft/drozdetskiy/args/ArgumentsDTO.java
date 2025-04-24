@@ -2,6 +2,7 @@ package ru.cft.drozdetskiy.args;
 
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -26,9 +27,9 @@ public final class ArgumentsDTO {
      */
     private final boolean isAppend;
     /**
-     * Список имён входящих файлов.
+     * Список входящих файлов.
      */
-    private final List<String> files;
+    private final List<Path> files;
 
     private ArgumentsDTO(Builder builder) {
         prefix = builder.prefix == null ? "" : builder.prefix;
@@ -46,7 +47,7 @@ public final class ArgumentsDTO {
         return directory;
     }
 
-    public List<String> getFiles() {
+    public List<Path> getFiles() {
         return files;
     }
 
@@ -67,7 +68,7 @@ public final class ArgumentsDTO {
         private String directory;
         private StatisticsType statisticsType;
         private boolean isAppend;
-        private List<String> files;
+        private List<Path> files;
 
         public Builder prefix(String prefix) {
             this.prefix = prefix;
@@ -93,7 +94,7 @@ public final class ArgumentsDTO {
             return this;
         }
 
-        public Builder files(List<String> files) {
+        public Builder files(List<Path> files) {
             this.files = files;
 
             return this;

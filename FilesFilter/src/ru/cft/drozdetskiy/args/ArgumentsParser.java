@@ -2,6 +2,7 @@ package ru.cft.drozdetskiy.args;
 
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -28,14 +29,14 @@ public final class ArgumentsParser {
         StringBuilder directory = new StringBuilder();
         StatisticsType statisticsType = StatisticsType.SIMPLE;
         boolean isAppend = false;
-        List<String> files = new ArrayList<>();
+        List<Path> files = new ArrayList<>();
         List<String> arguments = decompose(filter(args));
 
         for (Iterator<String> iterator = arguments.iterator(); iterator.hasNext(); ) {
             String argument = iterator.next();
 
             if (isNotOption(argument)) {
-                files.add(argument);
+                files.add(Path.of(argument));
             } else {
                 char symbol = argument.charAt(1);
 

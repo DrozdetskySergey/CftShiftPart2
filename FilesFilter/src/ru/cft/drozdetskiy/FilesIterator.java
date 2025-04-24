@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -15,16 +15,21 @@ final class FilesIterator implements Iterator<String>, AutoCloseable {
     private int index;
     private String next;
 
-    public FilesIterator(List<String> files) throws IOException {
+    public FilesIterator(List<Path> files) throws IOException {
         if (files.isEmpty()) {
             throw new IllegalArgumentException("не заданы файлы (files)");
         }
 
         readers = new ArrayList<>(files.size());
 
-        for (String s : files) {
-            BufferedReader reader = Files.newBufferedReader(Paths.get(s));
-            readers.add(reader);
+        try {
+            for (Path p : files) {
+                BufferedReader reader = Files.newBufferedReader(p);
+                readers.add(reader);
+            }
+        } catch (Exception e) {
+            close();
+            throw e;
         }
 
         updateNext();

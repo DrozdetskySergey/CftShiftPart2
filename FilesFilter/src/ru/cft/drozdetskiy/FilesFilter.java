@@ -26,7 +26,10 @@ public final class FilesFilter {
             System.out.print(help);
         } else {
             try {
-                handleFiles(ArgumentsParser.parse(args));
+                Map<ContentType, Statistics<?>> allStatistics = handleFiles(ArgumentsParser.parse(args));
+                System.out.println(allStatistics.get(LONG));
+                System.out.println(allStatistics.get(DOUBLE));
+                System.out.println(allStatistics.get(STRING));
             } catch (IllegalArgumentException e) {
                 System.out.printf("Не верно задан аргумент: %s%n%n%s", e.getMessage(), help);
             } catch (RuntimeException e) {
@@ -39,23 +42,24 @@ public final class FilesFilter {
         }
     }
 
-    private static void handleFiles(ArgumentsDTO dto) throws IOException {
+    private static Map<ContentType, Statistics<?>> handleFiles(ArgumentsDTO dto) throws IOException {
         createDirectory(Path.of(dto.getDirectory()));
         var longWriter = new LazyWriter(Path.of(dto.getDirectory(), dto.getPrefix() + "integers.txt"), dto.isAppend());
         var doubleWriter = new LazyWriter(Path.of(dto.getDirectory(), dto.getPrefix() + "floats.txt"), dto.isAppend());
         var stringWriter = new LazyWriter(Path.of(dto.getDirectory(), dto.getPrefix() + "strings.txt"), dto.isAppend());
+        var iterator = new FilesIterator(dto.getFiles());
+        Map<ContentType, Statistics<?>> allStatistics;
 
-        try (longWriter; doubleWriter; stringWriter; var iterator = new FilesIterator(dto.getFiles())) {
+        try (longWriter; doubleWriter; stringWriter; iterator) {
             Separator separator = new Separator.Builder()
                     .longAppender(longWriter)
                     .doubleAppender(doubleWriter)
                     .stringAppender(stringWriter)
                     .build();
-            Map<ContentType, Statistics<?>> statisticsMap = separator.separate(iterator, dto.getStatisticsType());
-            System.out.println(statisticsMap.get(LONG));
-            System.out.println(statisticsMap.get(DOUBLE));
-            System.out.println(statisticsMap.get(STRING));
+            allStatistics = separator.separate(iterator, dto.getStatisticsType());
         }
+
+        return allStatistics;
     }
 
     private static void createDirectory(Path path) {
