@@ -7,6 +7,7 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 import static ru.cft.drozdetskiy.ContentType.*;
@@ -44,9 +45,15 @@ public final class FilesFilter {
 
     private static Map<ContentType, Statistics<?>> handleFiles(ArgumentsDTO dto) throws IOException {
         createDirectory(Path.of(dto.getDirectory()));
-        var longWriter = new LazyWriter(Path.of(dto.getDirectory(), dto.getPrefix() + "integers.txt"), dto.isAppend());
-        var doubleWriter = new LazyWriter(Path.of(dto.getDirectory(), dto.getPrefix() + "floats.txt"), dto.isAppend());
-        var stringWriter = new LazyWriter(Path.of(dto.getDirectory(), dto.getPrefix() + "strings.txt"), dto.isAppend());
+        Path longsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "integers.txt");
+        Path doublesFile = Path.of(dto.getDirectory(), dto.getPrefix() + "floats.txt");
+        Path stringsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "strings.txt");
+        throwExceptionIfContains(dto.getFiles(), longsFile);
+        throwExceptionIfContains(dto.getFiles(), doublesFile);
+        throwExceptionIfContains(dto.getFiles(), stringsFile);
+        var longWriter = new LazyWriter(longsFile, dto.isAppend());
+        var doubleWriter = new LazyWriter(doublesFile, dto.isAppend());
+        var stringWriter = new LazyWriter(stringsFile, dto.isAppend());
         var iterator = new FilesIterator(dto.getFiles());
         Map<ContentType, Statistics<?>> allStatistics;
 
@@ -67,6 +74,12 @@ public final class FilesFilter {
             Files.createDirectories(path);
         } catch (Exception e) {
             throw new IllegalArgumentException("путь " + path.toString());
+        }
+    }
+
+    private static void throwExceptionIfContains(List<Path> files, Path file) {
+        if (files.contains(file)) {
+            throw new IllegalArgumentException("имя файла совпадает с именем результата " + file.toString());
         }
     }
 }
