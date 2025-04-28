@@ -63,8 +63,7 @@ final class FilesIterator implements Iterator<String>, Closeable {
             try {
                 next = readers.get(index).readLine();
             } catch (IOException e) {
-                next = null;
-                System.err.printf("Сбой чтения из файла, далее игнорируется %s%n", e.getMessage());
+                System.err.printf("Сбой чтения из файла %s, далее игнорируется.%n", e.getMessage());
             }
 
             if (next == null) {
