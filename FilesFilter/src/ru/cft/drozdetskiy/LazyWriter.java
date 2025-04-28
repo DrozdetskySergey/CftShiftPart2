@@ -1,5 +1,6 @@
 package ru.cft.drozdetskiy;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
@@ -7,7 +8,7 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-final class LazyWriter implements Appendable, AutoCloseable {
+final class LazyWriter implements Appendable, Closeable {
 
     private static final OpenOption[] WRITE_OPTIONS =
             {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
