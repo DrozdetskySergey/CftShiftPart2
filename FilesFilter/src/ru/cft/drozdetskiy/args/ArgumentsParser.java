@@ -36,7 +36,7 @@ public final class ArgumentsParser {
             String argument = iterator.next();
 
             if (isNotOption(argument)) {
-                files.add(Path.of(argument));
+                files.add(Path.of(argument).toAbsolutePath().normalize());
             } else {
                 char symbol = argument.charAt(1);
 

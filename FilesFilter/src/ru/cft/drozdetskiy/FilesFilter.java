@@ -21,7 +21,11 @@ public final class FilesFilter {
                 "-p <префикс>  Префикс имён файлов с результатом.%n" +
                 "-a            Режим записи в конец файла.%n" +
                 "-s            Краткая статистика.%n" +
-                "-f            Полная статистика.%n");
+                "-f            Полная статистика.%n" +
+                "files:%n" +
+                "Один или больше файлов с абсолютным или относительным путём.%n" +
+                "result:%n" +
+                "Файлы: <путь><префикс>integers.txt <путь><префикс>floats.txt <путь><префикс>strings.txt%n");
 
         if (args.length == 0 || args[0].equals("-h")) {
             System.out.print(help);
@@ -44,10 +48,10 @@ public final class FilesFilter {
     }
 
     private static Map<ContentType, Statistics<?>> handleFiles(ArgumentsDTO dto) throws IOException {
-        createDirectory(Path.of(dto.getDirectory()));
-        Path longsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "integers.txt");
-        Path doublesFile = Path.of(dto.getDirectory(), dto.getPrefix() + "floats.txt");
-        Path stringsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "strings.txt");
+        createDirectory(Path.of(dto.getDirectory()).toAbsolutePath().normalize());
+        Path longsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "integers.txt").toAbsolutePath().normalize();
+        Path doublesFile = Path.of(dto.getDirectory(), dto.getPrefix() + "floats.txt").toAbsolutePath().normalize();
+        Path stringsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "strings.txt").toAbsolutePath().normalize();
         throwExceptionIfContains(dto.getFiles(), longsFile);
         throwExceptionIfContains(dto.getFiles(), doublesFile);
         throwExceptionIfContains(dto.getFiles(), stringsFile);
@@ -73,13 +77,13 @@ public final class FilesFilter {
         try {
             Files.createDirectories(path);
         } catch (Exception e) {
-            throw new IllegalArgumentException("путь " + path.toString());
+            throw new IllegalArgumentException("путь " + path);
         }
     }
 
     private static void throwExceptionIfContains(List<Path> files, Path file) {
         if (files.contains(file)) {
-            throw new IllegalArgumentException("имя файла совпадает с именем результата " + file.toString());
+            throw new IllegalArgumentException("имя файла совпадает с именем результата " + file);
         }
     }
 }
