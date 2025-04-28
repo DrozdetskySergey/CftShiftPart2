@@ -1,6 +1,7 @@
 package ru.cft.drozdetskiy;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-final class FilesIterator implements Iterator<String>, AutoCloseable {
+final class FilesIterator implements Iterator<String>, Closeable {
 
     private final List<BufferedReader> readers;
     private int index;
@@ -50,8 +51,8 @@ final class FilesIterator implements Iterator<String>, AutoCloseable {
 
     @Override
     public void close() {
-        for (BufferedReader r : readers) {
-            closeBufferedReader(r);
+        while (!readers.isEmpty()) {
+            closeBufferedReader(readers.remove(0));
         }
     }
 
