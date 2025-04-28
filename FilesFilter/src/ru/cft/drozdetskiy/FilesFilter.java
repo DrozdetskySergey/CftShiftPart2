@@ -63,9 +63,9 @@ public final class FilesFilter {
 
         try (longWriter; doubleWriter; stringWriter; iterator) {
             Separator separator = new Separator.Builder()
-                    .longAppender(longWriter)
-                    .doubleAppender(doubleWriter)
-                    .stringAppender(stringWriter)
+                    .longWriter(longWriter)
+                    .doubleWriter(doubleWriter)
+                    .stringWriter(stringWriter)
                     .build();
             allStatistics = separator.separate(iterator, dto.getStatisticsType());
         }

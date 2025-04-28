@@ -14,38 +14,38 @@ import static ru.cft.drozdetskiy.ContentType.*;
 
 final class Separator {
 
-    private final Appendable longAppender;
-    private final Appendable doubleAppender;
-    private final Appendable stringAppender;
+    private final Appendable longWriter;
+    private final Appendable doubleWriter;
+    private final Appendable stringWriter;
     private Statistics<Long> longsStatistics;
     private Statistics<Double> doublesStatistics;
     private Statistics<String> stringsStatistics;
 
     private Separator(Builder builder) {
-        longAppender = Objects.requireNonNull(builder.longAppender, "Separator.longAppender = null");
-        doubleAppender = Objects.requireNonNull(builder.doubleAppender, "Separator.doubleAppender = null");
-        stringAppender = Objects.requireNonNull(builder.stringAppender, "Separator.stringAppender = null");
+        longWriter = Objects.requireNonNull(builder.longWriter, "Separator.longWriter = null");
+        doubleWriter = Objects.requireNonNull(builder.doubleWriter, "Separator.doubleWriter = null");
+        stringWriter = Objects.requireNonNull(builder.stringWriter, "Separator.stringWriter = null");
     }
 
     public static class Builder {
-        private Appendable longAppender;
-        private Appendable doubleAppender;
-        private Appendable stringAppender;
+        private Appendable longWriter;
+        private Appendable doubleWriter;
+        private Appendable stringWriter;
 
-        public Builder longAppender(Appendable appender) {
-            longAppender = appender;
-
-            return this;
-        }
-
-        public Builder doubleAppender(Appendable appender) {
-            doubleAppender = appender;
+        public Builder longWriter(Appendable longWriter) {
+            this.longWriter = longWriter;
 
             return this;
         }
 
-        public Builder stringAppender(Appendable appender) {
-            stringAppender = appender;
+        public Builder doubleWriter(Appendable doubleWriter) {
+            this.doubleWriter = doubleWriter;
+
+            return this;
+        }
+
+        public Builder stringWriter(Appendable stringWriter) {
+            this.stringWriter = stringWriter;
 
             return this;
         }
@@ -84,7 +84,7 @@ final class Separator {
 
     private void handleLongContent(String string) throws IOException {
         longsStatistics.include(Long.valueOf(string));
-        longAppender.append(string).append(System.lineSeparator());
+        longWriter.append(string).append(System.lineSeparator());
     }
 
     private void handleDoubleContent(String string) throws IOException {
@@ -92,7 +92,7 @@ final class Separator {
 
         if (Double.isFinite(number)) {
             doublesStatistics.include(number);
-            doubleAppender.append(string).append(System.lineSeparator());
+            doubleWriter.append(string).append(System.lineSeparator());
         } else {
             handleStringContent(string);
         }
@@ -100,7 +100,7 @@ final class Separator {
 
     private void handleStringContent(String string) throws IOException {
         stringsStatistics.include(string);
-        stringAppender.append(string).append(System.lineSeparator());
+        stringWriter.append(string).append(System.lineSeparator());
     }
 
     private ContentType getContentType(String string) {
