@@ -12,9 +12,9 @@ import static ru.cft.drozdetskiy.args.Option.*;
 /**
  * Функциональный класс. Предоставляет статичный метод parse. private Конструктор.
  */
-public final class ArgumentsParser {
+public final class Arguments {
 
-    private ArgumentsParser() {
+    private Arguments() {
     }
 
     /**
@@ -66,16 +66,6 @@ public final class ArgumentsParser {
     }
 
     /**
-     * Проверяет аргумент не может ли быть опцией {@link Option}.
-     *
-     * @param string Проверяемый аргумент.
-     * @return true если не может быть опцией.
-     */
-    private static boolean isNotOption(String string) {
-        return !string.startsWith("-");
-    }
-
-    /**
      * Отфильтровывает null и пустые строки, убирает пробелы в начале и в конце каждой стоки.
      *
      * @param args Массив сток.
@@ -115,5 +105,15 @@ public final class ArgumentsParser {
         }
 
         return result;
+    }
+
+    /**
+     * Проверяет что аргумент не может быть опцией {@link Option}.
+     *
+     * @param string Проверяемый аргумент.
+     * @return true если не может быть опцией.
+     */
+    private static boolean isNotOption(String string) {
+        return !string.startsWith("-");
     }
 }

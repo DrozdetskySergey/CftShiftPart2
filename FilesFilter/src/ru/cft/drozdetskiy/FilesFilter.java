@@ -1,7 +1,7 @@
 package ru.cft.drozdetskiy;
 
+import ru.cft.drozdetskiy.args.Arguments;
 import ru.cft.drozdetskiy.args.ArgumentsDTO;
-import ru.cft.drozdetskiy.args.ArgumentsParser;
 import ru.cft.drozdetskiy.statistics.Statistics;
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ public final class FilesFilter {
             System.out.print(help);
         } else {
             try {
-                Map<ContentType, Statistics<?>> allStatistics = handleFiles(ArgumentsParser.parse(args));
+                Map<ContentType, Statistics<?>> allStatistics = handleFiles(Arguments.parse(args));
                 System.out.println(allStatistics.get(LONG));
                 System.out.println(allStatistics.get(DOUBLE));
                 System.out.println(allStatistics.get(STRING));
