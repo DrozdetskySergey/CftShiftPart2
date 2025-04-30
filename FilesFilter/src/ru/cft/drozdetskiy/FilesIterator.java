@@ -9,16 +9,37 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
+/**
+ * Итератор по строкам из файлов. Выдаёт по одной строке из каждого файла по очереди.
+ * Очерёдность сохраняется как в списке переданных в конструктор файлов.
+ */
 final class FilesIterator implements Iterator<String>, Closeable {
 
+    /**
+     * Список ридеров для чтения строк.
+     */
     private final List<BufferedReader> readers;
+    /**
+     * Индекс ридера в списке, т.е. который читает следующую строку.
+     */
     private int index;
+    /**
+     * Буфер для следующей строки. Актуальная строка которую выдаст итератор через метод next()
+     */
     private String next;
 
+    /**
+     * Итератор по строкам из файлов. Выдаёт по одной строке из каждого файла по очереди.
+     *
+     * @param files Список файлов.
+     * @throws IllegalArgumentException если передан пустой список фалов.
+     * @throws IOException              если ошибка ввода/вывода из файла.
+     */
     public FilesIterator(List<Path> files) throws IOException {
         if (files.isEmpty()) {
-            throw new IllegalArgumentException("не заданы файлы (files)");
+            throw new IllegalArgumentException("Не заданы файлы (files)");
         }
 
         readers = new ArrayList<>(files.size());
@@ -28,7 +49,7 @@ final class FilesIterator implements Iterator<String>, Closeable {
                 BufferedReader reader = Files.newBufferedReader(p);
                 readers.add(reader);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             close();
             throw e;
         }
@@ -38,6 +59,10 @@ final class FilesIterator implements Iterator<String>, Closeable {
 
     @Override
     public String next() {
+        if (next == null) {
+            throw new NoSuchElementException("Следующей строки не существует.");
+        }
+
         String result = next;
         updateNext();
 
@@ -52,10 +77,15 @@ final class FilesIterator implements Iterator<String>, Closeable {
     @Override
     public void close() {
         while (!readers.isEmpty()) {
-            closeBufferedReader(readers.remove(0));
+            closeReader(readers.remove(readers.size() - 1));
         }
     }
 
+    /**
+     * Читает следующую строку из ридера и записывает её в буфер. Если ридер отдаёт NULL или бросает IOException,
+     * тогда он удаляется из списка и закрывается. Иначе меняет индекс ридера в списке на следующий или нулевой.
+     * IOException перехватывает и отображает сообщение об ошибке.
+     */
     private void updateNext() {
         next = null;
 
@@ -67,7 +97,7 @@ final class FilesIterator implements Iterator<String>, Closeable {
             }
 
             if (next == null) {
-                closeBufferedReader(readers.remove(index));
+                closeReader(readers.remove(index));
             } else {
                 index++;
             }
@@ -78,7 +108,12 @@ final class FilesIterator implements Iterator<String>, Closeable {
         }
     }
 
-    private void closeBufferedReader(Reader reader) {
+    /**
+     * Закрывает ридер. Если тот кидает IOException, то перехватывает и отображает сообщение об ошибке.
+     *
+     * @param reader ридер который требуется закрыть.
+     */
+    private void closeReader(Reader reader) {
         if (reader != null) {
             try {
                 reader.close();
