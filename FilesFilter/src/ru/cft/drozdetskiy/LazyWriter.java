@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 /**
- * Proxy класс реализующий интерфейс Appendable.
+ * Proxy класс реализующий интерфейсы Appendable, Closeable.
  * Создаёт проксируемый объект класса BufferedWriter только тогда, когда первый раз вызывается метод интерфейса.
  */
 final class LazyWriter implements Appendable, Closeable {
@@ -19,8 +19,17 @@ final class LazyWriter implements Appendable, Closeable {
     private static final OpenOption[] APPEND_OPTIONS =
             {StandardOpenOption.CREATE, StandardOpenOption.APPEND};
 
+    /**
+     * Путь к файлу для записи.
+     */
     private final Path file;
+    /**
+     * Массив стандартных опций для открытия файла.
+     */
     private final OpenOption[] openOptions;
+    /**
+     * Ссылка на проксируемый объект реализующий интерфейсы Appendable, Closeable.
+     */
     private Writer writer;
 
     /**
