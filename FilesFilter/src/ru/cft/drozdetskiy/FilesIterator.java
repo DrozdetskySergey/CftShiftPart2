@@ -60,7 +60,7 @@ final class FilesIterator implements Iterator<String>, Closeable {
     @Override
     public String next() {
         if (next == null) {
-            throw new NoSuchElementException("Следующей строки не существует.");
+            throw new NoSuchElementException("Запрашиваемая следующая строка не существует.");
         }
 
         String result = next;
@@ -82,8 +82,9 @@ final class FilesIterator implements Iterator<String>, Closeable {
     }
 
     /**
-     * Читает следующую строку из ридера и записывает её в буфер. Если ридер отдаёт NULL или бросает IOException,
-     * тогда он удаляется из списка и закрывается. Иначе меняет индекс ридера в списке на следующий или нулевой.
+     * Читает следующую строку из ридера readers.get(index) и записывает её в буфер.
+     * Если ридер отдаёт NULL или бросает IOException, тогда он удаляется из списка readers и закрывается.
+     * Иначе меняет индекс ридера в списке на следующий или нулевой.
      * IOException перехватывает и отображает сообщение об ошибке.
      */
     private void updateNext() {
