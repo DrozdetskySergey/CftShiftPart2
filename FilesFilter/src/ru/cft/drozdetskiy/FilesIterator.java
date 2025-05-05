@@ -18,15 +18,15 @@ import java.util.NoSuchElementException;
 final class FilesIterator implements Iterator<String>, Closeable {
 
     /**
-     * Список ридеров для чтения строк.
+     * Список буферизованных ридеров для чтения строк.
      */
     private final List<BufferedReader> readers;
     /**
-     * Индекс ридера в списке, т.е. который читает следующую строку.
+     * Индекс ридера в списке - читающий следующую строку.
      */
     private int index;
     /**
-     * Буфер для следующей строки. Актуальная строка которую выдаст итератор через метод next()
+     * Буфер для следующей строки. Актуальная строка, которую выдаст итератор через метод next.
      */
     private String next;
 
@@ -35,11 +35,11 @@ final class FilesIterator implements Iterator<String>, Closeable {
      *
      * @param files Список файлов.
      * @throws IllegalArgumentException если передан пустой список фалов.
-     * @throws IOException              если ошибка ввода/вывода из файла.
+     * @throws IOException              если ошибка открытия файла.
      */
     public FilesIterator(List<Path> files) throws IOException {
         if (files.isEmpty()) {
-            throw new IllegalArgumentException("Не заданы файлы (files)");
+            throw new IllegalArgumentException("Не заданы файлы (files).");
         }
 
         readers = new ArrayList<>(files.size());
@@ -82,9 +82,9 @@ final class FilesIterator implements Iterator<String>, Closeable {
     }
 
     /**
-     * Читает следующую строку из ридера readers.get(index) и записывает её в буфер.
-     * Если ридер отдаёт NULL или бросает IOException, тогда он удаляется из списка readers и закрывается.
-     * Иначе меняет индекс ридера в списке на следующий или нулевой.
+     * Читает следующую строку из буферизованного ридера (который соответствует индексу) и записывает её в буфер.
+     * Если ридер отдаёт null или бросает IOException, тогда он удаляется из списка readers и закрывается,
+     * а строка читается из следующего, иначе меняет индекс ридера на следующий или нулевой.
      * IOException перехватывает и отображает сообщение об ошибке.
      */
     private void updateNext() {
