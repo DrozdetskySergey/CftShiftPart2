@@ -8,11 +8,11 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 final public class FullStringsStatistics implements Statistics<String> {
 
     /**
-     * Минимальная длина объектов {@link String}
+     * Минимальная длина строки.
      */
     private int minLength = Integer.MAX_VALUE;
     /**
-     * Максимальная длина объектов {@link String}
+     * Максимальная длина строки.
      */
     private int maxLength = 0;
     /**
