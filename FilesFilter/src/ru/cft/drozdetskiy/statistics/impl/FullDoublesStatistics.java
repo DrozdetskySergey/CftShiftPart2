@@ -5,11 +5,26 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ * Полная статистика по объектам {@link Double}
+ */
 final class FullDoublesStatistics implements Statistics<Double> {
 
+    /**
+     * Минимальное значение.
+     */
     private double min = Double.MAX_VALUE;
+    /**
+     * Максимальное значение.
+     */
     private double max = Double.MIN_VALUE;
+    /**
+     * Сумма.
+     */
     private BigDecimal sum = BigDecimal.ZERO;
+    /**
+     * Количество.
+     */
     private long count = 0;
 
     @Override
