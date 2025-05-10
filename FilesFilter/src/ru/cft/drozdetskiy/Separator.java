@@ -105,7 +105,7 @@ final class Separator {
 
     private ContentType getContentType(String string) {
         if (string.isEmpty()) {
-            return EMPTY;
+            return STRING;
         }
 
         char[] symbols = string.toCharArray();
