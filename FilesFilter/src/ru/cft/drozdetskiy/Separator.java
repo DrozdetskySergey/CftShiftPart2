@@ -57,7 +57,7 @@ final class Separator {
     }
 
     public Map<ContentType, Statistics<?>> handleAndGetStatistics(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
-        StatisticsFactory factory = StatisticsFactoryBuilder.build(statisticsType);
+        StatisticsFactory factory = StatisticsFactoryBuilder.of(statisticsType);
         longsStatistics = factory.createForLong();
         doublesStatistics = factory.createForDouble();
         stringsStatistics = factory.createForString();
