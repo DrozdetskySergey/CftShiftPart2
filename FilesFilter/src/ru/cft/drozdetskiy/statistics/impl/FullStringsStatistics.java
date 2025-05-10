@@ -2,10 +2,22 @@ package ru.cft.drozdetskiy.statistics.impl;
 
 import ru.cft.drozdetskiy.statistics.Statistics;
 
+/**
+ * Полная статистика по объектам {@link String}
+ */
 final public class FullStringsStatistics implements Statistics<String> {
 
+    /**
+     * Минимальная длина объектов {@link String}
+     */
     private int minLength = Integer.MAX_VALUE;
+    /**
+     * Максимальная длина объектов {@link String}
+     */
     private int maxLength = 0;
+    /**
+     * Количество.
+     */
     private long count = 0;
 
     @Override
