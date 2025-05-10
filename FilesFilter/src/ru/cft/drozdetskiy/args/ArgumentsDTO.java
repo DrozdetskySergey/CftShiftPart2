@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * Неизменяемый объект для передачи данных пришедших в аргументы программы. Создаётся через Builder.
+ * Неизменяемый объект для передачи данных (DTO) пришедших в аргументы программы. Создаётся через Builder.
  */
 public final class ArgumentsDTO {
 
@@ -19,11 +19,11 @@ public final class ArgumentsDTO {
      */
     private final String directory;
     /**
-     * Тип собираемой статистики.
+     * Тип требуемой статистики.
      */
     private final StatisticsType statisticsType;
     /**
-     * Режим записи в конец файла если он уже существует.
+     * Режим записи в конец файла.
      */
     private final boolean isAppend;
     /**
@@ -31,6 +31,9 @@ public final class ArgumentsDTO {
      */
     private final List<Path> files;
 
+    /**
+     * Неизменяемый объект для передачи данных (DTO) пришедших в аргументы программы. Создаётся через Builder.
+     */
     private ArgumentsDTO(Builder builder) {
         prefix = builder.prefix == null ? "" : builder.prefix;
         directory = builder.directory == null ? "" : builder.directory;
@@ -39,22 +42,47 @@ public final class ArgumentsDTO {
         files = builder.files == null ? List.of() : List.copyOf(builder.files);
     }
 
+    /**
+     * Геттер. Отдаёт префикс для имён файлов с результатом.
+     *
+     * @return {@link String}
+     */
     public String getPrefix() {
         return prefix;
     }
 
+    /**
+     * Геттер. Отдаёт каталог для файлов с результатом.
+     *
+     * @return {@link String}
+     */
     public String getDirectory() {
         return directory;
     }
 
+    /**
+     * Геттер. Отдаёт список файлов для чтения строк (входящие данные).
+     *
+     * @return неизменяемый список объектов {@link Path}
+     */
     public List<Path> getFiles() {
         return files;
     }
 
+    /**
+     * Геттер. Отдаёт тип требуемой статистики.
+     *
+     * @return {@link StatisticsType}
+     */
     public StatisticsType getStatisticsType() {
         return statisticsType;
     }
 
+    /**
+     * Геттер. Отдаёт boolean значение режима записи в конец файла.
+     *
+     * @return true режим записи в конец файла, false перезапись файла.
+     */
     public boolean isAppend() {
         return isAppend;
     }
@@ -70,36 +98,66 @@ public final class ArgumentsDTO {
         private boolean isAppend;
         private List<Path> files;
 
+        /**
+         * Builder. Задаёт префикс для имён файлов с результатом.
+         *
+         * @param prefix строка с префиксом.
+         */
         public Builder prefix(String prefix) {
             this.prefix = prefix;
 
             return this;
         }
 
+        /**
+         * Builder. Задаёт каталог для файлов с результатом.
+         *
+         * @param directory строка с каталогом.
+         */
         public Builder directory(String directory) {
             this.directory = directory;
 
             return this;
         }
 
+        /**
+         * Builder. Задаёт тип требуемой статистики.
+         *
+         * @param statisticsType {@link StatisticsType}
+         */
         public Builder statisticsType(StatisticsType statisticsType) {
             this.statisticsType = statisticsType;
 
             return this;
         }
 
+        /**
+         * Builder. Задаёт boolean значение режима записи в конец файла.
+         *
+         * @param isAppend true режим записи в конец файла, false перезапись файла.
+         */
         public Builder isAppend(boolean isAppend) {
             this.isAppend = isAppend;
 
             return this;
         }
 
+        /**
+         * Builder. Задаёт список файлов для чтения строк (входящие данные).
+         *
+         * @param files список объектов {@link Path}
+         */
         public Builder files(List<Path> files) {
             this.files = files;
 
             return this;
         }
 
+        /**
+         * Builder. Завершает конструирование объекта.
+         *
+         * @return новый объект класса {@link ArgumentsDTO}
+         */
         public ArgumentsDTO build() {
             return new ArgumentsDTO(this);
         }
