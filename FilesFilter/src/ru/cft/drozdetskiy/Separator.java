@@ -20,6 +20,7 @@ final class Separator {
     private Statistics<Long> longsStatistics;
     private Statistics<Double> doublesStatistics;
     private Statistics<String> stringsStatistics;
+    private String next;
 
     private Separator(Builder builder) {
         longWriter = Objects.requireNonNull(builder.longWriter, "Separator.longWriter = null");
@@ -55,24 +56,24 @@ final class Separator {
         }
     }
 
-    public Map<ContentType, Statistics<?>> separate(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
+    public Map<ContentType, Statistics<?>> handleAndGetStatistics(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
         StatisticsFactory factory = StatisticsFactoryBuilder.build(statisticsType);
         longsStatistics = factory.createForLong();
         doublesStatistics = factory.createForDouble();
         stringsStatistics = factory.createForString();
 
         while (iterator.hasNext()) {
-            String string = iterator.next();
+            next = iterator.next();
 
-            switch (getContentType(string)) {
+            switch (getContentType()) {
                 case LONG:
-                    handleLongContent(string);
+                    handleLongContent();
                     break;
                 case DOUBLE:
-                    handleDoubleContent(string);
+                    handleDoubleContent();
                     break;
                 case STRING:
-                    handleStringContent(string);
+                    handleStringContent();
                     break;
                 default:
                     break;
@@ -82,33 +83,35 @@ final class Separator {
         return Map.of(LONG, longsStatistics, DOUBLE, doublesStatistics, STRING, stringsStatistics);
     }
 
-    private void handleLongContent(String string) throws IOException {
-        longsStatistics.include(Long.valueOf(string));
-        longWriter.append(string).append(System.lineSeparator());
+    private void handleLongContent() throws IOException {
+        longsStatistics.include(Long.valueOf(next));
+        longWriter.append(next).append(System.lineSeparator());
     }
 
-    private void handleDoubleContent(String string) throws IOException {
-        double number = Double.parseDouble(string);
+    private void handleDoubleContent() throws IOException {
+        double number = Double.parseDouble(next);
 
         if (Double.isFinite(number)) {
             doublesStatistics.include(number);
-            doubleWriter.append(string).append(System.lineSeparator());
+            doubleWriter.append(next).append(System.lineSeparator());
         } else {
-            handleStringContent(string);
+            handleStringContent();
         }
     }
 
-    private void handleStringContent(String string) throws IOException {
-        stringsStatistics.include(string);
-        stringWriter.append(string).append(System.lineSeparator());
+    private void handleStringContent() throws IOException {
+        if (!next.isEmpty()) {
+            stringsStatistics.include(next);
+            stringWriter.append(next).append(System.lineSeparator());
+        }
     }
 
-    private ContentType getContentType(String string) {
-        if (string.isEmpty()) {
+    private ContentType getContentType() {
+        if (next.isEmpty()) {
             return STRING;
         }
 
-        char[] symbols = string.toCharArray();
+        char[] symbols = next.toCharArray();
         int firstIndex = symbols[0] == '+' || symbols[0] == '-' ? 1 : 0;
         ContentType result = firstIndex == symbols.length ? STRING : LONG;
 
@@ -117,7 +120,7 @@ final class Separator {
                 result = DOUBLE;
             } else if ((symbols[i] == 'e' || symbols[i] == 'E')
                     && ((result == LONG && firstIndex < i) || (result == DOUBLE && firstIndex + 1 < i))) {
-                result = isIntegerNumeric(string.substring(i + 1)) ? DOUBLE : STRING;
+                result = isIntegerNumeric(next.substring(i + 1)) ? DOUBLE : STRING;
                 break;
             } else if (symbols[i] < '0' || symbols[i] > '9') {
                 result = STRING;
@@ -128,7 +131,7 @@ final class Separator {
             if (symbols.length > firstIndex + 19) {
                 result = DOUBLE;
             } else if (symbols.length == firstIndex + 19 && symbols[firstIndex] == '9') {
-                String digits = firstIndex == 1 ? string.substring(1) : string;
+                String digits = firstIndex == 1 ? next.substring(1) : next;
 
                 if ((symbols[0] == '-' && digits.compareTo("9223372036854775808") > 0) ||
                         (symbols[0] != '-' && digits.compareTo("9223372036854775807") > 0)) {

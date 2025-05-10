@@ -67,7 +67,7 @@ public final class FilesFilter {
                     .doubleWriter(doubleWriter)
                     .stringWriter(stringWriter)
                     .build();
-            allStatistics = separator.separate(iterator, dto.getStatisticsType());
+            allStatistics = separator.handleAndGetStatistics(iterator, dto.getStatisticsType());
         }
 
         return allStatistics;
