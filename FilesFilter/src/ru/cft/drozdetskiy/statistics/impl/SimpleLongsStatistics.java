@@ -2,8 +2,14 @@ package ru.cft.drozdetskiy.statistics.impl;
 
 import ru.cft.drozdetskiy.statistics.Statistics;
 
+/**
+ * Краткая статистика по объектам {@link Long}
+ */
 final class SimpleLongsStatistics implements Statistics<Long> {
 
+    /**
+     * Количество.
+     */
     private long count = 0;
 
     @Override
