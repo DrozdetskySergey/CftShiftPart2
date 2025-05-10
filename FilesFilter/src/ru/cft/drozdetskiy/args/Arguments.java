@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import static ru.cft.drozdetskiy.args.Option.*;
 
 /**
- * Функциональный класс. Предоставляет статичный метод parse. private Конструктор.
+ * Функциональный класс. Предоставляет статичный метод {@linkplain #parse(String[]) parse}
  */
 public final class Arguments {
 
@@ -80,7 +80,7 @@ public final class Arguments {
     }
 
     /**
-     * Не опции передаёт без изменения. Опции проверяет на слипание, разделяет на одиночные и передаёт.
+     * Опции проверяет на слипание и разделяет на одиночные. Не опции передаёт без изменения.
      *
      * @param arguments Список аргументов.
      * @return Список аргументов без составных опций.
