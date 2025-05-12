@@ -6,7 +6,9 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
 
@@ -17,15 +19,13 @@ public final class FilesFilter {
     public static void main(String[] args) {
         final String help = String.format("FilesFilter [options] [files...]%n" +
                 "options:%n" +
-                "-o <путь>     Путь до файлов с результатом.%n" +
+                "-o <каталог>  Каталог для файлов с результатом.%n" +
                 "-p <префикс>  Префикс имён файлов с результатом.%n" +
                 "-a            Режим записи в конец файла.%n" +
                 "-s            Краткая статистика.%n" +
                 "-f            Полная статистика.%n" +
                 "files:%n" +
-                "Один или больше файлов с абсолютным или относительным путём.%n" +
-                "result:%n" +
-                "Файлы: <путь><префикс>integers.txt <путь><префикс>floats.txt <путь><префикс>strings.txt%n");
+                "Один или более файлов с абсолютным или относительным путём.%n");
 
         if (args.length == 0 || args[0].equals("-h")) {
             System.out.print(help);
@@ -55,9 +55,13 @@ public final class FilesFilter {
         throwExceptionIfContains(dto.getFiles(), longsFile);
         throwExceptionIfContains(dto.getFiles(), doublesFile);
         throwExceptionIfContains(dto.getFiles(), stringsFile);
-        var longWriter = new LazyWriter(longsFile, dto.isAppend());
-        var doubleWriter = new LazyWriter(doublesFile, dto.isAppend());
-        var stringWriter = new LazyWriter(stringsFile, dto.isAppend());
+
+        OpenOption[] openOptions = dto.isAppend() ?
+                new StandardOpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.APPEND} :
+                new StandardOpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
+        var longWriter = new LazyWriter(longsFile, openOptions);
+        var doubleWriter = new LazyWriter(doublesFile, openOptions);
+        var stringWriter = new LazyWriter(stringsFile, openOptions);
         var iterator = new FilesIterator(dto.getFiles());
         Map<ContentType, Statistics<?>> allStatistics;
 
@@ -77,7 +81,7 @@ public final class FilesFilter {
         try {
             Files.createDirectories(path);
         } catch (Exception e) {
-            throw new IllegalArgumentException("путь " + path);
+            throw new IllegalArgumentException("каталог " + path);
         }
     }
 
