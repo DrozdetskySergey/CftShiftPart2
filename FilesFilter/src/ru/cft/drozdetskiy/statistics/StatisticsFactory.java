@@ -1,7 +1,8 @@
 package ru.cft.drozdetskiy.statistics;
 
 /**
- * Абстрактная фабрика для создания объектов интерфейса {@link Statistics} параметризованных типами: {@link Long}, {@link Double}, {@link String}.
+ * Абстрактная фабрика для создания объектов интерфейса {@link Statistics}
+ * параметризованных типами: {@link Long}, {@link Double}, {@link String}.
  * Предоставляет методы:
  * {@linkplain #createForLong() createForLong},
  * {@linkplain #createForDouble() createForDouble},

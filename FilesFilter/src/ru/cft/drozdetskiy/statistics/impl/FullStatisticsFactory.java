@@ -4,7 +4,8 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 
 /**
- * Фабрика для создания объектов интерфейса {@link Statistics} параметризованных типами: {@link Long}, {@link Double}, {@link String}.
+ * Фабрика для создания объектов интерфейса {@link Statistics}
+ * параметризованных типами: {@link Long}, {@link Double}, {@link String}.
  * Создаёт новые объекты для сбора полной (FULL) статистики.
  */
 public final class FullStatisticsFactory implements StatisticsFactory {
