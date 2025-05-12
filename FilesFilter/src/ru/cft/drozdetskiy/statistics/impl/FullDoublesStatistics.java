@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * Полная статистика по объектам {@link Double}
+ * Полная статистика по объектам класса {@link Double}
  */
 final class FullDoublesStatistics implements Statistics<Double> {
 

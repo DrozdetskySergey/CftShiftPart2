@@ -3,7 +3,7 @@ package ru.cft.drozdetskiy.statistics.impl;
 import ru.cft.drozdetskiy.statistics.Statistics;
 
 /**
- * Краткая статистика по объектам {@link Double}
+ * Краткая статистика по объектам класса {@link Double}
  */
 final class SimpleDoublesStatistics implements Statistics<Double> {
 

@@ -3,7 +3,7 @@ package ru.cft.drozdetskiy.statistics.impl;
 import ru.cft.drozdetskiy.statistics.Statistics;
 
 /**
- * Полная статистика по объектам {@link String}
+ * Полная статистика по объектам класса {@link String}
  */
 final public class FullStringsStatistics implements Statistics<String> {
 
