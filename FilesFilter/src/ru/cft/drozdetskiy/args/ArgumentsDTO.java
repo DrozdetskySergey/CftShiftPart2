@@ -63,7 +63,7 @@ public final class ArgumentsDTO {
     /**
      * Геттер. Отдаёт список файлов для чтения строк (входящие данные).
      *
-     * @return неизменяемый список объектов {@link Path}
+     * @return неизменяемый список объектов класса {@link Path}
      */
     public List<Path> getFiles() {
         return files;
@@ -81,7 +81,7 @@ public final class ArgumentsDTO {
     /**
      * Геттер. Отдаёт boolean значение режима записи в конец файла.
      *
-     * @return true режим записи в конец файла, false перезапись файла.
+     * @return true если режим записи в конец файла.
      */
     public boolean isAppend() {
         return isAppend;
@@ -134,7 +134,7 @@ public final class ArgumentsDTO {
         /**
          * Builder. Задаёт boolean значение режима записи в конец файла.
          *
-         * @param isAppend true режим записи в конец файла, false перезапись файла.
+         * @param isAppend true если режим записи в конец файла.
          */
         public Builder isAppend(boolean isAppend) {
             this.isAppend = isAppend;
@@ -145,7 +145,7 @@ public final class ArgumentsDTO {
         /**
          * Builder. Задаёт список файлов для чтения строк (входящие данные).
          *
-         * @param files список объектов {@link Path}
+         * @param files список объектов класса {@link Path}
          */
         public Builder files(List<Path> files) {
             this.files = files;
