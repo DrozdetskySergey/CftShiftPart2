@@ -1,8 +1,8 @@
 package ru.cft.drozdetskiy;
 
 import ru.cft.drozdetskiy.statistics.Statistics;
-import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 import ru.cft.drozdetskiy.statistics.StatisticsFactories;
+import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
 import java.io.IOException;
@@ -12,6 +12,10 @@ import java.util.Objects;
 
 import static ru.cft.drozdetskiy.ContentType.*;
 
+/**
+ * Разделяет поток строк в зависимости от типа содержимого {@link ContentType} в объекты
+ * интерфейса {@link Appendable}, переданные в конструктор. При этом собирается статистика.
+ */
 final class Separator {
 
     private final Appendable longWriter;
@@ -56,6 +60,17 @@ final class Separator {
         }
     }
 
+    /**
+     * Обрабатывает строки из объекта интерфейса {@link Iterator}.
+     * В зависимости от типа содержимого {@link ContentType} строка отправляется в один из объектов
+     * интерфейса {@link Appendable} переданных в конструктор.
+     * При этом собирается статистика требуемого типа {@link StatisticsType}.
+     *
+     * @param iterator       объекта интерфейса {@link Iterator}
+     * @param statisticsType требуемый тип статистики {@link StatisticsType}
+     * @return словарь {@link Map} с собранной статистикой по всем строкам.
+     * @throws IOException если один из объектов интерфейса {@link Appendable} бросает IOException.
+     */
     public Map<ContentType, Statistics<?>> handleStrings(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
         StatisticsFactory factory = StatisticsFactories.get(statisticsType);
         longStatistics = factory.createForLong();
@@ -83,11 +98,21 @@ final class Separator {
         return Map.of(LONG, longStatistics, DOUBLE, doubleStatistics, STRING, stringStatistics);
     }
 
+    /**
+     * Обрабатывает ситуацию когда тип содержимого строки {@linkplain #next} это целое число.
+     *
+     * @throws IOException если какой-то из методов append объекта {@linkplain #longWriter} бросил IOException
+     */
     private void handleLongContent() throws IOException {
         longStatistics.include(Long.valueOf(next));
         longWriter.append(next).append(System.lineSeparator());
     }
 
+    /**
+     * Обрабатывает ситуацию когда тип содержимого строки {@linkplain #next} это вещественное число.
+     *
+     * @throws IOException если какой-то из методов append объекта {@linkplain #doubleWriter} бросил IOException
+     */
     private void handleDoubleContent() throws IOException {
         double number = Double.parseDouble(next);
 
@@ -99,6 +124,11 @@ final class Separator {
         }
     }
 
+    /**
+     * Обрабатывает ситуацию когда тип содержимого строки {@linkplain #next} это простая строка.
+     *
+     * @throws IOException если какой-то из методов append объекта {@linkplain #stringWriter} бросил IOException
+     */
     private void handleStringContent() throws IOException {
         if (!next.isEmpty()) {
             stringStatistics.include(next);
@@ -106,6 +136,17 @@ final class Separator {
         }
     }
 
+    /**
+     * Определяет тип содержимого строки методом исключения. Сначала проверяет, что это целое число.
+     * Если нет, то проверяет, что это вещественное число. Если нет, тогда это простая строка.
+     * У целого числа первый символ кроме цифры может быть '+' или '-', остальные символы могут быть только цифры.
+     * Целое число должно попадать в диапазон -9223372036854775808..9223372036854775807.
+     * У вещественного числа начало как у целого, а потом должен встретиться один из символов:
+     * '.', 'e', 'E' при определённых условиях. Возможно сочетание символа '.' и после него
+     * одного из символов: 'e', 'E'.
+     *
+     * @return тип содержимого строки {@link ContentType}
+     */
     private ContentType getContentType() {
         if (next.isEmpty()) {
             return STRING;
@@ -143,6 +184,13 @@ final class Separator {
         return result;
     }
 
+    /**
+     * Проверяет содержимое строки это целое число или нет.
+     * Т.е. первый символ кроме цифры может быть '+' или '-', остальные символы могут быть только цифры.
+     *
+     * @param string проверяемая строка.
+     * @return true если строка это целое число.
+     */
     private boolean isIntegerNumeric(String string) {
         if (string.isEmpty()) {
             return false;
