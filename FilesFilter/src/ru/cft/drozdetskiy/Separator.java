@@ -17,9 +17,9 @@ final class Separator {
     private final Appendable longWriter;
     private final Appendable doubleWriter;
     private final Appendable stringWriter;
-    private Statistics<Long> longsStatistics;
-    private Statistics<Double> doublesStatistics;
-    private Statistics<String> stringsStatistics;
+    private Statistics<Long> longStatistics;
+    private Statistics<Double> doubleStatistics;
+    private Statistics<String> stringStatistics;
     private String next;
 
     private Separator(Builder builder) {
@@ -33,20 +33,20 @@ final class Separator {
         private Appendable doubleWriter;
         private Appendable stringWriter;
 
-        public Builder longWriter(Appendable longWriter) {
-            this.longWriter = longWriter;
+        public Builder longWriter(Appendable writer) {
+            longWriter = writer;
 
             return this;
         }
 
-        public Builder doubleWriter(Appendable doubleWriter) {
-            this.doubleWriter = doubleWriter;
+        public Builder doubleWriter(Appendable writer) {
+            doubleWriter = writer;
 
             return this;
         }
 
-        public Builder stringWriter(Appendable stringWriter) {
-            this.stringWriter = stringWriter;
+        public Builder stringWriter(Appendable writer) {
+            stringWriter = writer;
 
             return this;
         }
@@ -58,9 +58,9 @@ final class Separator {
 
     public Map<ContentType, Statistics<?>> handleStrings(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
         StatisticsFactory factory = StatisticsFactories.get(statisticsType);
-        longsStatistics = factory.createForLong();
-        doublesStatistics = factory.createForDouble();
-        stringsStatistics = factory.createForString();
+        longStatistics = factory.createForLong();
+        doubleStatistics = factory.createForDouble();
+        stringStatistics = factory.createForString();
 
         while (iterator.hasNext()) {
             next = iterator.next();
@@ -80,11 +80,11 @@ final class Separator {
             }
         }
 
-        return Map.of(LONG, longsStatistics, DOUBLE, doublesStatistics, STRING, stringsStatistics);
+        return Map.of(LONG, longStatistics, DOUBLE, doubleStatistics, STRING, stringStatistics);
     }
 
     private void handleLongContent() throws IOException {
-        longsStatistics.include(Long.valueOf(next));
+        longStatistics.include(Long.valueOf(next));
         longWriter.append(next).append(System.lineSeparator());
     }
 
@@ -92,7 +92,7 @@ final class Separator {
         double number = Double.parseDouble(next);
 
         if (Double.isFinite(number)) {
-            doublesStatistics.include(number);
+            doubleStatistics.include(number);
             doubleWriter.append(next).append(System.lineSeparator());
         } else {
             handleStringContent();
@@ -101,7 +101,7 @@ final class Separator {
 
     private void handleStringContent() throws IOException {
         if (!next.isEmpty()) {
-            stringsStatistics.include(next);
+            stringStatistics.include(next);
             stringWriter.append(next).append(System.lineSeparator());
         }
     }
