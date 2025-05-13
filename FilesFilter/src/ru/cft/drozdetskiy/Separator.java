@@ -2,7 +2,7 @@ package ru.cft.drozdetskiy;
 
 import ru.cft.drozdetskiy.statistics.Statistics;
 import ru.cft.drozdetskiy.statistics.StatisticsFactory;
-import ru.cft.drozdetskiy.statistics.StatisticsFactoryBuilder;
+import ru.cft.drozdetskiy.statistics.StatisticsFactories;
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
 import java.io.IOException;
@@ -57,7 +57,7 @@ final class Separator {
     }
 
     public Map<ContentType, Statistics<?>> handleStrings(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
-        StatisticsFactory factory = StatisticsFactoryBuilder.of(statisticsType);
+        StatisticsFactory factory = StatisticsFactories.get(statisticsType);
         longsStatistics = factory.createForLong();
         doublesStatistics = factory.createForDouble();
         stringsStatistics = factory.createForString();
