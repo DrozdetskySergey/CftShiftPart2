@@ -18,12 +18,33 @@ import static ru.cft.drozdetskiy.ContentType.*;
  */
 final class Separator {
 
+    /**
+     * Сюда распределяется строка {@linkplain #next} если её содержимое это целое число.
+     */
     private final Appendable longWriter;
+    /**
+     * Сюда распределяется строка {@linkplain #next} если её содержимое это вещественное число.
+     */
     private final Appendable doubleWriter;
+    /**
+     * Сюда распределяется строка {@linkplain #next} если её содержимое это простая строка.
+     */
     private final Appendable stringWriter;
+    /**
+     * Статистика по строкам распределенных в {@linkplain #longWriter}
+     */
     private Statistics<Long> longStatistics;
+    /**
+     * Статистика по строкам распределенных в {@linkplain #doubleWriter}
+     */
     private Statistics<Double> doubleStatistics;
+    /**
+     * Статистика по строкам распределенных в {@linkplain #stringWriter}
+     */
     private Statistics<String> stringStatistics;
+    /**
+     * Следующая строка для распределения в один из объектов интерфейса {@link Appendable}
+     */
     private String next;
 
     /**
