@@ -30,7 +30,7 @@ final class Separator {
      * интерфейса {@link Appendable}
      *
      * @param writers словарь {@link Map} с объектами интерфейса {@link Appendable}
-     *                в соответствие по типу {@link ContentType}
+     *                в соответствии с типом {@link ContentType}
      */
     public Separator(Map<ContentType, Appendable> writers) {
         longWriter = writers.get(LONG);
@@ -46,7 +46,7 @@ final class Separator {
      *
      * @param iterator       объекта интерфейса {@link Iterator}
      * @param statisticsType требуемый тип статистики {@link StatisticsType}
-     * @return словарь {@link Map} с собранной статистикой в соответствие по типу {@link ContentType}
+     * @return словарь {@link Map} с собранной статистикой в соответствии с типом {@link ContentType}
      * @throws IOException если один из объектов интерфейса {@link Appendable} бросает IOException.
      */
     public Map<ContentType, Statistics<?>> handleStrings(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
