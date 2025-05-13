@@ -6,6 +6,7 @@ import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
 import java.io.IOException;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -73,7 +74,12 @@ final class Separator {
             }
         }
 
-        return Map.of(LONG, longStatistics, DOUBLE, doubleStatistics, STRING, stringStatistics);
+        Map<ContentType, Statistics<?>> allStatistics = new EnumMap<>(ContentType.class);
+        allStatistics.put(LONG, longStatistics);
+        allStatistics.put(DOUBLE, doubleStatistics);
+        allStatistics.put(STRING, stringStatistics);
+
+        return allStatistics;
     }
 
     /**
