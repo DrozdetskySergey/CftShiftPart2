@@ -8,12 +8,11 @@ import ru.cft.drozdetskiy.statistics.StatisticsType;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 
 import static ru.cft.drozdetskiy.ContentType.*;
 
 /**
- * Разделяет поток строк в зависимости от типа содержимого {@link ContentType} в объекты
+ * Распределяет строки в зависимости от типа содержимого {@link ContentType} в объекты
  * интерфейса {@link Appendable}, переданные в конструктор. При этом собирается статистика.
  */
 final class Separator {
@@ -26,38 +25,17 @@ final class Separator {
     private Statistics<String> stringStatistics;
     private String next;
 
-    private Separator(Builder builder) {
-        longWriter = Objects.requireNonNull(builder.longWriter, "Separator.longWriter = null");
-        doubleWriter = Objects.requireNonNull(builder.doubleWriter, "Separator.doubleWriter = null");
-        stringWriter = Objects.requireNonNull(builder.stringWriter, "Separator.stringWriter = null");
-    }
-
-    public static class Builder {
-        private Appendable longWriter;
-        private Appendable doubleWriter;
-        private Appendable stringWriter;
-
-        public Builder longWriter(Appendable writer) {
-            longWriter = writer;
-
-            return this;
-        }
-
-        public Builder doubleWriter(Appendable writer) {
-            doubleWriter = writer;
-
-            return this;
-        }
-
-        public Builder stringWriter(Appendable writer) {
-            stringWriter = writer;
-
-            return this;
-        }
-
-        public Separator build() {
-            return new Separator(this);
-        }
+    /**
+     * Распределяет строки в зависимости от типа содержимого {@link ContentType} в объекты
+     * интерфейса {@link Appendable}
+     *
+     * @param writers словарь {@link Map} с объектами интерфейса {@link Appendable}
+     *                в соответствие по типу {@link ContentType}
+     */
+    public Separator(Map<ContentType, Appendable> writers) {
+        longWriter = writers.get(LONG);
+        doubleWriter = writers.get(DOUBLE);
+        stringWriter = writers.get(STRING);
     }
 
     /**
@@ -68,7 +46,7 @@ final class Separator {
      *
      * @param iterator       объекта интерфейса {@link Iterator}
      * @param statisticsType требуемый тип статистики {@link StatisticsType}
-     * @return словарь {@link Map} с собранной статистикой по всем строкам.
+     * @return словарь {@link Map} с собранной статистикой в соответствие по типу {@link ContentType}
      * @throws IOException если один из объектов интерфейса {@link Appendable} бросает IOException.
      */
     public Map<ContentType, Statistics<?>> handleStrings(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {

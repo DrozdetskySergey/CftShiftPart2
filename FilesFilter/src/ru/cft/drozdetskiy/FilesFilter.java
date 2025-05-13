@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,15 +63,16 @@ public final class FilesFilter {
         var longWriter = new LazyWriter(longsFile, openOptions);
         var doubleWriter = new LazyWriter(doublesFile, openOptions);
         var stringWriter = new LazyWriter(stringsFile, openOptions);
-        var iterator = new FilesIterator(dto.getFiles());
+
+        Map<ContentType, Appendable> writers = new EnumMap<>(ContentType.class);
+        writers.put(LONG, longWriter);
+        writers.put(DOUBLE, doubleWriter);
+        writers.put(STRING, stringWriter);
+        var separator = new Separator(writers);
+
         Map<ContentType, Statistics<?>> allStatistics;
 
-        try (longWriter; doubleWriter; stringWriter; iterator) {
-            Separator separator = new Separator.Builder()
-                    .longWriter(longWriter)
-                    .doubleWriter(doubleWriter)
-                    .stringWriter(stringWriter)
-                    .build();
+        try (longWriter; doubleWriter; stringWriter; var iterator = new FilesIterator(dto.getFiles())) {
             allStatistics = separator.handleStrings(iterator, dto.getStatisticsType());
         }
 
