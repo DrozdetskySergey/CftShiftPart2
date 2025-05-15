@@ -32,7 +32,7 @@ public final class FilesFilter {
             System.out.print(help);
         } else {
             try {
-                Map<ContentType, Statistics<?>> allStatistics = handleFiles(Arguments.parse(args));
+                Map<ContentType, Statistics<?>> allStatistics = filterFiles(Arguments.parse(args));
                 System.out.println(allStatistics.get(LONG));
                 System.out.println(allStatistics.get(DOUBLE));
                 System.out.println(allStatistics.get(STRING));
@@ -41,14 +41,14 @@ public final class FilesFilter {
             } catch (RuntimeException e) {
                 System.err.printf("Что-то пошло не так! %s%n", e.getMessage());
             } catch (IOException e) {
-                System.err.printf("Сбой записи/чтения файла %s%n", e.getMessage());
+                System.err.printf("Сбой файловой системой. %s%n", e.getMessage());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private static Map<ContentType, Statistics<?>> handleFiles(ArgumentsDTO dto) throws IOException {
+    private static Map<ContentType, Statistics<?>> filterFiles(ArgumentsDTO dto) throws IOException {
         createDirectory(Path.of(dto.getDirectory()).toAbsolutePath().normalize());
         Path longsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "integers.txt").toAbsolutePath().normalize();
         Path doublesFile = Path.of(dto.getDirectory(), dto.getPrefix() + "floats.txt").toAbsolutePath().normalize();
@@ -57,9 +57,7 @@ public final class FilesFilter {
         throwExceptionIfContains(dto.getFiles(), doublesFile);
         throwExceptionIfContains(dto.getFiles(), stringsFile);
 
-        OpenOption[] openOptions = dto.isAppend() ?
-                new StandardOpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.APPEND} :
-                new StandardOpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
+        OpenOption[] openOptions = getOpenOptions(dto.isAppend());
         var longWriter = new LazyWriter(longsFile, openOptions);
         var doubleWriter = new LazyWriter(doublesFile, openOptions);
         var stringWriter = new LazyWriter(stringsFile, openOptions);
@@ -91,5 +89,11 @@ public final class FilesFilter {
         if (files.contains(file)) {
             throw new IllegalArgumentException("имя файла совпадает с именем результата " + file);
         }
+    }
+
+    private static OpenOption[] getOpenOptions(boolean isAppend) {
+        return isAppend ?
+                new StandardOpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.APPEND} :
+                new StandardOpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
     }
 }
