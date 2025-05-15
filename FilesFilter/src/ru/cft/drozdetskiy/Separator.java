@@ -6,7 +6,6 @@ import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
 import java.io.IOException;
-import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -19,27 +18,19 @@ import static ru.cft.drozdetskiy.ContentType.*;
 final class Separator {
 
     /**
-     * Сюда распределяется строка {@linkplain #next} если её содержимое это целое число.
+     * Словарь с объектами интерфейса {@link Appendable} в соответствии с типом {@link ContentType}
      */
-    private final Appendable longWriter;
+    private final Map<ContentType, Appendable> writers;
     /**
-     * Сюда распределяется строка {@linkplain #next} если её содержимое это вещественное число.
-     */
-    private final Appendable doubleWriter;
-    /**
-     * Сюда распределяется строка {@linkplain #next} если её содержимое это простая строка.
-     */
-    private final Appendable stringWriter;
-    /**
-     * Статистика по строкам распределенных в {@linkplain #longWriter}
+     * Статистика обработанных объектов класса Long
      */
     private Statistics<Long> longStatistics;
     /**
-     * Статистика по строкам распределенных в {@linkplain #doubleWriter}
+     * Статистика обработанных объектов класса Double
      */
     private Statistics<Double> doubleStatistics;
     /**
-     * Статистика по строкам распределенных в {@linkplain #stringWriter}
+     * Статистика обработанных объектов класса String
      */
     private Statistics<String> stringStatistics;
     /**
@@ -55,9 +46,7 @@ final class Separator {
      *                в соответствии с типом {@link ContentType}
      */
     public Separator(Map<ContentType, Appendable> writers) {
-        longWriter = writers.get(LONG);
-        doubleWriter = writers.get(DOUBLE);
-        stringWriter = writers.get(STRING);
+        this.writers = writers;
     }
 
     /**
@@ -68,7 +57,7 @@ final class Separator {
      *
      * @param iterator       объекта интерфейса {@link Iterator}
      * @param statisticsType требуемый тип статистики {@link StatisticsType}
-     * @return словарь {@link Map} с собранной статистикой в соответствии с типом {@link ContentType}
+     * @return неизменяемый словарь {@link Map} с собранной статистикой в соответствии с типом {@link ContentType}
      * @throws IOException если один из объектов интерфейса {@link Appendable} бросает IOException.
      */
     public Map<ContentType, Statistics<?>> handleStrings(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
@@ -95,35 +84,30 @@ final class Separator {
             }
         }
 
-        Map<ContentType, Statistics<?>> allStatistics = new EnumMap<>(ContentType.class);
-        allStatistics.put(LONG, longStatistics);
-        allStatistics.put(DOUBLE, doubleStatistics);
-        allStatistics.put(STRING, stringStatistics);
-
-        return allStatistics;
+        return Map.of(LONG, longStatistics, DOUBLE, doubleStatistics, STRING, stringStatistics);
     }
 
     /**
      * Обрабатывает ситуацию когда тип содержимого строки {@linkplain #next} это целое число.
      *
-     * @throws IOException если какой-то из методов append объекта {@linkplain #longWriter} бросил IOException
+     * @throws IOException если какой-то из методов append объекта интерфейса {@link Appendable} бросил IOException
      */
     private void handleLongContent() throws IOException {
         longStatistics.include(Long.valueOf(next));
-        longWriter.append(next).append(System.lineSeparator());
+        writers.get(LONG).append(next).append(System.lineSeparator());
     }
 
     /**
      * Обрабатывает ситуацию когда тип содержимого строки {@linkplain #next} это вещественное число.
      *
-     * @throws IOException если какой-то из методов append объекта {@linkplain #doubleWriter} бросил IOException
+     * @throws IOException если какой-то из методов append объекта интерфейса {@link Appendable} бросил IOException
      */
     private void handleDoubleContent() throws IOException {
         double number = Double.parseDouble(next);
 
         if (Double.isFinite(number)) {
             doubleStatistics.include(number);
-            doubleWriter.append(next).append(System.lineSeparator());
+            writers.get(DOUBLE).append(next).append(System.lineSeparator());
         } else {
             handleStringContent();
         }
@@ -132,19 +116,19 @@ final class Separator {
     /**
      * Обрабатывает ситуацию когда тип содержимого строки {@linkplain #next} это простая строка.
      *
-     * @throws IOException если какой-то из методов append объекта {@linkplain #stringWriter} бросил IOException
+     * @throws IOException если какой-то из методов append объекта интерфейса {@link Appendable} бросил IOException
      */
     private void handleStringContent() throws IOException {
         if (!next.isEmpty()) {
             stringStatistics.include(next);
-            stringWriter.append(next).append(System.lineSeparator());
+            writers.get(STRING).append(next).append(System.lineSeparator());
         }
     }
 
     /**
      * Определяет тип содержимого строки методом исключения. Сначала проверяет, что это целое число.
      * Если нет, то проверяет, что это вещественное число. Если нет, тогда это простая строка.
-     * У целого числа первый символ кроме цифры может быть '+' или '-', остальные символы могут быть только цифры.
+     * У целого числа первый символ кроме цифры может быть '+' или '-', остальные символы должны быть цифры.
      * Целое число должно попадать в диапазон -9223372036854775808..9223372036854775807.
      * У вещественного числа начало как у целого, а потом должен встретиться один из символов:
      * '.', 'e', 'E' при определённых условиях. Возможно сочетание символа '.' и после него
