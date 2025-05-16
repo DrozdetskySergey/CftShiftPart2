@@ -36,6 +36,8 @@ public final class FilesFilter {
                 System.out.println(allStatistics.get(LONG));
                 System.out.println(allStatistics.get(DOUBLE));
                 System.out.println(allStatistics.get(STRING));
+            } catch (NumberFormatException e) {
+                System.err.printf("Не верно распознана строка. %s%n", e.getMessage());
             } catch (IllegalArgumentException e) {
                 System.out.printf("Не верно задан аргумент: %s%n%n%s", e.getMessage(), help);
             } catch (RuntimeException e) {
