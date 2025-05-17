@@ -21,22 +21,6 @@ final class Separator {
      * Словарь с объектами интерфейса {@link Appendable} в соответствии с типом {@link ContentType}
      */
     private final Map<ContentType, Appendable> writers;
-    /**
-     * Статистика обработанных объектов класса Long
-     */
-    private Statistics<Long> longStatistics;
-    /**
-     * Статистика обработанных объектов класса Double
-     */
-    private Statistics<Double> doubleStatistics;
-    /**
-     * Статистика обработанных объектов класса String
-     */
-    private Statistics<String> stringStatistics;
-    /**
-     * Следующая строка для распределения в один из объектов интерфейса {@link Appendable}
-     */
-    private String next;
 
     /**
      * Распределяет строки в зависимости от типа содержимого {@link ContentType} в объекты
@@ -62,75 +46,44 @@ final class Separator {
      */
     public Map<ContentType, Statistics<?>> handleStrings(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
         StatisticsFactory factory = StatisticsFactories.get(statisticsType);
-        longStatistics = factory.createForLong();
-        doubleStatistics = factory.createForDouble();
-        stringStatistics = factory.createForString();
+        Statistics<Long> longStatistics = factory.createForLong();
+        Statistics<Double> doubleStatistics = factory.createForDouble();
+        Statistics<String> stringStatistics = factory.createForString();
 
         while (iterator.hasNext()) {
-            next = iterator.next();
+            String next = iterator.next();
+            ContentType type = getContentType(next);
 
-            switch (getContentType()) {
-                case LONG:
-                    handleLongContent();
-                    break;
-                case DOUBLE:
-                    handleDoubleContent();
-                    break;
-                case STRING:
-                    handleStringContent();
-                    break;
-                default:
-                    break;
+            if (type == LONG) {
+                if (isInRange(next)) {
+                    longStatistics.include(Long.valueOf(next));
+                } else {
+                    type = DOUBLE;
+                }
             }
+
+            if (type == DOUBLE) {
+                double number = Double.parseDouble(next);
+
+                if (Double.isFinite(number)) {
+                    doubleStatistics.include(number);
+                } else {
+                    type = STRING;
+                }
+            }
+
+            if (type == STRING) {
+                stringStatistics.include(next);
+            }
+
+            writers.get(type).append(next).append(System.lineSeparator());
         }
 
         return Map.of(LONG, longStatistics, DOUBLE, doubleStatistics, STRING, stringStatistics);
     }
 
     /**
-     * Обрабатывает ситуацию когда тип содержимого строки {@linkplain #next} это целое число.
-     *
-     * @throws IOException если какой-то из методов append объекта интерфейса {@link Appendable} бросил IOException
-     */
-    private void handleLongContent() throws IOException {
-        if (isNextInRange()) {
-            longStatistics.include(Long.valueOf(next));
-            writers.get(LONG).append(next).append(System.lineSeparator());
-        } else {
-            handleDoubleContent();
-        }
-    }
-
-    /**
-     * Обрабатывает ситуацию когда тип содержимого строки {@linkplain #next} это вещественное число.
-     *
-     * @throws IOException если какой-то из методов append объекта интерфейса {@link Appendable} бросил IOException
-     */
-    private void handleDoubleContent() throws IOException {
-        double number = Double.parseDouble(next);
-
-        if (Double.isFinite(number)) {
-            doubleStatistics.include(number);
-            writers.get(DOUBLE).append(next).append(System.lineSeparator());
-        } else {
-            handleStringContent();
-        }
-    }
-
-    /**
-     * Обрабатывает ситуацию когда тип содержимого строки {@linkplain #next} это простая строка.
-     *
-     * @throws IOException если какой-то из методов append объекта интерфейса {@link Appendable} бросил IOException
-     */
-    private void handleStringContent() throws IOException {
-        if (!next.isEmpty()) {
-            stringStatistics.include(next);
-            writers.get(STRING).append(next).append(System.lineSeparator());
-        }
-    }
-
-    /**
-     * Определяет тип содержимого строки {@linkplain #next} методом исключения.
+     * Определяет тип содержимого строки методом исключения.
      * Сначала проверяет, что это целое число. Если нет, то проверяет, что это вещественное число.
      * Если нет, тогда это простая строка.
      * У целого числа первый символ кроме цифры может быть '+' или '-', остальные символы должны быть цифры.
@@ -138,14 +91,15 @@ final class Separator {
      * '.', 'e', 'E' при определённых условиях. Возможно сочетание символа '.' и после него
      * одного из символов: 'e', 'E'.
      *
+     * @param string проверяемая строка.
      * @return тип содержимого строки {@link ContentType}
      */
-    private ContentType getContentType() {
-        if (next.isEmpty()) {
+    private ContentType getContentType(String string) {
+        if (string.isEmpty()) {
             return STRING;
         }
 
-        char[] symbols = next.toCharArray();
+        char[] symbols = string.toCharArray();
         int firstIndex = symbols[0] == '+' || symbols[0] == '-' ? 1 : 0;
         ContentType result = firstIndex == symbols.length ? STRING : LONG;
 
@@ -154,7 +108,7 @@ final class Separator {
                 result = DOUBLE;
             } else if ((symbols[i] == 'e' || symbols[i] == 'E')
                     && ((result == LONG && firstIndex < i) || (result == DOUBLE && firstIndex + 1 < i))) {
-                result = isIntegerNumeric(next.substring(i + 1)) ? DOUBLE : STRING;
+                result = isIntegerNumeric(string.substring(i + 1)) ? DOUBLE : STRING;
                 break;
             } else if (symbols[i] < '0' || symbols[i] > '9') {
                 result = STRING;
@@ -165,26 +119,27 @@ final class Separator {
     }
 
     /**
-     * ВНИМАНИЕ: содержимое строки {@linkplain #next} должно быть целым числом!
+     * ВНИМАНИЕ: содержимое проверяемой строки должно быть целым числом!
      * Проверяет, что это целое число попадает в диапазон -9223372036854775808..9223372036854775807.
      *
+     * @param string проверяемая строка.
      * @return true если попадает в диапазон.
      */
-    private boolean isNextInRange() {
+    private boolean isInRange(String string) {
         boolean result = true;
 
-        if (next.length() > 18) {
-            char[] symbols = next.toCharArray();
+        if (string.length() > 18) {
+            char[] symbols = string.toCharArray();
             int firstIndex = 0;
 
             for (char c = symbols[firstIndex]; c == '0' || c == '+' || c == '-'; c = symbols[firstIndex]) {
                 firstIndex++;
             }
 
-            if (next.length() > firstIndex + 19) {
+            if (string.length() > firstIndex + 19) {
                 result = false;
-            } else if (next.length() == firstIndex + 19 && symbols[firstIndex] == '9') {
-                String digits = next.substring(firstIndex);
+            } else if (string.length() == firstIndex + 19 && symbols[firstIndex] == '9') {
+                String digits = string.substring(firstIndex);
 
                 if ((symbols[0] == '-' && digits.compareTo("9223372036854775808") > 0) ||
                         (symbols[0] != '-' && digits.compareTo("9223372036854775807") > 0)) {
