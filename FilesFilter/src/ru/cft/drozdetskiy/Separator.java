@@ -93,8 +93,12 @@ final class Separator {
      * @throws IOException если какой-то из методов append объекта интерфейса {@link Appendable} бросил IOException
      */
     private void handleLongContent() throws IOException {
-        longStatistics.include(Long.valueOf(next));
-        writers.get(LONG).append(next).append(System.lineSeparator());
+        if (isNextInRange()) {
+            longStatistics.include(Long.valueOf(next));
+            writers.get(LONG).append(next).append(System.lineSeparator());
+        } else {
+            handleDoubleContent();
+        }
     }
 
     /**
@@ -126,10 +130,10 @@ final class Separator {
     }
 
     /**
-     * Определяет тип содержимого строки методом исключения. Сначала проверяет, что это целое число.
-     * Если нет, то проверяет, что это вещественное число. Если нет, тогда это простая строка.
+     * Определяет тип содержимого строки {@linkplain #next} методом исключения.
+     * Сначала проверяет, что это целое число. Если нет, то проверяет, что это вещественное число.
+     * Если нет, тогда это простая строка.
      * У целого числа первый символ кроме цифры может быть '+' или '-', остальные символы должны быть цифры.
-     * Целое число должно попадать в диапазон -9223372036854775808..9223372036854775807.
      * У вещественного числа начало как у целого, а потом должен встретиться один из символов:
      * '.', 'e', 'E' при определённых условиях. Возможно сочетание символа '.' и после него
      * одного из символов: 'e', 'E'.
@@ -157,15 +161,34 @@ final class Separator {
             }
         }
 
-        if (result == LONG) {
-            if (symbols.length > firstIndex + 19) {
-                result = DOUBLE;
-            } else if (symbols.length == firstIndex + 19 && symbols[firstIndex] == '9') {
-                String digits = firstIndex == 1 ? next.substring(1) : next;
+        return result;
+    }
+
+    /**
+     * ВНИМАНИЕ: содержимое строки {@linkplain #next} должно быть целым числом!
+     * Проверяет, что это целое число попадает в диапазон -9223372036854775808..9223372036854775807.
+     *
+     * @return true если попадает в диапазон.
+     */
+    private boolean isNextInRange() {
+        boolean result = true;
+
+        if (next.length() > 18) {
+            char[] symbols = next.toCharArray();
+            int firstIndex = 0;
+
+            for (char c = symbols[firstIndex]; c == '0' || c == '+' || c == '-'; c = symbols[firstIndex]) {
+                firstIndex++;
+            }
+
+            if (next.length() > firstIndex + 19) {
+                result = false;
+            } else if (next.length() == firstIndex + 19 && symbols[firstIndex] == '9') {
+                String digits = next.substring(firstIndex);
 
                 if ((symbols[0] == '-' && digits.compareTo("9223372036854775808") > 0) ||
                         (symbols[0] != '-' && digits.compareTo("9223372036854775807") > 0)) {
-                    result = DOUBLE;
+                    result = false;
                 }
             }
         }
