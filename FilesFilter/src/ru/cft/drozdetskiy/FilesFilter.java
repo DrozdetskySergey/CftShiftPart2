@@ -1,5 +1,7 @@
 package ru.cft.drozdetskiy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.cft.drozdetskiy.args.Arguments;
 import ru.cft.drozdetskiy.args.ArgumentsDTO;
 import ru.cft.drozdetskiy.statistics.Statistics;
@@ -9,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +29,10 @@ import static ru.cft.drozdetskiy.ContentType.*;
  */
 public final class FilesFilter {
 
+    private static final Logger LOG = LoggerFactory.getLogger(FilesFilter.class);
+
     public static void main(String[] args) {
+        LOG.info("Util starts with args = {}", Arrays.toString(args));
         final String help = String.format("FilesFilter [options] [files...]%n" +
                 "options:%n" +
                 "-o <каталог>  Каталог для файлов с результатом.%n" +
@@ -61,7 +67,7 @@ public final class FilesFilter {
     /**
      * Центральный метод всей утилиты FilesFilter.
      *
-     * @param dto DTO с вводными даннами для утилиты.
+     * @param dto DTO с вводными данными для утилиты.
      * @return неизменяемый словарь {@link Map} с собранной статистикой в соответствии с типом {@link ContentType}
      * @throws IOException              если произошёл сбой при работе с файловой системой.
      * @throws IllegalArgumentException если пользователь задал не верные данные.
