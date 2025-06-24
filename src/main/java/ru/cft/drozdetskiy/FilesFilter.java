@@ -32,7 +32,7 @@ public final class FilesFilter {
     private static final Logger LOG = LoggerFactory.getLogger(FilesFilter.class);
 
     public static void main(String[] args) {
-        LOG.info("Util starts with args = {}", Arrays.toString(args));
+        LOG.info("Старт утилиты, args = {}", Arrays.toString(args));
         final String help = String.format("FilesFilter [options] [files...]%n" +
                 "options:%n" +
                 "-o <каталог>  Каталог для файлов с результатом.%n" +
@@ -52,16 +52,21 @@ public final class FilesFilter {
                 System.out.println(allStatistics.get(DOUBLE));
                 System.out.println(allStatistics.get(STRING));
             } catch (NumberFormatException e) {
-                System.err.printf("Передайте эту информацию разработчику: %s%n", e.getMessage());
+                System.err.printf("Не верно определён тип содержимого строки. %s%n", e.getMessage());
+                LOG.error("Не верно определён тип содержимого строки. {}", e.getMessage());
             } catch (IllegalArgumentException e) {
                 System.out.printf("Не верно задан аргумент: %s%n%n%s", e.getMessage(), help);
+                LOG.info("Не верно задан аргумент: {}", e.getMessage());
             } catch (IOException e) {
-                System.err.printf("Сбой файловой системой. %s%n", e.getMessage());
-            } catch (RuntimeException e) {
-                System.err.println("Передайте эту информацию разработчику:");
-                e.printStackTrace();
+                System.err.printf("Ошибка файловой системы. %s%n", e.getMessage());
+                LOG.error("Ошибка файловой системы. {}", e.getMessage());
+            } catch (Exception e) {
+                System.err.printf("Критическая ошибка! %s%n", e.getMessage());
+                LOG.error("Критическая ошибка!", e);
             }
         }
+
+        LOG.info("Финиш утилиты.");
     }
 
     /**
@@ -72,7 +77,6 @@ public final class FilesFilter {
      * @throws IOException              если произошёл сбой при работе с файловой системой.
      * @throws IllegalArgumentException если пользователь задал не верные данные.
      * @throws NumberFormatException    если не удалось конвертировать строку в определённое число.
-     * @throws RuntimeException         если что-то пошло не так!
      */
     private static Map<ContentType, Statistics<?>> filterFiles(ArgumentsDTO dto) throws IOException {
         createDirectory(Path.of(dto.getDirectory()).toAbsolutePath().normalize());
