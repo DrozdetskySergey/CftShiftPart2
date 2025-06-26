@@ -1,5 +1,8 @@
 package ru.cft.drozdetskiy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.IOException;
@@ -15,6 +18,8 @@ import java.nio.file.StandardOpenOption;
  * когда первый раз вызывается метод интерфейса {@link Appendable}
  */
 final class LazyWriter implements Appendable, Closeable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LazyWriter.class);
 
     /**
      * Путь к файлу для записи.
@@ -66,6 +71,7 @@ final class LazyWriter implements Appendable, Closeable {
     public void close() throws IOException {
         if (writer != null) {
             writer.close();
+            LOG.debug("Закрытие врайтера для файла {}", file);
         }
     }
 
@@ -78,6 +84,7 @@ final class LazyWriter implements Appendable, Closeable {
     private Writer getWriter() throws IOException {
         if (writer == null) {
             writer = Files.newBufferedWriter(file, openOptions);
+            LOG.debug("Создание врайтера для файла {}, опции: {}", file, openOptions);
         }
 
         return writer;
