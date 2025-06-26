@@ -1,5 +1,8 @@
 package ru.cft.drozdetskiy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
@@ -16,6 +19,8 @@ import java.util.NoSuchElementException;
  * Очерёдность сохраняется как в списке переданных в конструктор файлов.
  */
 final class FilesIterator implements Iterator<String>, Closeable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(FilesIterator.class);
 
     /**
      * Список буферизованных ридеров для чтения строк.
@@ -35,11 +40,11 @@ final class FilesIterator implements Iterator<String>, Closeable {
      *
      * @param files Список файлов.
      * @throws IllegalArgumentException если передан пустой список фалов.
-     * @throws IOException              если ошибка открытия файла.
+     * @throws IOException              если сбой при создании ридера для переданного файла.
      */
     public FilesIterator(List<Path> files) throws IOException {
         if (files.isEmpty()) {
-            throw new IllegalArgumentException("Не заданы файлы (files).");
+            throw new IllegalArgumentException("отсутствуют файлы (files).");
         }
 
         readers = new ArrayList<>(files.size());
@@ -48,12 +53,14 @@ final class FilesIterator implements Iterator<String>, Closeable {
             for (Path p : files) {
                 BufferedReader reader = Files.newBufferedReader(p);
                 readers.add(reader);
+                LOG.debug("Создание ридера для файла {}", p);
             }
         } catch (IOException e) {
             close();
             throw e;
         }
 
+        index = 0;
         updateNext();
     }
 
@@ -77,7 +84,7 @@ final class FilesIterator implements Iterator<String>, Closeable {
     @Override
     public void close() {
         while (!readers.isEmpty()) {
-            closeReader(readers.remove(readers.size() - 1));
+            closeReader(readers.remove(0));
         }
     }
 
@@ -90,11 +97,12 @@ final class FilesIterator implements Iterator<String>, Closeable {
     private void updateNext() {
         next = null;
 
-        while (next == null && readers.size() > 0) {
+        while (next == null && !readers.isEmpty()) {
             try {
                 next = readers.get(index).readLine();
             } catch (IOException e) {
-                System.err.printf("Сбой чтения из файла %s, далее игнорируется.%n", e.getMessage());
+                System.err.printf("Сбой чтения из ридера для файла %s, далее он игнорируется.%n", e.getMessage());
+                LOG.warn("Сбой чтения из ридера для файла {}", e.getMessage());
             }
 
             if (next == null) {
@@ -112,14 +120,16 @@ final class FilesIterator implements Iterator<String>, Closeable {
     /**
      * Закрывает ридер. Если тот кидает IOException, то перехватывает и отображает сообщение об ошибке.
      *
-     * @param reader ридер который требуется закрыть.
+     * @param reader ридер, который требуется закрыть.
      */
     private void closeReader(Reader reader) {
         if (reader != null) {
             try {
                 reader.close();
+                LOG.debug("Закрытие ридера для файла.");
             } catch (IOException e) {
-                System.err.printf("Сбой закрытия файла %s%n", e.getMessage());
+                System.err.printf("Сбой закрытия ридера для файла %s%n", e.getMessage());
+                LOG.warn("Сбой закрытия ридера для файла {}", e.getMessage());
             }
         }
     }
