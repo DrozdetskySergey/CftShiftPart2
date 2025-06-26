@@ -83,8 +83,12 @@ final class LazyWriter implements Appendable, Closeable {
      */
     private Writer getWriter() throws IOException {
         if (writer == null) {
-            writer = Files.newBufferedWriter(file, openOptions);
-            LOG.debug("Создание врайтера для файла {}, опции: {}", file, openOptions);
+            try {
+                writer = Files.newBufferedWriter(file, openOptions);
+                LOG.debug("Создание врайтера для файла {}, опции: {}", file, openOptions);
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("При создания врайтера для файла заданы не валидные опции.", e);
+            }
         }
 
         return writer;
