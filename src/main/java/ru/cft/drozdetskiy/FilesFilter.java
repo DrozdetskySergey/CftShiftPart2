@@ -19,20 +19,20 @@ import java.util.Map;
 import static ru.cft.drozdetskiy.ContentType.*;
 
 /**
- * Утилита фильтрации содержимого файлов. Задача: записать разные типы данных в разные файлы.
- * При запуске в командной строке подается несколько файлов, содержащих целые числа,
- * вещественные числа и строки. В качестве разделителя перевод строки.
- * Строки из файлов читаются по очереди в соответствии с их перечислением в командной строке.
- * Статистика по каждому типу выводится в консоль.
+ * Консольная утилита фильтрации содержимого файлов. Задача: записать разные типы данных в разные файлы.
+ * При запуске через параметры подаются опции и несколько файлов, содержащих целые числа,
+ * вещественные числа и строки. В качестве разделителя используется перевод строки.
+ * Строки из файлов читаются по очереди в соответствии с их перечислением в параметрах.
+ * Статистика по каждому типу данных выводится в консоль.
  *
- * @author Дроздецкий Сергей <a href="mailto:bigjunior@mail.ru">email</a>
+ * @author Дроздецкий Сергей, <a href="mailto:bigjunior@mail.ru">bigjunior@mail.ru</a>
  */
 public final class FilesFilter {
 
     private static final Logger LOG = LoggerFactory.getLogger(FilesFilter.class);
 
     public static void main(String[] args) {
-        LOG.info("Старт утилиты, args = {}", Arrays.toString(args));
+        LOG.info("Запуск утилиты, args = {}", Arrays.toString(args));
         final String help = String.format("FilesFilter [options] [files...]%n" +
                 "options:%n" +
                 "-o <каталог>  Каталог для файлов с результатом.%n" +
@@ -52,8 +52,8 @@ public final class FilesFilter {
                 System.out.println(allStatistics.get(DOUBLE));
                 System.out.println(allStatistics.get(STRING));
             } catch (NumberFormatException e) {
-                System.err.printf("Не верно определён тип содержимого строки. %s%n", e.getMessage());
-                LOG.error("Не верно определён тип содержимого строки. {}", e.getMessage());
+                System.err.printf("Не верно определён тип содержимого в строке %s%n", e.getMessage());
+                LOG.error("Не верно определён тип содержимого в строке {}", e.getMessage());
             } catch (IllegalArgumentException e) {
                 System.out.printf("Не верно задан аргумент: %s%n%n%s", e.getMessage(), help);
                 LOG.info("Не верно задан аргумент: {}", e.getMessage());
@@ -66,14 +66,15 @@ public final class FilesFilter {
             }
         }
 
-        LOG.info("Финиш утилиты.");
+        LOG.info("Остановка утилиты.");
     }
 
     /**
-     * Центральный метод всей утилиты FilesFilter.
+     * Основной (божественный) метод всей утилиты. Получает подготовленные параметры, создаёт нужные объекты
+     * и запускает обработку данных. Возвращает собранную статистику.
      *
-     * @param dto DTO с вводными данными для утилиты.
-     * @return неизменяемый словарь {@link Map} с собранной статистикой в соответствии с типом {@link ContentType}
+     * @param dto DTO с параметрами для утилиты.
+     * @return словарь {@link Map} с собранной статистикой в соответствии с типом {@link ContentType}
      * @throws IOException              если произошёл сбой при работе с файловой системой.
      * @throws IllegalArgumentException если пользователь задал не верные данные.
      * @throws NumberFormatException    если не удалось конвертировать строку в определённое число.
