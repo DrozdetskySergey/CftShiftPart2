@@ -88,7 +88,7 @@ public final class ArgumentsDTO {
     }
 
     /**
-     * Встроенный статичный класс для сборки объекта класса {@link ArgumentsDTO}
+     * Builder. Встроенный статичный класс для сборки объекта класса {@link ArgumentsDTO}
      */
     public static class Builder {
 
