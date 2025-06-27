@@ -1,7 +1,7 @@
 package ru.cft.drozdetskiy.args;
 
 /**
- * Опции программы (аргументы начинающиеся с символа '-') переданные в main:
+ * Опции программы (аргументы начинающиеся с символа минус) переданные в main:
  * {@linkplain #SET_DIRECTORY}, {@linkplain #SET_PREFIX}, {@linkplain #APPEND_FILES},
  * {@linkplain #SIMPLE_STAT}, {@linkplain #FULL_STAT}
  */
