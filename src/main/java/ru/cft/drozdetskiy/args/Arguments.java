@@ -10,7 +10,8 @@ import java.util.stream.Collectors;
 import static ru.cft.drozdetskiy.args.Option.*;
 
 /**
- * Функциональный класс. Предоставляет статичный метод {@linkplain #parse(String[]) parse}
+ * Функциональный класс. Специализируется на аргументах для утилиты.
+ * Предоставляет статичный метод {@linkplain #parse(String[]) parse}
  */
 public final class Arguments {
 
@@ -18,10 +19,11 @@ public final class Arguments {
     }
 
     /**
-     * Парсит массив строк, распознает опции {@link Option}, имена файлов и другие данный.
+     * Парсит массив строк, вычленяет опции {@link Option} и имена файлов.
+     * Создаёт и возвращает DTO с нужными аргументами для утилиты.
      *
-     * @param args Массив строк.
-     * @return DTO с нужными даннами для программы.
+     * @param args массив строк.
+     * @return Специализированное DTO с аргументами для утилиты.
      * @throws IllegalArgumentException если встречается неизвестная опция.
      */
     public static ArgumentsDTO parse(String[] args) {
@@ -30,7 +32,8 @@ public final class Arguments {
         StatisticsType statisticsType = StatisticsType.SIMPLE;
         boolean isAppend = false;
         List<Path> files = new ArrayList<>();
-        List<String> arguments = decompose(filter(args));
+
+        List<String> arguments = decomposeArguments(filterAndClean(args));
 
         for (Iterator<String> iterator = arguments.iterator(); iterator.hasNext(); ) {
             String argument = iterator.next();
@@ -66,13 +69,14 @@ public final class Arguments {
     }
 
     /**
-     * Отфильтровывает null и пустые строки, убирает пробелы в начале и в конце каждой стоки.
+     * В массиве строк отфильтровывает null и пустые строки, убирает пробелы в начале и в конце каждой стоки.
+     * Оставшиеся очищенные строки возвращает в виде списка.
      *
-     * @param args Массив сток.
-     * @return Список релевантных строк.
+     * @param array массив сток.
+     * @return Список отфильтрованных и очищенных строк.
      */
-    private static List<String> filter(String[] args) {
-        return Arrays.stream(args)
+    private static List<String> filterAndClean(String[] array) {
+        return Arrays.stream(array)
                 .filter(Objects::nonNull)
                 .filter(Predicate.not(String::isBlank))
                 .map(String::strip)
@@ -80,12 +84,15 @@ public final class Arguments {
     }
 
     /**
-     * Опции проверяет на слипание и разделяет на одиночные. Не опции передаёт без изменения.
+     * Проверят каждый аргумент в списке. Аргумент может быть опцией {@link Option} или нет соответственно.
+     * У опции первый символ минус. Опции проверяет на слипание и разделяет на самостоятельные аргументы.
+     * Не опции копирует без изменений.
+     * Возвращает новый список аргументов без слипшихся опций, при этом не нарушая изначальный порядок.
      *
-     * @param arguments Список аргументов.
+     * @param arguments список аргументов.
      * @return Список аргументов без составных опций.
      */
-    private static List<String> decompose(List<String> arguments) {
+    private static List<String> decomposeArguments(List<String> arguments) {
         List<String> result = new ArrayList<>();
 
         for (String s : arguments) {
@@ -108,12 +115,12 @@ public final class Arguments {
     }
 
     /**
-     * Проверяет что аргумент не может быть опцией {@link Option}.
+     * Проверяет что аргумент не может быть опцией {@link Option}. У опции первый символ минус.
      *
-     * @param string Проверяемый аргумент.
-     * @return true если не может быть опцией.
+     * @param argument проверяемый аргумент в виде строки.
+     * @return true если аргумент не может быть опцией.
      */
-    private static boolean isNotOption(String string) {
-        return !string.startsWith("-");
+    private static boolean isNotOption(String argument) {
+        return !argument.startsWith("-");
     }
 }
