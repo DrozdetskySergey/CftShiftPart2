@@ -11,7 +11,7 @@ import static ru.cft.drozdetskiy.args.Option.*;
 
 /**
  * Функциональный класс. Специализируется на аргументах для утилиты.
- * Предоставляет статичный метод {@linkplain #parse(String[]) parse}
+ * Предоставляет статичный метод {@link #parse(String[]) parse}
  */
 public final class Arguments {
 
