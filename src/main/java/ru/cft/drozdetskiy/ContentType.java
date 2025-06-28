@@ -1,8 +1,8 @@
 package ru.cft.drozdetskiy;
 
 /**
- * Тип содержимого строки т.е. в какой объект можно распарсить всю строку:
- * {@linkplain #LONG}, {@linkplain #DOUBLE}, {@linkplain #STRING}
+ * Можно распарсить строку в целое число, либо в вещественное число, либо оставить строкой.
+ * Типы содержимого строки: {@linkplain #LONG}, {@linkplain #DOUBLE}, {@linkplain #STRING}
  */
 enum ContentType {
     /**
