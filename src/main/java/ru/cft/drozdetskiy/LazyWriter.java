@@ -11,11 +11,12 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 
 /**
- * Proxy класс реализующий интерфейсы: Appendable, Closeable.
- * Создаёт проксируемый объект класса {@link BufferedWriter} только тогда,
- * когда первый раз вызывается метод интерфейса {@link Appendable}
+ * Proxy класс реализующий интерфейсы: {@link Appendable}, {@link Closeable}.
+ * Проксируемый объект класса {@link BufferedWriter} созданный для файла. Создаёт проксируемый объект только тогда,
+ * когда первый раз вызывается метод интерфейса Appendable.
  */
 final class LazyWriter implements Appendable, Closeable {
 
@@ -30,13 +31,14 @@ final class LazyWriter implements Appendable, Closeable {
      */
     private final OpenOption[] openOptions;
     /**
-     * Проксируемый объект реализующий интерфейсы: Appendable, Closeable.
+     * Проксируемый объект реализующий интерфейсы: {@link Appendable}, {@link Closeable}.
      */
     private Writer writer;
 
     /**
-     * Proxy класс реализующий интерфейсы: Appendable, Closeable.
-     * Проксируемый объект класса {@link BufferedWriter} созданный для файла.
+     * Proxy класс реализующий интерфейсы: {@link Appendable}, {@link Closeable}.
+     * Проксируемый объект класса {@link BufferedWriter} созданный для файла. Создаёт проксируемый объект
+     * только тогда, когда первый раз вызывается метод интерфейса Appendable.
      *
      * @param file        путь к файлу.
      * @param openOptions массив стандартных опций {@link StandardOpenOption} открытия файла.
@@ -78,16 +80,18 @@ final class LazyWriter implements Appendable, Closeable {
     /**
      * Создаёт проксируемый объект если он не существует.
      *
-     * @return объект класса {@link BufferedWriter} созданный для файла.
-     * @throws IOException если ошибка создания или открытия файла.
+     * @return Объект класса {@link BufferedWriter} созданный для файла.
+     * @throws IOException      если ошибка создания или открытия файла.
+     * @throws RuntimeException если заданы не валидные опции открытия файла.
      */
     private Writer getWriter() throws IOException {
         if (writer == null) {
             try {
                 writer = Files.newBufferedWriter(file, openOptions);
                 LOG.debug("Создание врайтера для файла {}, опции: {}", file, openOptions);
-            } catch (IllegalArgumentException e) {
-                throw new RuntimeException("При создания врайтера для файла заданы не валидные опции.", e);
+            } catch (IllegalArgumentException | UnsupportedOperationException e) {
+                throw new RuntimeException(String.format("Заданы не валидные OpenOptions = %s. %s",
+                        Arrays.toString(openOptions), e.getMessage()));
             }
         }
 
