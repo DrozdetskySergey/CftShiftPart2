@@ -23,7 +23,7 @@ final class FilesIterator implements Iterator<String>, Closeable {
     private static final Logger LOG = LoggerFactory.getLogger(FilesIterator.class);
 
     /**
-     * Список буферизованных ридеров для чтения строк.
+     * Список ридеров для чтения строк.
      */
     private final List<BufferedReader> readers;
     /**
@@ -40,7 +40,7 @@ final class FilesIterator implements Iterator<String>, Closeable {
      *
      * @param files Список файлов.
      * @throws IllegalArgumentException если передан пустой список фалов.
-     * @throws IOException              если сбой при создании ридера для переданного файла.
+     * @throws IOException              если сбой при создании ридера для файла.
      */
     public FilesIterator(List<Path> files) throws IOException {
         if (files.isEmpty()) {
@@ -90,8 +90,9 @@ final class FilesIterator implements Iterator<String>, Closeable {
 
     /**
      * Читает следующую строку из буферизованного ридера (который соответствует индексу) и записывает её в буфер.
-     * Если ридер отдаёт null или бросает IOException, тогда он удаляется из списка readers и закрывается,
-     * а строка читается из следующего, иначе меняет индекс ридера на следующий или нулевой.
+     * Если ридер отдал строку, то меняет индекс ридера на следующий или нулевой (по кругу).
+     * Если ридер отдаёт null или бросает IOException, тогда удаляет его из списка ридеров и закрывает,
+     * а строку читает из следующего ридера.
      * IOException перехватывает и отображает сообщение об ошибке.
      */
     private void updateNext() {
