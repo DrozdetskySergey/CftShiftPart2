@@ -81,7 +81,8 @@ public final class FilesFilter {
      * @throws NumberFormatException    если не удалось конвертировать строку в определённое число.
      */
     private static Map<ContentType, Statistics<?>> filterFiles(ArgumentsDTO dto) throws IOException {
-        createDirectory(Path.of(dto.getDirectory()).toAbsolutePath().normalize());
+        Path resultDirectory = Path.of(dto.getDirectory()).toAbsolutePath().normalize();
+        createDirectory(resultDirectory);
         Path longsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "integers.txt").toAbsolutePath().normalize();
         Path doublesFile = Path.of(dto.getDirectory(), dto.getPrefix() + "floats.txt").toAbsolutePath().normalize();
         Path stringsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "strings.txt").toAbsolutePath().normalize();
