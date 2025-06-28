@@ -14,24 +14,25 @@ import java.util.Map;
 import static ru.cft.drozdetskiy.ContentType.*;
 
 /**
- * Распределяет строки в зависимости от типа содержимого {@link ContentType} в объекты
- * интерфейса {@link Appendable}, переданные в конструктор. При этом собирается статистика.
+ * Распределяет строки в зависимости от {@linkplain  ContentType типа содержимого} по объектам
+ * интерфейса {@link Appendable}, переданные в конструктор. При этом собирается статистика требуемого
+ * {@linkplain  StatisticsType типа }.
  */
 final class Separator {
 
     private static final Logger LOG = LoggerFactory.getLogger(Separator.class);
 
     /**
-     * Словарь с объектами интерфейса {@link Appendable} в соответствии с типом {@link ContentType}
+     * Словарь с объектами интерфейса {@link Appendable} в соответствии с {@linkplain  ContentType типом}.
      */
     private final Map<ContentType, Appendable> writers;
 
     /**
-     * Распределяет строки в зависимости от типа содержимого {@link ContentType} в объекты
-     * интерфейса {@link Appendable}
+     * Распределяет строки в зависимости от {@linkplain  ContentType типа содержимого} по объектам
+     * интерфейса {@link Appendable}.
      *
-     * @param writers словарь {@link Map} с объектами интерфейса {@link Appendable}
-     *                в соответствии с типом {@link ContentType}
+     * @param writers словарь с объектами интерфейса {@link Appendable}
+     *                в соответствии с {@linkplain  ContentType типом}.
      */
     public Separator(Map<ContentType, Appendable> writers) {
         this.writers = writers;
@@ -39,14 +40,16 @@ final class Separator {
 
     /**
      * Обрабатывает строки из объекта интерфейса {@link Iterator}.
-     * В зависимости от типа содержимого {@link ContentType} строка отправляется в один из объектов
-     * интерфейса {@link Appendable} переданных в конструктор.
-     * При этом собирается статистика требуемого типа {@link StatisticsType}.
+     * В зависимости от {@linkplain  ContentType типа содержимого} строка отправляется в один из объектов
+     * интерфейса {@link Appendable} переданных в конструктор этого класса.
+     * При этом собирается и потом отдаётся статистика требуемого {@linkplain  StatisticsType типа}.
      *
-     * @param iterator       объекта интерфейса {@link Iterator}
-     * @param statisticsType требуемый тип статистики {@link StatisticsType}
-     * @return неизменяемый словарь {@link Map} с собранной статистикой в соответствии с типом {@link ContentType}
-     * @throws IOException если метод append у объектов интерфейса {@link Appendable} бросает IOException.
+     * @param iterator       объект интерфейса {@link Iterator} параметризованный строкой.
+     * @param statisticsType требуемый {@linkplain  StatisticsType тип статистики}.
+     * @return Неизменяемый словарь {@link Map} с собранной статистикой в соответствии с
+     * {@linkplain  ContentType типом содержимого} обработанных строк.
+     * @throws IOException           если метод append у объектов интерфейса {@link Appendable} бросает IOException.
+     * @throws NumberFormatException если ошибочно определён {@linkplain  ContentType типа содержимого} в строке.
      */
     public Map<ContentType, Statistics<?>> handleStrings(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
         StatisticsFactory factory = StatisticsFactories.get(statisticsType);
@@ -89,15 +92,16 @@ final class Separator {
     }
 
     /**
-     * Определяет тип содержимого строки методом исключения.
+     * Определяет {@linkplain  ContentType тип содержимого} строки методом исключения.
      * Сначала проверяет, что это целое число. Если нет, то проверяет, что это вещественное число.
      * Если нет, тогда это простая строка.
-     * У целого числа первый символ кроме цифры может быть плюс или минус, а остальные символы должны быть цифрами.
-     * У вещественного числа начало как у целого, а потом должен встретиться один из трёх символов: [точка, e, E]
-     * при определённых условиях. Возможно сочетание символа точки и ещё одного из двух символов: [e, E].
+     * У целого числа первый символ, кроме цифры, может быть плюс или минус, а остальные символы должны быть цифрами.
+     * У вещественного числа начало как у целого, а потом, при определённых условиях, должен встретиться
+     * один из трёх символов: [точка, e, E]. Так же возможно сочетание символа [точка] и ещё
+     * одного из двух символов: [e, E].
      *
      * @param string проверяемая строка.
-     * @return тип содержимого строки {@link ContentType}
+     * @return {@linkplain  ContentType Тип содержимого} строки.
      */
     private ContentType getContentType(String string) {
         if (string.isEmpty()) {
@@ -124,8 +128,8 @@ final class Separator {
     }
 
     /**
-     * ВНИМАНИЕ: содержимое проверяемой строки должно быть целым числом!
-     * У целого числа первый символ кроме цифры может быть плюс или минус, а остальные символы должны быть цифрами.
+     * ВНИМАНИЕ: {@linkplain  ContentType тип содержимого} проверяемой строки должен быть - целое число!
+     * У целого числа первый символ, кроме цифры, может быть плюс или минус, а остальные символы должны быть цифрами.
      * Проверяет, что это целое число попадает в диапазон от -9223372036854775808 до +9223372036854775807.
      *
      * @param string проверяемая строка.
@@ -158,8 +162,8 @@ final class Separator {
     }
 
     /**
-     * Проверяет тип содержимого строки это целое число или нет.
-     * У целого числа первый символ кроме цифры может быть плюс или минус, а остальные символы должны быть цифрами.
+     * Проверяет {@linkplain  ContentType тип содержимого} строки это целое число или нет.
+     * У целого числа первый символ, кроме цифры, может быть плюс или минус, а остальные символы должны быть цифрами.
      *
      * @param string проверяемая строка.
      * @return true если содержимое строки это целое число.
