@@ -45,7 +45,7 @@ public final class ArgumentsDTO {
     /**
      * Геттер. Отдаёт префикс для имён файлов с результатом.
      *
-     * @return {@link String}
+     * @return Строка с префиксом.
      */
     public String getPrefix() {
         return prefix;
@@ -54,7 +54,7 @@ public final class ArgumentsDTO {
     /**
      * Геттер. Отдаёт каталог для файлов с результатом.
      *
-     * @return {@link String}
+     * @return Строка с каталогом.
      */
     public String getDirectory() {
         return directory;
@@ -63,7 +63,7 @@ public final class ArgumentsDTO {
     /**
      * Геттер. Отдаёт список файлов для чтения строк (входящие данные).
      *
-     * @return неизменяемый список объектов класса {@link Path}
+     * @return Неизменяемый список объектов класса {@link Path}
      */
     public List<Path> getFiles() {
         return files;
@@ -72,7 +72,7 @@ public final class ArgumentsDTO {
     /**
      * Геттер. Отдаёт тип требуемой статистики.
      *
-     * @return {@link StatisticsType}
+     * @return {@linkplain StatisticsType Тип статистики}.
      */
     public StatisticsType getStatisticsType() {
         return statisticsType;
@@ -123,7 +123,7 @@ public final class ArgumentsDTO {
         /**
          * Builder. Задаёт тип требуемой статистики.
          *
-         * @param statisticsType {@link StatisticsType}
+         * @param statisticsType {@linkplain StatisticsType Тип статистики}.
          */
         public Builder statisticsType(StatisticsType statisticsType) {
             this.statisticsType = statisticsType;
