@@ -4,9 +4,9 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 
 /**
- * Фабрика для создания объектов интерфейса {@link Statistics}
+ * Фабрики реализующий интерфейс абстрактной фабрики {@link StatisticsFactory}.
+ * Создаёт новые объекты для сбора краткой (SIMPLE) {@linkplain  Statistics статистики}
  * параметризованных типами: {@link Long}, {@link Double}, {@link String}.
- * Создаёт новые объекты для сбора краткой (SIMPLE) статистики.
  */
 final public class SimpleStatisticsFactory implements StatisticsFactory {
 
