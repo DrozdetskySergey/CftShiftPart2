@@ -4,7 +4,8 @@ import ru.cft.drozdetskiy.statistics.impl.FullStatisticsFactory;
 import ru.cft.drozdetskiy.statistics.impl.SimpleStatisticsFactory;
 
 /**
- * Функциональный класс. Предоставляет статичный метод {@linkplain #get(StatisticsType) get}
+ * Функциональный класс. Специализируется на создание объектов абстрактной фабрики {@link StatisticsFactory}.
+ * Предоставляет статичный метод {@linkplain #get(StatisticsType) get}
  */
 public final class StatisticsFactories {
 
@@ -12,10 +13,11 @@ public final class StatisticsFactories {
     }
 
     /**
-     * Создаёт объект интерфейса {@link StatisticsFactory} относительно переданного типа статистики.
+     * Создаёт объект конкретной фабрики реализующий интерфейс абстрактной фабрики {@link StatisticsFactory}
+     * в зависимости от требуемого {@linkplain StatisticsType типа статистики}.
      *
-     * @param type требуемый тип статистики {@linkplain StatisticsType}
-     * @return объект конкретной фабрики реализующий интерфейс {@link StatisticsFactory}
+     * @param type требуемый {@linkplain StatisticsType тип статистики}
+     * @return Объект конкретной фабрики реализующий интерфейс абстрактной фабрики {@link StatisticsFactory}.
      */
     public static StatisticsFactory get(StatisticsType type) {
         return type == StatisticsType.FULL ? new FullStatisticsFactory() : new SimpleStatisticsFactory();
