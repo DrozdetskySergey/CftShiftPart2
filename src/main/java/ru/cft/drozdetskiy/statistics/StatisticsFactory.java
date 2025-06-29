@@ -11,21 +11,21 @@ package ru.cft.drozdetskiy.statistics;
 public interface StatisticsFactory {
 
     /**
-     * Создаёт новый объект статистики {@link Statistics} параметризованный типом {@link Long}
+     * Создаёт новый объект интерфейса {@link Statistics} параметризованный типом {@link Long}
      *
      * @return {@link Statistics}<{@link Long}>
      */
     Statistics<Long> createForLong();
 
     /**
-     * Создаёт новый объект статистики {@link Statistics} параметризованный типом {@link Double}
+     * Создаёт новый объект интерфейса {@link Statistics} параметризованный типом {@link Double}
      *
      * @return {@link Statistics}<{@link Double}>
      */
     Statistics<Double> createForDouble();
 
     /**
-     * Создаёт новый объект статистики {@link Statistics} параметризованный типом {@link String}
+     * Создаёт новый объект интерфейса {@link Statistics} параметризованный типом {@link String}
      *
      * @return {@link Statistics}<{@link String}>
      */
