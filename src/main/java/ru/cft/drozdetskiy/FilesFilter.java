@@ -52,14 +52,14 @@ public final class FilesFilter {
                 System.out.println(allStatistics.get(DOUBLE));
                 System.out.println(allStatistics.get(STRING));
             } catch (NumberFormatException e) {
-                System.err.printf("Не верно определён тип содержимого в строке %s%n", e.getMessage());
-                LOG.error("Не верно определён тип содержимого в строке {}", e.getMessage());
+                System.err.printf("Не верно определён тип содержимого в строке: %s%n", e.getMessage());
+                LOG.error("Не верно определён тип содержимого в строке: {}", e.getMessage());
             } catch (IllegalArgumentException e) {
                 System.out.printf("Не верно задан аргумент: %s%n%n%s", e.getMessage(), help);
                 LOG.info("Не верно задан аргумент: {}", e.getMessage());
             } catch (IOException e) {
-                System.err.printf("Ошибка файловой системы. %s%n", e.getMessage());
-                LOG.error("Ошибка файловой системы. {}", e.getMessage());
+                System.err.printf("Ошибка при работе с файлом: %s%n", e.getMessage());
+                LOG.error("Ошибка при работе с файлом: {}", e.getMessage());
             } catch (Exception e) {
                 System.err.printf("Критическая ошибка! %s%n", e.getMessage());
                 LOG.error("Критическая ошибка!", e);
