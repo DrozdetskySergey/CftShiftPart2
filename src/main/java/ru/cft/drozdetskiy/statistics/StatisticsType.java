@@ -1,7 +1,7 @@
 package ru.cft.drozdetskiy.statistics;
 
 /**
- * Тип собираемой статистики: {@linkplain #SIMPLE}, {@linkplain #FULL}
+ * Типы собираемой статистики: {@linkplain #SIMPLE}, {@linkplain #FULL}
  */
 public enum StatisticsType {
 
