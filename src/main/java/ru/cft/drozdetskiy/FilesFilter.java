@@ -12,9 +12,9 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import static ru.cft.drozdetskiy.ContentType.*;
 
@@ -86,20 +86,13 @@ public final class FilesFilter {
         Path longsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "integers.txt").toAbsolutePath().normalize();
         Path doublesFile = Path.of(dto.getDirectory(), dto.getPrefix() + "floats.txt").toAbsolutePath().normalize();
         Path stringsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "strings.txt").toAbsolutePath().normalize();
-        throwExceptionIfContains(dto.getFiles(), longsFile);
-        throwExceptionIfContains(dto.getFiles(), doublesFile);
-        throwExceptionIfContains(dto.getFiles(), stringsFile);
+        throwExceptionIfContainsAny(dto.getFiles(), Set.of(longsFile, doublesFile, stringsFile));
 
         OpenOption[] openOptions = getOpenOptions(dto.isAppend());
         var longWriter = new LazyWriter(longsFile, openOptions);
         var doubleWriter = new LazyWriter(doublesFile, openOptions);
         var stringWriter = new LazyWriter(stringsFile, openOptions);
-
-        Map<ContentType, Appendable> writers = new EnumMap<>(ContentType.class);
-        writers.put(LONG, longWriter);
-        writers.put(DOUBLE, doubleWriter);
-        writers.put(STRING, stringWriter);
-        var separator = new Separator(writers);
+        var separator = new Separator(Map.of(LONG, longWriter, DOUBLE, doubleWriter, STRING, stringWriter));
 
         Map<ContentType, Statistics<?>> allStatistics;
 
@@ -125,15 +118,18 @@ public final class FilesFilter {
     }
 
     /**
-     * Бросает IllegalArgumentException если данный список путей к файлам содержит данный путь к файлу.
+     * Бросает IllegalArgumentException если контрольный перечень путей к файлам содержит
+     * какой-либо из альтернативных путей к файлам.
      *
-     * @param files список путей к файлам.
-     * @param file  путь к файлу.
-     * @throws IllegalArgumentException если список путей содержит путь.
+     * @param checklist    контрольный перечень путей к файлам.
+     * @param alternatives альтернативный перечень путей к файлам.
+     * @throws IllegalArgumentException если контрольный перечень путей содержит какой-либо альтернативный путь.
      */
-    private static void throwExceptionIfContains(List<Path> files, Path file) {
-        if (files.contains(file)) {
-            throw new IllegalArgumentException("имя файла совпадает с именем результата " + file);
+    private static void throwExceptionIfContainsAny(Collection<Path> checklist, Collection<Path> alternatives) {
+        for (Path p : alternatives) {
+            if (checklist.contains(p)) {
+                throw new IllegalArgumentException("не допустимое имя файла " + p);
+            }
         }
     }
 
