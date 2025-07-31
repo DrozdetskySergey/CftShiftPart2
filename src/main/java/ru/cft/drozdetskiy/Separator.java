@@ -8,6 +8,7 @@ import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
 import java.io.IOException;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ final class Separator {
      *                в соответствии с {@linkplain  ContentType типом}.
      */
     public Separator(Map<ContentType, Appendable> writers) {
-        this.writers = writers;
+        this.writers = new EnumMap<>(writers);
     }
 
     /**
