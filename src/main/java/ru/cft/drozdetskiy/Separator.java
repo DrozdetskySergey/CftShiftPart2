@@ -114,10 +114,10 @@ final class Separator {
         ContentType result = firstIndex == symbols.length ? STRING : LONG;
 
         for (int i = firstIndex; result != STRING && i < symbols.length; i++) {
-            if (symbols[i] == '.' && result == LONG && symbols.length != firstIndex + 1) {
+            if (symbols[i] == '.' && result == LONG && symbols.length > firstIndex + 1) {
                 result = DOUBLE;
             } else if ((symbols[i] == 'e' || symbols[i] == 'E')
-                    && ((result == LONG && i != firstIndex) || (result == DOUBLE && i != firstIndex + 1))) {
+                    && ((result == LONG && i > firstIndex) || (result == DOUBLE && i > firstIndex + 1))) {
                 result = isIntegerNumeric(string.substring(i + 1)) ? DOUBLE : STRING;
                 break;
             } else if (symbols[i] < '0' || '9' < symbols[i]) {
