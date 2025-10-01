@@ -51,12 +51,12 @@ public final class FilesFilter {
                 System.out.println(allStatistics.get(LONG));
                 System.out.println(allStatistics.get(DOUBLE));
                 System.out.println(allStatistics.get(STRING));
+            } catch (InvalidInputException e) {
+                System.out.printf("Не верно задан аргумент: %s%n%n%s", e.getMessage(), help);
+                LOG.info("Не верно задан аргумент: {}", e.getMessage());
             } catch (NumberFormatException e) {
                 System.err.printf("Не верно определён тип содержимого в строке: %s%n", e.getMessage());
                 LOG.error("Не верно определён тип содержимого в строке: {}", e.getMessage());
-            } catch (IllegalArgumentException e) {
-                System.out.printf("Не верно задан аргумент: %s%n%n%s", e.getMessage(), help);
-                LOG.info("Не верно задан аргумент: {}", e.getMessage());
             } catch (IOException e) {
                 System.err.printf("Ошибка при работе с файлом: %s%n", e.getMessage());
                 LOG.error("Ошибка при работе с файлом: {}", e.getMessage());
@@ -76,9 +76,9 @@ public final class FilesFilter {
      * @param dto DTO с аргументами для утилиты.
      * @return Словарь {@link Map} с собранной статистикой в соответствии с
      * {@linkplain  ContentType типом содержимого} обработанных строк.
-     * @throws IOException              если произошёл сбой при работе с файловой системой.
-     * @throws IllegalArgumentException если пользователь задал не верные данные.
-     * @throws NumberFormatException    если не удалось конвертировать строку в определённое число.
+     * @throws IOException           если произошёл сбой при работе с файловой системой.
+     * @throws InvalidInputException если пользователь задал не верные данные.
+     * @throws NumberFormatException если не удалось конвертировать строку в определённое число.
      */
     private static Map<ContentType, Statistics<?>> filterFiles(ArgumentsDTO dto) throws IOException {
         Path resultDirectory = Path.of(dto.getDirectory()).toAbsolutePath().normalize();
@@ -86,7 +86,7 @@ public final class FilesFilter {
         Path longsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "integers.txt").toAbsolutePath().normalize();
         Path doublesFile = Path.of(dto.getDirectory(), dto.getPrefix() + "floats.txt").toAbsolutePath().normalize();
         Path stringsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "strings.txt").toAbsolutePath().normalize();
-        throwExceptionIfContainsAny(dto.getFiles(), Set.of(longsFile, doublesFile, stringsFile));
+        throwInvalidInputExceptionIfContainsAny(dto.getFiles(), Set.of(longsFile, doublesFile, stringsFile));
 
         OpenOption[] openOptions = getOpenOptions(dto.isAppend());
         var longWriter = new LazyWriter(longsFile, openOptions);
@@ -107,28 +107,28 @@ public final class FilesFilter {
      * Создаёт каталог по переданному пути.
      *
      * @param path путь для каталога.
-     * @throws IllegalArgumentException если не удалось создать каталог.
+     * @throws InvalidInputException если не удалось создать каталог.
      */
     private static void createDirectory(Path path) {
         try {
             Files.createDirectories(path);
         } catch (Exception e) {
-            throw new IllegalArgumentException("каталог " + path);
+            throw new InvalidInputException("каталог %s не удалось создать.", path);
         }
     }
 
     /**
-     * Бросает IllegalArgumentException если контрольный перечень путей к файлам содержит
+     * Бросает InvalidInputException если контрольный перечень путей к файлам содержит
      * какой-либо из альтернативных путей к файлам.
      *
      * @param checklist    контрольный перечень путей к файлам.
      * @param alternatives альтернативный перечень путей к файлам.
-     * @throws IllegalArgumentException если контрольный перечень путей содержит какой-либо альтернативный путь.
+     * @throws InvalidInputException если контрольный перечень путей содержит какой-либо альтернативный путь.
      */
-    private static void throwExceptionIfContainsAny(Collection<Path> checklist, Collection<Path> alternatives) {
+    private static void throwInvalidInputExceptionIfContainsAny(Collection<Path> checklist, Collection<Path> alternatives) {
         for (Path p : alternatives) {
             if (checklist.contains(p)) {
-                throw new IllegalArgumentException("не допустимое имя файла " + p);
+                throw new InvalidInputException("одинаковый путь к файлу %s в двух списках.", p);
             }
         }
     }

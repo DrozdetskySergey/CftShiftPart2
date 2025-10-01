@@ -1,5 +1,6 @@
 package ru.cft.drozdetskiy.args;
 
+import ru.cft.drozdetskiy.InvalidInputException;
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
 import java.nio.file.Path;
@@ -24,7 +25,7 @@ public final class Arguments {
      *
      * @param args массив строк.
      * @return {@linkplain ArgumentsDTO DTO} с входными данными для утилиты.
-     * @throws IllegalArgumentException если встречается неизвестная опция.
+     * @throws InvalidInputException если встречается неизвестная опция.
      */
     public static ArgumentsDTO parse(String[] args) {
         StringBuilder prefix = new StringBuilder();
@@ -54,7 +55,7 @@ public final class Arguments {
                 } else if (symbol == SET_PREFIX.symbol && iterator.hasNext()) {
                     prefix.append(iterator.next());
                 } else {
-                    throw new IllegalArgumentException(argument);
+                    throw new InvalidInputException(argument);
                 }
             }
         }

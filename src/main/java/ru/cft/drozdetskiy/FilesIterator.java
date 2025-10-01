@@ -39,12 +39,12 @@ final class FilesIterator implements Iterator<String>, Closeable {
      * Итератор по строкам из файлов. Выдаёт по одной строке из каждого файла по очереди.
      *
      * @param files Список файлов.
-     * @throws IllegalArgumentException если передан пустой список фалов.
-     * @throws IOException              если сбой при создании ридера для файла.
+     * @throws InvalidInputException если передан пустой список фалов.
+     * @throws IOException           если сбой при создании ридера для файла.
      */
     public FilesIterator(List<Path> files) throws IOException {
         if (files.isEmpty()) {
-            throw new IllegalArgumentException("отсутствуют файлы (files).");
+            throw new InvalidInputException("не указан(ы) файл(ы).");
         }
 
         readers = new ArrayList<>(files.size());

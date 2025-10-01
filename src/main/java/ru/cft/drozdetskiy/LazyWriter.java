@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 
 /**
  * Proxy класс реализующий интерфейсы: {@link Appendable}, {@link Closeable}.
@@ -86,13 +85,8 @@ final class LazyWriter implements Appendable, Closeable {
      */
     private Writer getWriter() throws IOException {
         if (writer == null) {
-            try {
-                writer = Files.newBufferedWriter(file, openOptions);
-                LOG.debug("Создание врайтера для файла {}, опции: {}", file, openOptions);
-            } catch (IllegalArgumentException | UnsupportedOperationException e) {
-                throw new RuntimeException(String.format("Заданы не валидные OpenOptions = %s. %s",
-                        Arrays.toString(openOptions), e.getMessage()));
-            }
+            writer = Files.newBufferedWriter(file, openOptions);
+            LOG.debug("Создание врайтера для файла {}, опции: {}", file, openOptions);
         }
 
         return writer;
