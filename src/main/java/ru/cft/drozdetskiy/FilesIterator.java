@@ -34,6 +34,10 @@ final class FilesIterator implements Iterator<String>, Closeable {
      * Буфер для следующей строки. Актуальная строка, которую выдаст итератор через метод next.
      */
     private String next;
+    /**
+     * Флаг: объект был закрыт (close) или нет.
+     */
+    private boolean isClosed;
 
     /**
      * Итератор по строкам из файлов. Выдаёт по одной строке из каждого файла по очереди.
@@ -66,6 +70,8 @@ final class FilesIterator implements Iterator<String>, Closeable {
 
     @Override
     public String next() {
+        throwIllegalStateExceptionIfClosed();
+
         if (next == null) {
             throw new NoSuchElementException("Запрашиваемая следующая строка не существует.");
         }
@@ -78,11 +84,15 @@ final class FilesIterator implements Iterator<String>, Closeable {
 
     @Override
     public boolean hasNext() {
+        throwIllegalStateExceptionIfClosed();
+
         return next != null;
     }
 
     @Override
     public void close() {
+        isClosed = true;
+
         while (!readers.isEmpty()) {
             closeReader(readers.remove(0));
         }
@@ -132,6 +142,17 @@ final class FilesIterator implements Iterator<String>, Closeable {
                 System.err.printf("Сбой закрытия ридера для файла %s%n", e.getMessage());
                 LOG.warn("Сбой закрытия ридера для файла {}", e.getMessage());
             }
+        }
+    }
+
+    /**
+     * Бросает IllegalStateException если объект закрыт (close).
+     *
+     * @throws IllegalStateException если объект закрыт.
+     */
+    private void throwIllegalStateExceptionIfClosed() {
+        if (isClosed) {
+            throw new IllegalStateException("Объект FilesIterator находится в неподходящем состоянии для выполняемой операции, уже закрыт (close).");
         }
     }
 }
