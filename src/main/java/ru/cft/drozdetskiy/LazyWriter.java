@@ -69,10 +69,15 @@ final class LazyWriter implements Appendable, Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         if (writer != null) {
-            writer.close();
-            LOG.debug("Закрытие врайтера для файла {}", file);
+            try {
+                writer.close();
+                LOG.debug("Закрытие врайтера для файла {}", file);
+            } catch (IOException e) {
+                System.err.printf("Сбой закрытия врайтера для файла %s%n", e.getMessage());
+                LOG.warn("Сбой закрытия врайтера для файла {}", e.getMessage());
+            }
         }
     }
 
@@ -81,7 +86,6 @@ final class LazyWriter implements Appendable, Closeable {
      *
      * @return Объект класса {@link BufferedWriter} созданный для файла.
      * @throws IOException      если ошибка создания или открытия файла.
-     * @throws RuntimeException если заданы не валидные опции открытия файла.
      */
     private Writer getWriter() throws IOException {
         if (writer == null) {
