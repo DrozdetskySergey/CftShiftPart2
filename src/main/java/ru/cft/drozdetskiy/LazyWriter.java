@@ -33,6 +33,10 @@ final class LazyWriter implements Appendable, Closeable {
      * Проксируемый объект реализующий интерфейсы: {@link Appendable}, {@link Closeable}.
      */
     private Writer writer;
+    /**
+     * Флаг: объект был закрыт (close) или нет.
+     */
+    private boolean isClosed;
 
     /**
      * Proxy класс реализующий интерфейсы: {@link Appendable}, {@link Closeable}.
@@ -49,6 +53,7 @@ final class LazyWriter implements Appendable, Closeable {
 
     @Override
     public Appendable append(CharSequence chars) throws IOException {
+        throwIllegalStateExceptionIfClosed();
         getWriter().append(chars);
 
         return this;
@@ -56,6 +61,7 @@ final class LazyWriter implements Appendable, Closeable {
 
     @Override
     public Appendable append(CharSequence chars, int start, int end) throws IOException {
+        throwIllegalStateExceptionIfClosed();
         getWriter().append(chars, start, end);
 
         return this;
@@ -63,6 +69,7 @@ final class LazyWriter implements Appendable, Closeable {
 
     @Override
     public Appendable append(char c) throws IOException {
+        throwIllegalStateExceptionIfClosed();
         getWriter().append(c);
 
         return this;
@@ -70,6 +77,8 @@ final class LazyWriter implements Appendable, Closeable {
 
     @Override
     public void close() {
+        isClosed = true;
+
         if (writer != null) {
             try {
                 writer.close();
@@ -85,7 +94,7 @@ final class LazyWriter implements Appendable, Closeable {
      * Создаёт проксируемый объект если он не существует.
      *
      * @return Объект класса {@link BufferedWriter} созданный для файла.
-     * @throws IOException      если ошибка создания или открытия файла.
+     * @throws IOException если ошибка создания или открытия файла.
      */
     private Writer getWriter() throws IOException {
         if (writer == null) {
@@ -94,5 +103,16 @@ final class LazyWriter implements Appendable, Closeable {
         }
 
         return writer;
+    }
+
+    /**
+     * Бросает IllegalStateException если объект закрыт (close).
+     *
+     * @throws IllegalStateException если объект закрыт.
+     */
+    private void throwIllegalStateExceptionIfClosed() {
+        if (isClosed) {
+            throw new IllegalStateException("Объект BufferedWriter находится в неподходящем состоянии для выполняемой операции, уже закрыт (close).");
+        }
     }
 }
