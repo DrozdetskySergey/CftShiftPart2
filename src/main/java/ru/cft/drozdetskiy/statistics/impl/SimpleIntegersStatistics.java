@@ -5,7 +5,7 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 /**
  * Краткая статистика по объектам класса {@link Long}
  */
-final class SimpleLongsStatistics implements Statistics<Long> {
+final class SimpleIntegersStatistics implements Statistics<Long> {
 
     /**
      * Количество.

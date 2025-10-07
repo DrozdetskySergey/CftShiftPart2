@@ -48,8 +48,8 @@ public final class FilesFilter {
         } else {
             try {
                 Map<ContentType, Statistics<?>> allStatistics = filterFiles(Arguments.parse(args));
-                System.out.println(allStatistics.get(LONG));
-                System.out.println(allStatistics.get(DOUBLE));
+                System.out.println(allStatistics.get(INTEGER));
+                System.out.println(allStatistics.get(FLOAT));
                 System.out.println(allStatistics.get(STRING));
             } catch (InvalidInputException e) {
                 System.out.printf("Не верно задан аргумент: %s%n%n%s", e.getMessage(), help);
@@ -83,20 +83,20 @@ public final class FilesFilter {
     private static Map<ContentType, Statistics<?>> filterFiles(ArgumentsDTO dto) throws IOException {
         Path resultDirectory = Path.of(dto.getDirectory()).toAbsolutePath().normalize();
         createDirectory(resultDirectory);
-        Path longsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "integers.txt").toAbsolutePath().normalize();
-        Path doublesFile = Path.of(dto.getDirectory(), dto.getPrefix() + "floats.txt").toAbsolutePath().normalize();
+        Path integersFile = Path.of(dto.getDirectory(), dto.getPrefix() + "integers.txt").toAbsolutePath().normalize();
+        Path floatsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "floats.txt").toAbsolutePath().normalize();
         Path stringsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "strings.txt").toAbsolutePath().normalize();
-        throwInvalidInputExceptionIfContainsAny(dto.getFiles(), Set.of(longsFile, doublesFile, stringsFile));
+        throwInvalidInputExceptionIfContainsAny(dto.getFiles(), Set.of(integersFile, floatsFile, stringsFile));
 
         OpenOption[] openOptions = getOpenOptions(dto.isAppend());
-        var longWriter = new LazyWriter(longsFile, openOptions);
-        var doubleWriter = new LazyWriter(doublesFile, openOptions);
-        var stringWriter = new LazyWriter(stringsFile, openOptions);
-        var separator = new Separator(Map.of(LONG, longWriter, DOUBLE, doubleWriter, STRING, stringWriter));
+        var integersWriter = new LazyWriter(integersFile, openOptions);
+        var floatsWriter = new LazyWriter(floatsFile, openOptions);
+        var stringsWriter = new LazyWriter(stringsFile, openOptions);
+        var separator = new Separator(Map.of(INTEGER, integersWriter, FLOAT, floatsWriter, STRING, stringsWriter));
 
         Map<ContentType, Statistics<?>> allStatistics;
 
-        try (longWriter; doubleWriter; stringWriter; var iterator = new FilesIterator(dto.getFiles())) {
+        try (integersWriter; floatsWriter; stringsWriter; var iterator = new FilesIterator(dto.getFiles())) {
             allStatistics = separator.handleStrings(iterator, dto.getStatisticsType());
         }
 

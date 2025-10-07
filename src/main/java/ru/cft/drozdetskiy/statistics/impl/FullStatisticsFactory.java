@@ -11,13 +11,13 @@ import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 public final class FullStatisticsFactory implements StatisticsFactory {
 
     @Override
-    public Statistics<Long> createForLong() {
-        return new FullLongsStatistics();
+    public Statistics<Long> createForInteger() {
+        return new FullIntegersStatistics();
     }
 
     @Override
-    public Statistics<Double> createForDouble() {
-        return new FullDoublesStatistics();
+    public Statistics<Double> createForFloat() {
+        return new FullFloatsStatistics();
     }
 
     @Override

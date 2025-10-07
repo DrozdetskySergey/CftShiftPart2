@@ -5,7 +5,7 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 /**
  * Краткая статистика по объектам класса {@link Double}
  */
-final class SimpleDoublesStatistics implements Statistics<Double> {
+final class SimpleFloatsStatistics implements Statistics<Double> {
 
     /**
      * Количество.

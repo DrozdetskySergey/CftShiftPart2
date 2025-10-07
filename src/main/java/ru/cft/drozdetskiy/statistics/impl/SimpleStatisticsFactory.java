@@ -11,13 +11,13 @@ import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 final public class SimpleStatisticsFactory implements StatisticsFactory {
 
     @Override
-    public Statistics<Long> createForLong() {
-        return new SimpleLongsStatistics();
+    public Statistics<Long> createForInteger() {
+        return new SimpleIntegersStatistics();
     }
 
     @Override
-    public Statistics<Double> createForDouble() {
-        return new SimpleDoublesStatistics();
+    public Statistics<Double> createForFloat() {
+        return new SimpleFloatsStatistics();
     }
 
     @Override

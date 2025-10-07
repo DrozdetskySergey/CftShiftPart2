@@ -54,28 +54,28 @@ final class Separator {
      */
     public Map<ContentType, Statistics<?>> handleStrings(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
         StatisticsFactory factory = StatisticsFactories.get(statisticsType);
-        Statistics<Long> longStatistics = factory.createForLong();
-        Statistics<Double> doubleStatistics = factory.createForDouble();
-        Statistics<String> stringStatistics = factory.createForString();
+        Statistics<Long> integersStatistics = factory.createForInteger();
+        Statistics<Double> floatsStatistics = factory.createForFloat();
+        Statistics<String> stringsStatistics = factory.createForString();
 
         while (iterator.hasNext()) {
             String next = iterator.next();
             ContentType type = getContentType(next);
 
-            if (type == LONG) {
+            if (type == INTEGER) {
                 if (isInRange(next)) {
-                    longStatistics.include(Long.valueOf(next));
+                    integersStatistics.include(Long.valueOf(next));
                 } else {
-                    type = DOUBLE;
+                    type = FLOAT;
                     LOG.trace("Целое число {} не попадает в максимальный диапазон и будет обработано как вещественное.", next);
                 }
             }
 
-            if (type == DOUBLE) {
+            if (type == FLOAT) {
                 double number = Double.parseDouble(next);
 
                 if (Double.isFinite(number)) {
-                    doubleStatistics.include(number);
+                    floatsStatistics.include(number);
                 } else {
                     type = STRING;
                     LOG.trace("Вещественное число {} является infinite или NaN и будет обработано как строка", next);
@@ -83,13 +83,13 @@ final class Separator {
             }
 
             if (type == STRING) {
-                stringStatistics.include(next);
+                stringsStatistics.include(next);
             }
 
             writers.get(type).append(next).append(System.lineSeparator());
         }
 
-        return Map.of(LONG, longStatistics, DOUBLE, doubleStatistics, STRING, stringStatistics);
+        return Map.of(INTEGER, integersStatistics, FLOAT, floatsStatistics, STRING, stringsStatistics);
     }
 
     /**
@@ -111,14 +111,14 @@ final class Separator {
 
         char[] symbols = string.toCharArray();
         int firstIndex = symbols[0] == '+' || symbols[0] == '-' ? 1 : 0;
-        ContentType result = firstIndex == symbols.length ? STRING : LONG;
+        ContentType result = firstIndex == symbols.length ? STRING : INTEGER;
 
         for (int i = firstIndex; result != STRING && i < symbols.length; i++) {
-            if (symbols[i] == '.' && result == LONG && symbols.length > firstIndex + 1) {
-                result = DOUBLE;
+            if (symbols[i] == '.' && result == INTEGER && symbols.length > firstIndex + 1) {
+                result = FLOAT;
             } else if ((symbols[i] == 'e' || symbols[i] == 'E')
-                    && ((result == LONG && i > firstIndex) || (result == DOUBLE && i > firstIndex + 1))) {
-                result = isIntegerNumeric(string.substring(i + 1)) ? DOUBLE : STRING;
+                    && ((result == INTEGER && i > firstIndex) || (result == FLOAT && i > firstIndex + 1))) {
+                result = isIntegerNumeric(string.substring(i + 1)) ? FLOAT : STRING;
                 break;
             } else if (symbols[i] < '0' || '9' < symbols[i]) {
                 result = STRING;
