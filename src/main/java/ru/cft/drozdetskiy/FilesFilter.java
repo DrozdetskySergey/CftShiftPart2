@@ -7,14 +7,11 @@ import ru.cft.drozdetskiy.args.ArgumentsDTO;
 import ru.cft.drozdetskiy.statistics.Statistics;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static ru.cft.drozdetskiy.ContentType.*;
 
@@ -54,6 +51,9 @@ public final class FilesFilter {
             } catch (InvalidInputException e) {
                 System.out.printf("Не верно задан аргумент: %s%n%n%s", e.getMessage(), help);
                 LOG.info("Не верно задан аргумент: {}", e.getMessage());
+            } catch (InvalidPathException e) {
+                System.out.printf("Задан не корректный каталог или путь к файлу. %s%n", e.getMessage());
+                LOG.info("Задан не корректный каталог или путь к файлу. {}", e.getMessage());
             } catch (NumberFormatException e) {
                 System.err.printf("Не верно определён тип содержимого в строке: %s%n", e.getMessage());
                 LOG.error("Не верно определён тип содержимого в строке: {}", e.getMessage());
@@ -76,17 +76,18 @@ public final class FilesFilter {
      * @param dto DTO с аргументами для утилиты.
      * @return Словарь {@link Map} с собранной статистикой в соответствии с
      * {@linkplain  ContentType типом содержимого} обработанных строк.
-     * @throws IOException           если произошёл сбой при работе с файловой системой.
+     * @throws IOException           если произошёл сбой при работе с файлом.
      * @throws InvalidInputException если пользователь задал не верные данные.
      * @throws NumberFormatException если не удалось конвертировать строку в определённое число.
+     * @throws InvalidPathException  если заданный путь нельзя конвертировать в {@linkplain Path}.
      */
     private static Map<ContentType, Statistics<?>> filterFiles(ArgumentsDTO dto) throws IOException {
-        Path resultDirectory = Path.of(dto.getDirectory()).toAbsolutePath().normalize();
+        Path resultDirectory = dto.getDirectory().toAbsolutePath().normalize();
         createDirectory(resultDirectory);
-        Path integersFile = Path.of(dto.getDirectory(), dto.getPrefix() + "integers.txt").toAbsolutePath().normalize();
-        Path floatsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "floats.txt").toAbsolutePath().normalize();
-        Path stringsFile = Path.of(dto.getDirectory(), dto.getPrefix() + "strings.txt").toAbsolutePath().normalize();
-        throwInvalidInputExceptionIfContainsAny(dto.getFiles(), Set.of(integersFile, floatsFile, stringsFile));
+        Path integersFile = resultDirectory.resolve(dto.getPrefix() + "integers.txt");
+        Path floatsFile = resultDirectory.resolve(dto.getPrefix() + "floats.txt");
+        Path stringsFile = resultDirectory.resolve(dto.getPrefix() + "strings.txt");
+        throwInvalidInputExceptionIfContainsAny(dto.getFiles(), List.of(integersFile, floatsFile, stringsFile));
 
         OpenOption[] openOptions = getOpenOptions(dto.isAppend());
         var integersWriter = new LazyWriter(integersFile, openOptions);
@@ -118,17 +119,16 @@ public final class FilesFilter {
     }
 
     /**
-     * Бросает InvalidInputException если контрольный перечень путей к файлам содержит
-     * какой-либо из альтернативных путей к файлам.
+     * Бросает InvalidInputException если контрольный перечень путей содержит какой-либо из альтернативных путей.
      *
-     * @param checklist    контрольный перечень путей к файлам.
-     * @param alternatives альтернативный перечень путей к файлам.
+     * @param checklist    контрольный перечень путей.
+     * @param alternatives альтернативный перечень путей.
      * @throws InvalidInputException если контрольный перечень путей содержит какой-либо альтернативный путь.
      */
     private static void throwInvalidInputExceptionIfContainsAny(Collection<Path> checklist, Collection<Path> alternatives) {
         for (Path p : alternatives) {
             if (checklist.contains(p)) {
-                throw new InvalidInputException("одинаковый путь к файлу %s в двух списках.", p);
+                throw new InvalidInputException("совпадающий путь %s", p);
             }
         }
     }

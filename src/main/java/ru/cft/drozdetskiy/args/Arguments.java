@@ -3,6 +3,7 @@ package ru.cft.drozdetskiy.args;
 import ru.cft.drozdetskiy.InvalidInputException;
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
@@ -26,13 +27,14 @@ public final class Arguments {
      * @param args массив строк.
      * @return {@linkplain ArgumentsDTO DTO} с входными данными для утилиты.
      * @throws InvalidInputException если встречается неизвестная опция.
+     * @throws InvalidPathException  если заданный путь нельзя конвертировать в {@linkplain Path}.
      */
     public static ArgumentsDTO parse(String[] args) {
         StringBuilder prefix = new StringBuilder();
-        StringBuilder directory = new StringBuilder();
+        Path directory = null;
         StatisticsType statisticsType = StatisticsType.SIMPLE;
         boolean isAppend = false;
-        List<Path> files = new ArrayList<>();
+        Set<Path> files = new LinkedHashSet<>();
 
         List<String> arguments = decomposeArguments(filterAndClean(args));
 
@@ -51,7 +53,7 @@ public final class Arguments {
                 } else if (symbol == FULL_STAT.symbol) {
                     statisticsType = StatisticsType.FULL;
                 } else if (symbol == SET_DIRECTORY.symbol && iterator.hasNext()) {
-                    directory.append(iterator.next());
+                    directory = directory == null ? Path.of(iterator.next()) : directory.resolve(iterator.next());
                 } else if (symbol == SET_PREFIX.symbol && iterator.hasNext()) {
                     prefix.append(iterator.next());
                 } else {
@@ -60,12 +62,16 @@ public final class Arguments {
             }
         }
 
+        if (directory == null) {
+            directory = Path.of(".");
+        }
+
         return new ArgumentsDTO.Builder()
                 .prefix(prefix.toString())
-                .directory(directory.toString())
+                .directory(directory)
                 .statisticsType(statisticsType)
                 .isAppend(isAppend)
-                .files(files)
+                .files(new ArrayList<>(files))
                 .build();
     }
 

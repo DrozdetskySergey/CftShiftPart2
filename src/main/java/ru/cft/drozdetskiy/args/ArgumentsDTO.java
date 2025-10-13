@@ -17,7 +17,7 @@ public final class ArgumentsDTO {
     /**
      * Каталог для результата.
      */
-    private final String directory;
+    private final Path directory;
     /**
      * Тип требуемой статистики.
      */
@@ -36,7 +36,7 @@ public final class ArgumentsDTO {
      */
     private ArgumentsDTO(Builder builder) {
         prefix = builder.prefix == null ? "" : builder.prefix;
-        directory = builder.directory == null ? "" : builder.directory;
+        directory = builder.directory == null ? Path.of(".") : builder.directory;
         statisticsType = builder.statisticsType == null ? StatisticsType.SIMPLE : builder.statisticsType;
         isAppend = builder.isAppend;
         files = builder.files == null ? List.of() : List.copyOf(builder.files);
@@ -54,9 +54,9 @@ public final class ArgumentsDTO {
     /**
      * Геттер. Отдаёт каталог для файлов с результатом.
      *
-     * @return Строка с каталогом.
+     * @return Каталог для результата.
      */
-    public String getDirectory() {
+    public Path getDirectory() {
         return directory;
     }
 
@@ -93,7 +93,7 @@ public final class ArgumentsDTO {
     public static class Builder {
 
         private String prefix;
-        private String directory;
+        private Path directory;
         private StatisticsType statisticsType;
         private boolean isAppend;
         private List<Path> files;
@@ -112,9 +112,9 @@ public final class ArgumentsDTO {
         /**
          * Builder. Задаёт каталог для файлов с результатом.
          *
-         * @param directory строка с каталогом.
+         * @param directory каталог.
          */
-        public Builder directory(String directory) {
+        public Builder directory(Path directory) {
             this.directory = directory;
 
             return this;
