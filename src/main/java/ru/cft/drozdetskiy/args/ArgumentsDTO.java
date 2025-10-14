@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * Неизменяемый объект для передачи данных (DTO) пришедших в аргументы программы. Создаётся через Builder.
+ * Контейнер для передачи данных (DTO) пришедших в аргументы программы. Создаётся через Builder.
  */
 public final class ArgumentsDTO {
 
@@ -27,19 +27,19 @@ public final class ArgumentsDTO {
      */
     private final boolean isAppend;
     /**
-     * Список входящих файлов.
+     * Список путей к файлам.
      */
     private final List<Path> files;
 
     /**
-     * Неизменяемый объект для передачи данных (DTO) пришедших в аргументы программы. Создаётся через Builder.
+     * Контейнер для передачи данных (DTO) пришедших в аргументы программы. Создаётся через Builder.
      */
     private ArgumentsDTO(Builder builder) {
-        prefix = builder.prefix == null ? "" : builder.prefix;
-        directory = builder.directory == null ? Path.of(".") : builder.directory;
-        statisticsType = builder.statisticsType == null ? StatisticsType.SIMPLE : builder.statisticsType;
+        prefix = builder.prefix;
+        directory = builder.directory;
+        statisticsType = builder.statisticsType;
         isAppend = builder.isAppend;
-        files = builder.files == null ? List.of() : List.copyOf(builder.files);
+        files = builder.files;
     }
 
     /**
@@ -61,9 +61,9 @@ public final class ArgumentsDTO {
     }
 
     /**
-     * Геттер. Отдаёт список файлов для чтения строк (входящие данные).
+     * Геттер. Отдаёт список путей к файлам.
      *
-     * @return Неизменяемый список объектов класса {@link Path}
+     * @return Список объектов интерфейса {@link Path}
      */
     public List<Path> getFiles() {
         return files;
@@ -90,7 +90,7 @@ public final class ArgumentsDTO {
     /**
      * Builder. Встроенный статичный класс для сборки объекта класса {@link ArgumentsDTO}
      */
-    public static class Builder {
+    public static final class Builder {
 
         private String prefix;
         private Path directory;
@@ -143,9 +143,9 @@ public final class ArgumentsDTO {
         }
 
         /**
-         * Builder. Задаёт список файлов для чтения строк (входящие данные).
+         * Builder. Задаёт список путей к файлам.
          *
-         * @param files список объектов класса {@link Path}
+         * @param files список объектов интерфейса {@link Path}
          */
         public Builder files(List<Path> files) {
             this.files = files;
