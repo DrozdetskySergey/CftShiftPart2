@@ -21,7 +21,7 @@ public final class Arguments {
     }
 
     /**
-     * Парсит массив строк, вычленяет {@linkplain Option опции} и имена файлов.
+     * Парсит массив строк, вычленяет {@linkplain Option опции} и пути до файлов.
      * Создаёт и возвращает DTO с входными данными для утилиты.
      *
      * @param args массив строк.
@@ -62,16 +62,12 @@ public final class Arguments {
             }
         }
 
-        if (directory == null) {
-            directory = Path.of(".");
-        }
-
         return new ArgumentsDTO.Builder()
                 .prefix(prefix.toString())
-                .directory(directory)
+                .directory(directory == null ? Path.of(".") : directory)
                 .statisticsType(statisticsType)
                 .isAppend(isAppend)
-                .files(new ArrayList<>(files))
+                .files(List.copyOf(files))
                 .build();
     }
 
