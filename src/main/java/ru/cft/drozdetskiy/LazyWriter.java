@@ -77,6 +77,10 @@ final class LazyWriter implements Appendable, Closeable {
 
     @Override
     public void close() {
+        if (isClosed) {
+            return;
+        }
+
         isClosed = true;
 
         if (writer != null) {
