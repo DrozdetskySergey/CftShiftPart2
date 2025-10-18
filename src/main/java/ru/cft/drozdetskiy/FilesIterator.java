@@ -64,7 +64,6 @@ final class FilesIterator implements Iterator<String>, Closeable {
             throw e;
         }
 
-        index = 0;
         updateNext();
     }
 
@@ -91,6 +90,10 @@ final class FilesIterator implements Iterator<String>, Closeable {
 
     @Override
     public void close() {
+        if (isClosed) {
+            return;
+        }
+
         isClosed = true;
 
         while (!readers.isEmpty()) {
