@@ -1,33 +1,35 @@
 package ru.cft.drozdetskiy.statistics;
 
+import ru.cft.drozdetskiy.ContentType;
+
 /**
  * Абстрактная фабрика для создания объектов интерфейса {@link Statistics}
- * параметризованных типами: {@link Long}, {@link Double}, {@link String}.
+ * для разных значений определенного {@linkplain  ContentType типа}.
  * Предоставляет методы:
- * {@linkplain #createForInteger() createForLong},
- * {@linkplain #createForFloat() createForDouble},
+ * {@linkplain #createForInteger() createForInteger},
+ * {@linkplain #createForFloat() createForFloat},
  * {@linkplain #createForString() createForString}.
  */
 public interface StatisticsFactory {
 
     /**
-     * Создаёт новый объект интерфейса {@link Statistics} параметризованный типом {@link Long}
+     * Создаёт новый объект интерфейса {@link Statistics} для конкретного {@linkplain ContentType#INTEGER типа INTEGER}
      *
-     * @return {@link Statistics}<{@link Long}>
+     * @return {@link Statistics}
      */
-    Statistics<Long> createForInteger();
+    Statistics createForInteger();
 
     /**
-     * Создаёт новый объект интерфейса {@link Statistics} параметризованный типом {@link Double}
+     * Создаёт новый объект интерфейса {@link Statistics} для конкретного {@linkplain ContentType#FLOAT типа FLOAT}
      *
-     * @return {@link Statistics}<{@link Double}>
+     * @return {@link Statistics}
      */
-    Statistics<Double> createForFloat();
+    Statistics createForFloat();
 
     /**
-     * Создаёт новый объект интерфейса {@link Statistics} параметризованный типом {@link String}
+     * Создаёт новый объект интерфейса {@link Statistics} для конкретного {@linkplain ContentType#STRING типа STRING}
      *
-     * @return {@link Statistics}<{@link String}>
+     * @return {@link Statistics}
      */
-    Statistics<String> createForString();
+    Statistics createForString();
 }

@@ -44,7 +44,7 @@ public final class FilesFilter {
             System.out.print(help);
         } else {
             try {
-                Map<ContentType, Statistics<?>> allStatistics = filterFiles(Arguments.parse(args));
+                Map<ContentType, Statistics> allStatistics = filterFiles(Arguments.parse(args));
                 System.out.println(allStatistics.get(INTEGER));
                 System.out.println(allStatistics.get(FLOAT));
                 System.out.println(allStatistics.get(STRING));
@@ -54,9 +54,6 @@ public final class FilesFilter {
             } catch (InvalidPathException e) {
                 System.out.printf("Задан не корректный каталог или путь к файлу. %s%n", e.getMessage());
                 LOG.info("Задан не корректный каталог или путь к файлу. {}", e.getMessage());
-            } catch (NumberFormatException e) {
-                System.err.printf("Не верно определён тип содержимого в строке: %s%n", e.getMessage());
-                LOG.error("Не верно определён тип содержимого в строке: {}", e.getMessage());
             } catch (IOException e) {
                 System.err.printf("Ошибка при работе с файлом: %s%n", e.getMessage());
                 LOG.error("Ошибка при работе с файлом: {}", e.getMessage());
@@ -78,10 +75,9 @@ public final class FilesFilter {
      * {@linkplain  ContentType типом содержимого} обработанных строк.
      * @throws IOException           если произошёл сбой при работе с файлом.
      * @throws InvalidInputException если пользователь задал не верные данные.
-     * @throws NumberFormatException если не удалось конвертировать строку в определённое число.
-     * @throws InvalidPathException  если заданный путь нельзя конвертировать в {@linkplain Path}.
+     * @throws InvalidPathException  если заданный пользователем путь нельзя конвертировать в {@linkplain Path}.
      */
-    private static Map<ContentType, Statistics<?>> filterFiles(ArgumentsDTO dto) throws IOException {
+    private static Map<ContentType, Statistics> filterFiles(ArgumentsDTO dto) throws IOException {
         Path resultDirectory = dto.getDirectory().toAbsolutePath().normalize();
         createDirectory(resultDirectory);
         Path integersFile = resultDirectory.resolve(dto.getPrefix() + "integers.txt");
@@ -95,7 +91,7 @@ public final class FilesFilter {
         var stringsWriter = new LazyWriter(stringsFile, openOptions);
         var separator = new Separator(Map.of(INTEGER, integersWriter, FLOAT, floatsWriter, STRING, stringsWriter));
 
-        Map<ContentType, Statistics<?>> allStatistics;
+        Map<ContentType, Statistics> allStatistics;
 
         try (integersWriter; floatsWriter; stringsWriter; var iterator = new FilesIterator(dto.getFiles())) {
             allStatistics = separator.handleStrings(iterator, dto.getStatisticsType());

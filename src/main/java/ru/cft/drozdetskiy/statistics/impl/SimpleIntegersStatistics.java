@@ -1,19 +1,20 @@
 package ru.cft.drozdetskiy.statistics.impl;
 
+import ru.cft.drozdetskiy.ContentType;
 import ru.cft.drozdetskiy.statistics.Statistics;
 
 /**
- * Краткая статистика по объектам класса {@link Long}
+ * Краткая статистика для конкретного значения {@linkplain ContentType#INTEGER типа INTEGER} переданного в виде строки.
  */
-final class SimpleIntegersStatistics implements Statistics<Long> {
+final class SimpleIntegersStatistics implements Statistics {
 
     /**
      * Количество.
      */
-    private long count = 0;
+    private long count;
 
     @Override
-    public void include(Long value) {
+    public void include(String value) {
         count++;
     }
 

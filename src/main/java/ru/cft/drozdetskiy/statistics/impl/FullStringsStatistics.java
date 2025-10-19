@@ -1,11 +1,12 @@
 package ru.cft.drozdetskiy.statistics.impl;
 
+import ru.cft.drozdetskiy.ContentType;
 import ru.cft.drozdetskiy.statistics.Statistics;
 
 /**
- * Полная статистика по объектам класса {@link String}
+ * Полная статистика для конкретного значения {@linkplain ContentType#STRING типа STRING} переданного в виде строки.
  */
-final public class FullStringsStatistics implements Statistics<String> {
+final public class FullStringsStatistics implements Statistics {
 
     /**
      * Минимальная длина строки.
@@ -14,11 +15,11 @@ final public class FullStringsStatistics implements Statistics<String> {
     /**
      * Максимальная длина строки.
      */
-    private int maxLength = 0;
+    private int maxLength;
     /**
      * Количество.
      */
-    private long count = 0;
+    private long count;
 
     @Override
     public void include(String value) {
@@ -37,7 +38,7 @@ final public class FullStringsStatistics implements Statistics<String> {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder(String.format("Количество сток = %d%n", count));
+        StringBuilder result = new StringBuilder(String.format("Количество строк = %d%n", count));
 
         if (count > 0) {
             result.append(String.format("| Минимальная длина строки = %d%n", minLength));

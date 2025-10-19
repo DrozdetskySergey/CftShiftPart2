@@ -2,26 +2,26 @@ package ru.cft.drozdetskiy.statistics.impl;
 
 import ru.cft.drozdetskiy.statistics.Statistics;
 import ru.cft.drozdetskiy.statistics.StatisticsFactory;
+import ru.cft.drozdetskiy.statistics.StatisticsType;
 
 /**
  * Фабрики реализующий интерфейс абстрактной фабрики {@link StatisticsFactory}.
- * Создаёт новые объекты для сбора полной (FULL) {@linkplain  Statistics статистики}
- * параметризованных типами: {@link Long}, {@link Double}, {@link String}.
+ * Создаёт новые объекты для сбора {@linkplain StatisticsType#FULL полной} статистики.
  */
-public final class FullStatisticsFactory implements StatisticsFactory {
+final public class FullStatisticsFactory implements StatisticsFactory {
 
     @Override
-    public Statistics<Long> createForInteger() {
+    public Statistics createForInteger() {
         return new FullIntegersStatistics();
     }
 
     @Override
-    public Statistics<Double> createForFloat() {
+    public Statistics createForFloat() {
         return new FullFloatsStatistics();
     }
 
     @Override
-    public Statistics<String> createForString() {
+    public Statistics createForString() {
         return new FullStringsStatistics();
     }
 }
