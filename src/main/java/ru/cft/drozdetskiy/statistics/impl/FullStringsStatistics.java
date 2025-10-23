@@ -23,16 +23,8 @@ final public class FullStringsStatistics implements Statistics {
 
     @Override
     public void include(String value) {
-        int length = value.length();
-
-        if (length < minLength) {
-            minLength = length;
-        }
-
-        if (length > maxLength) {
-            maxLength = length;
-        }
-
+        minLength = Math.min(minLength, value.length());
+        maxLength = Math.max(maxLength, value.length());
         count++;
     }
 
