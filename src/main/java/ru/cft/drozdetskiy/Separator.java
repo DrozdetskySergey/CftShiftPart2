@@ -90,7 +90,7 @@ final class Separator {
                 result = FLOAT;
             } else if ((symbols[i] == 'e' || symbols[i] == 'E')
                     && ((result == INTEGER && i > firstIndex) || (result == FLOAT && i > firstIndex + 1))) {
-                result = isConvertToInteger(string.substring(i + 1)) ? FLOAT : STRING;
+                result = isConvertedToInteger(string.substring(i + 1)) ? FLOAT : STRING;
                 break;
             } else if (symbols[i] < '0' || '9' < symbols[i]) {
                 result = STRING;
@@ -108,7 +108,7 @@ final class Separator {
      * @param string проверяемая строка.
      * @return true если содержимое строки можно конвертировать в Integer без Integer.MIN_VALUE.
      */
-    private boolean isConvertToInteger(String string) {
+    private boolean isConvertedToInteger(String string) {
         if (string.isEmpty()) {
             return false;
         }
