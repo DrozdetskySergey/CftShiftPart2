@@ -15,11 +15,11 @@ final class FullIntegersStatistics implements Statistics {
     /**
      * Минимальное значение.
      */
-    private BigInteger min;
+    private BigInteger minInteger;
     /**
      * Максимальное значение.
      */
-    private BigInteger max;
+    private BigInteger maxInteger;
     /**
      * Сумма.
      */
@@ -31,10 +31,10 @@ final class FullIntegersStatistics implements Statistics {
 
     @Override
     public void include(String value) {
-        BigInteger number = new BigInteger(value);
-        min = min == null ? number : min.min(number);
-        max = max == null ? number : max.max(number);
-        sum = sum.add(number);
+        BigInteger integer = new BigInteger(value);
+        minInteger = minInteger == null ? integer : minInteger.min(integer);
+        maxInteger = maxInteger == null ? integer : maxInteger.max(integer);
+        sum = sum.add(integer);
         count++;
     }
 
@@ -45,10 +45,10 @@ final class FullIntegersStatistics implements Statistics {
         if (count > 0) {
             BigDecimal average = (new BigDecimal(sum)).setScale(6, RoundingMode.DOWN)
                     .divide(BigDecimal.valueOf(count), RoundingMode.DOWN);
-            result.append(String.format("| Минимальное значение = %d%n", min));
-            result.append(String.format("| Максимальное значение = %d%n", max));
+            result.append(String.format("| Минимальное значение = %d%n", minInteger));
+            result.append(String.format("| Максимальное значение = %d%n", maxInteger));
             result.append(String.format("| Среднее арифметическое значение = %s%n", average));
-            result.append(String.format("| Сумма всех элементов = %s%n", sum));
+            result.append(String.format("| Сумма всех целых чисел = %s%n", sum));
         }
 
         return result.toString();
