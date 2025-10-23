@@ -14,11 +14,11 @@ final class FullFloatsStatistics implements Statistics {
     /**
      * Минимальное значение.
      */
-    private BigDecimal min;
+    private BigDecimal minDecimal;
     /**
      * Максимальное значение.
      */
-    private BigDecimal max;
+    private BigDecimal maxDecimal;
     /**
      * Сумма.
      */
@@ -34,13 +34,13 @@ final class FullFloatsStatistics implements Statistics {
 
     @Override
     public void include(String value) {
-        BigDecimal decimalNumber = new BigDecimal(value);
-        min = min == null ? decimalNumber : min.min(decimalNumber);
-        max = max == null ? decimalNumber : max.max(decimalNumber);
-        final int maxNormalScale = 100000;
+        BigDecimal decimal = new BigDecimal(value);
+        minDecimal = minDecimal == null ? decimal : minDecimal.min(decimal);
+        maxDecimal = maxDecimal == null ? decimal : maxDecimal.max(decimal);
+        final int greatestScale = 100000;
 
-        if (hasNormalScale && Math.abs(decimalNumber.scale()) < maxNormalScale) {
-            sum = sum.add(decimalNumber);
+        if (hasNormalScale && Math.abs(decimal.scale()) < greatestScale) {
+            sum = sum.add(decimal);
         } else {
             hasNormalScale = false;
         }
@@ -56,10 +56,10 @@ final class FullFloatsStatistics implements Statistics {
         if (count > 0) {
             sum = sum.setScale(16, RoundingMode.DOWN);
             BigDecimal average = sum.divide(BigDecimal.valueOf(count), RoundingMode.DOWN);
-            result.append(String.format("| Минимальное значение = %e%n", min));
-            result.append(String.format("| Максимальное значение = %e%n", max));
+            result.append(String.format("| Минимальное значение = %e%n", minDecimal));
+            result.append(String.format("| Максимальное значение = %e%n", maxDecimal));
             result.append(String.format("| Среднее арифметическое значение = %s%n", hasNormalScale ? average : message));
-            result.append(String.format("| Сумма всех элементов = %s%n", hasNormalScale ? sum : message));
+            result.append(String.format("| Сумма всех вещественных чисел = %s%n", hasNormalScale ? sum : message));
         }
 
         return result.toString();
