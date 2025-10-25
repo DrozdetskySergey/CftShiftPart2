@@ -30,14 +30,14 @@ public final class FilesFilter {
 
     public static void main(String[] args) {
         LOG.info("Запуск утилиты, args = {}", Arrays.toString(args));
-        final String help = String.format("FilesFilter [options] [files...]%n" +
-                "options:%n" +
+        final String help = String.format("FilesFilter [опции] [файлы]%n" +
+                "опции:%n" +
                 "-o <каталог>  Каталог для файлов с результатом.%n" +
                 "-p <префикс>  Префикс имён файлов с результатом.%n" +
                 "-a            Режим записи в конец файла.%n" +
                 "-s            Краткая статистика.%n" +
                 "-f            Полная статистика.%n" +
-                "files:%n" +
+                "файлы:%n" +
                 "Один или более файлов с абсолютным или относительным путём.%n");
 
         if (args.length == 0 || args[0].equals("-h")) {
