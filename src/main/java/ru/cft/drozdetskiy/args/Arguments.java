@@ -57,7 +57,7 @@ public final class Arguments {
                 } else if (symbol == SET_PREFIX.symbol && iterator.hasNext()) {
                     prefix.append(iterator.next());
                 } else {
-                    throw new InvalidInputException(argument);
+                    throw new InvalidInputException("опция %s", argument);
                 }
             }
         }
