@@ -7,7 +7,6 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static ru.cft.drozdetskiy.args.Option.*;
 
