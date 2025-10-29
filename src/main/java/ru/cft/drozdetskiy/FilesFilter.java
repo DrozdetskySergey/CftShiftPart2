@@ -80,12 +80,12 @@ public final class FilesFilter {
      * @throws InvalidPathException  если заданный пользователем путь нельзя конвертировать в {@linkplain Path}.
      */
     private static Map<ContentType, Statistics> filterFiles(ArgumentsDTO dto) throws IOException {
-        Path resultDirectory = dto.getDirectory().toAbsolutePath().normalize();
+        Path resultDirectory = dto.directory().toAbsolutePath().normalize();
         createDirectory(resultDirectory);
-        Path integersFile = resultDirectory.resolve(dto.getPrefix() + "integers.txt");
-        Path floatsFile = resultDirectory.resolve(dto.getPrefix() + "floats.txt");
-        Path stringsFile = resultDirectory.resolve(dto.getPrefix() + "strings.txt");
-        throwInvalidInputExceptionIfContainsAny(dto.getFiles(), List.of(integersFile, floatsFile, stringsFile));
+        Path integersFile = resultDirectory.resolve(dto.prefix() + "integers.txt");
+        Path floatsFile = resultDirectory.resolve(dto.prefix() + "floats.txt");
+        Path stringsFile = resultDirectory.resolve(dto.prefix() + "strings.txt");
+        throwInvalidInputExceptionIfContainsAny(dto.files(), List.of(integersFile, floatsFile, stringsFile));
 
         OpenOption[] openOptions = getOpenOptions(dto.isAppend());
         var integersWriter = new LazyWriter(integersFile, openOptions);
@@ -95,8 +95,8 @@ public final class FilesFilter {
 
         Map<ContentType, Statistics> allStatistics;
 
-        try (integersWriter; floatsWriter; stringsWriter; var iterator = new FilesIterator(dto.getFiles())) {
-            allStatistics = separator.handleStrings(iterator, dto.getStatisticsType());
+        try (integersWriter; floatsWriter; stringsWriter; var iterator = new FilesIterator(dto.files())) {
+            allStatistics = separator.handleStrings(iterator, dto.statisticsType());
         }
 
         return allStatistics;

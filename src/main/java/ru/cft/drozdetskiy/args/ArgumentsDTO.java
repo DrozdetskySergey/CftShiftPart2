@@ -7,85 +7,15 @@ import java.util.List;
 
 /**
  * Контейнер для передачи данных (DTO) пришедших в аргументы программы. Создаётся через Builder.
+ *
+ * @param prefix         Префикс имен файлов с результатом.
+ * @param directory      Каталог для результата.
+ * @param statisticsType Тип требуемой статистики.
+ * @param isAppend       Режим записи в конец файла.
+ * @param files          Список путей к файлам.
  */
-public final class ArgumentsDTO {
-
-    /**
-     * Префикс имен файлов с результатом.
-     */
-    private final String prefix;
-    /**
-     * Каталог для результата.
-     */
-    private final Path directory;
-    /**
-     * Тип требуемой статистики.
-     */
-    private final StatisticsType statisticsType;
-    /**
-     * Режим записи в конец файла.
-     */
-    private final boolean isAppend;
-    /**
-     * Список путей к файлам.
-     */
-    private final List<Path> files;
-
-    /**
-     * Контейнер для передачи данных (DTO) пришедших в аргументы программы. Создаётся через Builder.
-     */
-    private ArgumentsDTO(Builder builder) {
-        prefix = builder.prefix;
-        directory = builder.directory;
-        statisticsType = builder.statisticsType;
-        isAppend = builder.isAppend;
-        files = builder.files;
-    }
-
-    /**
-     * Геттер. Отдаёт префикс для имён файлов с результатом.
-     *
-     * @return Строка с префиксом.
-     */
-    public String getPrefix() {
-        return prefix;
-    }
-
-    /**
-     * Геттер. Отдаёт каталог для файлов с результатом.
-     *
-     * @return Каталог для результата.
-     */
-    public Path getDirectory() {
-        return directory;
-    }
-
-    /**
-     * Геттер. Отдаёт список путей к файлам.
-     *
-     * @return Список объектов интерфейса {@link Path}
-     */
-    public List<Path> getFiles() {
-        return files;
-    }
-
-    /**
-     * Геттер. Отдаёт тип требуемой статистики.
-     *
-     * @return {@linkplain StatisticsType Тип статистики}.
-     */
-    public StatisticsType getStatisticsType() {
-        return statisticsType;
-    }
-
-    /**
-     * Геттер. Отдаёт boolean значение режима записи в конец файла.
-     *
-     * @return true если режим записи в конец файла.
-     */
-    public boolean isAppend() {
-        return isAppend;
-    }
+public record ArgumentsDTO(String prefix, Path directory, StatisticsType statisticsType, boolean isAppend,
+                           List<Path> files) {
 
     /**
      * Builder. Встроенный статичный класс для сборки объекта класса {@link ArgumentsDTO}
@@ -159,7 +89,7 @@ public final class ArgumentsDTO {
          * @return новый объект класса {@link ArgumentsDTO}
          */
         public ArgumentsDTO build() {
-            return new ArgumentsDTO(this);
+            return new ArgumentsDTO(prefix, directory, statisticsType, isAppend, files);
         }
     }
 }
