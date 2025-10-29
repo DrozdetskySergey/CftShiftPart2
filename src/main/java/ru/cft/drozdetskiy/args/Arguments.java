@@ -83,7 +83,7 @@ public final class Arguments {
                 .filter(Objects::nonNull)
                 .filter(Predicate.not(String::isBlank))
                 .map(String::strip)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
