@@ -5,7 +5,7 @@ import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 import ru.cft.drozdetskiy.statistics.StatisticsType;
 
 /**
- * Фабрики реализующий интерфейс абстрактной фабрики {@link StatisticsFactory}.
+ * Фабрика реализующая интерфейс абстрактной фабрики {@link StatisticsFactory}.
  * Создаёт новые объекты для сбора {@linkplain StatisticsType#FULL полной} статистики.
  */
 final public class FullStatisticsFactory implements StatisticsFactory {
