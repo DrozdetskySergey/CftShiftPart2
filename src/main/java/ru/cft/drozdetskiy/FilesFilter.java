@@ -42,7 +42,7 @@ public final class FilesFilter {
                 Один или более файлов с абсолютным или относительным путём.
                 """;
 
-        if (args.length == 0 || args[0].equals("-h")) {
+        if (args.length == 0) {
             System.out.print(help);
         } else {
             try {
@@ -50,6 +50,7 @@ public final class FilesFilter {
                 System.out.println(allStatistics.get(INTEGER));
                 System.out.println(allStatistics.get(FLOAT));
                 System.out.println(allStatistics.get(STRING));
+                LOG.info("Остановка утилиты.");
             } catch (InvalidInputException e) {
                 System.out.printf("Не верно задан аргумент: %s%n%n%s", e.getMessage(), help);
                 LOG.info("Не верно задан аргумент: {}", e.getMessage());
@@ -57,20 +58,18 @@ public final class FilesFilter {
                 System.out.printf("Задан не корректный каталог или путь к файлу. %s%n", e.getMessage());
                 LOG.info("Задан не корректный каталог или путь к файлу. {}", e.getMessage());
             } catch (IOException e) {
-                System.err.printf("Ошибка при работе с файлом: %s%n", e.getMessage());
-                LOG.error("Ошибка при работе с файлом: {}", e.getMessage());
+                System.err.printf("Сбой при работе с операций ввода-вывода. %s%n", e.getMessage());
+                LOG.error("Сбой при работе с операций ввода-вывода. {}", e.getMessage());
             } catch (Exception e) {
                 System.err.printf("Критическая ошибка! %s%n", e.getMessage());
                 LOG.error("Критическая ошибка!", e);
             }
         }
-
-        LOG.info("Остановка утилиты.");
     }
 
     /**
-     * Основной (божественный) метод всей утилиты. Получает подготовленные аргументы через DTO,
-     * создаёт нужные объекты и запускает фильтрацию строк из файлов. Возвращает собранную статистику.
+     * Основной метод всей утилиты. Получает подготовленные аргументы через DTO, создаёт нужные объекты
+     * и запускает фильтрацию строк из файлов. Возвращает собранную статистику.
      *
      * @param dto DTO с аргументами для утилиты.
      * @return Словарь {@link Map} с собранной статистикой в соответствии с
@@ -80,11 +79,10 @@ public final class FilesFilter {
      * @throws InvalidPathException  если заданный пользователем путь нельзя конвертировать в {@linkplain Path}.
      */
     private static Map<ContentType, Statistics> filterFiles(ArgumentsDTO dto) throws IOException {
-        Path resultDirectory = dto.directory().toAbsolutePath().normalize();
-        createDirectory(resultDirectory);
-        Path integersFile = resultDirectory.resolve(dto.prefix() + "integers.txt");
-        Path floatsFile = resultDirectory.resolve(dto.prefix() + "floats.txt");
-        Path stringsFile = resultDirectory.resolve(dto.prefix() + "strings.txt");
+        createDirectory(dto.directory());
+        Path integersFile = dto.directory().resolve(dto.prefix() + "integers.txt");
+        Path floatsFile = dto.directory().resolve(dto.prefix() + "floats.txt");
+        Path stringsFile = dto.directory().resolve(dto.prefix() + "strings.txt");
         throwInvalidInputExceptionIfContainsAny(dto.files(), List.of(integersFile, floatsFile, stringsFile));
 
         OpenOption[] openOptions = getOpenOptions(dto.isAppend());
@@ -93,13 +91,9 @@ public final class FilesFilter {
         var stringsWriter = new LazyWriter(stringsFile, openOptions);
         var separator = new Separator(Map.of(INTEGER, integersWriter, FLOAT, floatsWriter, STRING, stringsWriter));
 
-        Map<ContentType, Statistics> allStatistics;
-
         try (integersWriter; floatsWriter; stringsWriter; var iterator = new FilesIterator(dto.files())) {
-            allStatistics = separator.handleStrings(iterator, dto.statisticsType());
+            return separator.handleStrings(iterator, dto.statisticsType());
         }
-
-        return allStatistics;
     }
 
     /**
