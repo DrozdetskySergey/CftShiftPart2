@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * Полная статистика для конкретного значения {@linkplain ContentType#FLOAT типа FLOAT} переданного в виде строки.
+ * Полная статистика для значения типа {@linkplain ContentType#FLOAT FLOAT} переданного в формате строки.
  */
 final class FullFloatsStatistics implements Statistics {
 
@@ -24,7 +24,7 @@ final class FullFloatsStatistics implements Statistics {
      */
     private BigDecimal sum = BigDecimal.ZERO;
     /**
-     * Флаг. Сигнализирует, что сумма не имеет большого масштаба по модулю.
+     * Флаг. Сигнализирует о том, что приходящие значения не имели крупного масштаба (scale).
      */
     private boolean hasNormalScale = true;
     /**

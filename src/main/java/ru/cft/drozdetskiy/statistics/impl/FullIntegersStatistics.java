@@ -8,7 +8,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 
 /**
- * Полная статистика для конкретного значения {@linkplain ContentType#INTEGER типа INTEGER} переданного в виде строки.
+ * Полная статистика для значения типа {@linkplain ContentType#INTEGER INTEGER} переданного в формате строки.
  */
 final class FullIntegersStatistics implements Statistics {
 

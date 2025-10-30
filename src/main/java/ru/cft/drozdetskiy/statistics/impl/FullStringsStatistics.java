@@ -4,7 +4,7 @@ import ru.cft.drozdetskiy.ContentType;
 import ru.cft.drozdetskiy.statistics.Statistics;
 
 /**
- * Полная статистика для конкретного значения {@linkplain ContentType#STRING типа STRING} переданного в виде строки.
+ * Полная статистика для значения типа {@linkplain ContentType#STRING STRING} переданного в формате строки.
  */
 final public class FullStringsStatistics implements Statistics {
 
