@@ -4,7 +4,7 @@ import ru.cft.drozdetskiy.ContentType;
 import ru.cft.drozdetskiy.statistics.Statistics;
 
 /**
- * Краткая статистика для конкретного значения {@linkplain ContentType#INTEGER типа INTEGER} переданного в виде строки.
+ * Краткая статистика для значения типа {@linkplain ContentType#INTEGER INTEGER} переданного в формате строки.
  */
 final class SimpleIntegersStatistics implements Statistics {
 

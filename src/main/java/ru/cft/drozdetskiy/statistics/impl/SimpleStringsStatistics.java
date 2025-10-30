@@ -4,7 +4,7 @@ import ru.cft.drozdetskiy.ContentType;
 import ru.cft.drozdetskiy.statistics.Statistics;
 
 /**
- * Краткая статистика для конкретного значения {@linkplain ContentType#STRING типа STRING} переданного в виде строки.
+ * Краткая статистика для значения типа {@linkplain ContentType#STRING STRING} переданного в формате строки.
  */
 final class SimpleStringsStatistics implements Statistics {
 

@@ -4,7 +4,7 @@ import ru.cft.drozdetskiy.ContentType;
 import ru.cft.drozdetskiy.statistics.Statistics;
 
 /**
- * Краткая статистика для конкретного значения {@linkplain ContentType#FLOAT типа FLOAT} переданного в виде строки.
+ * Краткая статистика для значения типа {@linkplain ContentType#FLOAT FLOAT} переданного в формате строки.
  */
 final class SimpleFloatsStatistics implements Statistics {
 
