@@ -18,19 +18,11 @@ public final class StatisticsFactories {
      *
      * @param type требуемый {@linkplain StatisticsType тип статистики}
      * @return Объект конкретной фабрики реализующий интерфейс абстрактной фабрики {@link StatisticsFactory}.
-     * @throws IllegalArgumentException если передан неизвестный тип статистики.
      */
     public static StatisticsFactory get(StatisticsType type) {
-        StatisticsFactory result;
-
-        if (type == StatisticsType.SIMPLE) {
-            result = new SimpleStatisticsFactory();
-        } else if (type == StatisticsType.FULL) {
-            result = new FullStatisticsFactory();
-        } else {
-            throw new IllegalArgumentException("Неизвестный тип статистики.");
-        }
-
-        return result;
+        return switch (type) {
+            case SIMPLE -> new SimpleStatisticsFactory();
+            case FULL -> new FullStatisticsFactory();
+        };
     }
 }
