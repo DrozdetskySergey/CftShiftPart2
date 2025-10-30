@@ -63,7 +63,7 @@ public final class Arguments {
 
         return new ArgumentsDTO.Builder()
                 .prefix(prefix.toString())
-                .directory(directory == null ? Path.of(".") : directory)
+                .directory((directory == null ? Path.of(".") : directory).toAbsolutePath().normalize())
                 .statisticsType(statisticsType)
                 .isAppend(isAppend)
                 .files(List.copyOf(files))
