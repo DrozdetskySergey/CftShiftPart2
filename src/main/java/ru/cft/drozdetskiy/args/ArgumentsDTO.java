@@ -11,7 +11,7 @@ import java.util.List;
  * @param prefix         Префикс имен файлов с результатом.
  * @param directory      Каталог для результата.
  * @param statisticsType Тип требуемой статистики.
- * @param isAppend       Режим записи в конец файла.
+ * @param isAppend       Флаг режима записи в конец файла.
  * @param files          Список путей к файлам.
  */
 public record ArgumentsDTO(String prefix, Path directory, StatisticsType statisticsType, boolean isAppend,
@@ -62,7 +62,7 @@ public record ArgumentsDTO(String prefix, Path directory, StatisticsType statist
         }
 
         /**
-         * Builder. Задаёт boolean значение режима записи в конец файла.
+         * Builder. Задаёт флаг режима записи в конец файла.
          *
          * @param isAppend true если режим записи в конец файла.
          */
