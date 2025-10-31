@@ -81,12 +81,13 @@ final class Separator {
             return STRING;
         }
 
-        char[] symbols = string.toCharArray();
-        int firstIndex = symbols[0] == '+' || symbols[0] == '-' ? 1 : 0;
-        ContentType result = firstIndex == symbols.length ? STRING : INTEGER;
+        final char[] symbols = string.toCharArray();
+        final int firstIndex = symbols[0] == '+' || symbols[0] == '-' ? 1 : 0;
+        final int lastIndex = symbols.length - 1;
+        ContentType result = firstIndex <= lastIndex ? INTEGER : STRING; // STRING если строка "+" или "-"
 
-        for (int i = firstIndex; result != STRING && i < symbols.length; i++) {
-            if (symbols[i] == '.' && result == INTEGER && symbols.length > firstIndex + 1) {
+        for (int i = firstIndex; result != STRING && i <= lastIndex; i++) {
+            if (symbols[i] == '.' && result == INTEGER && firstIndex < lastIndex) {
                 result = FLOAT;
             } else if ((symbols[i] == 'e' || symbols[i] == 'E')
                        && ((result == INTEGER && i > firstIndex) || (result == FLOAT && i > firstIndex + 1))) {
@@ -113,20 +114,21 @@ final class Separator {
             return false;
         }
 
-        char[] symbols = string.toCharArray();
+        final char[] symbols = string.toCharArray();
         int firstIndex = symbols[0] == '+' || symbols[0] == '-' ? 1 : 0;
+        final int lastIndex = symbols.length - 1;
 
-        while (firstIndex + 1 < symbols.length && symbols[firstIndex] == '0') {
+        while (firstIndex < lastIndex && symbols[firstIndex] == '0') {
             firstIndex++;
         }
 
-        boolean result = firstIndex < symbols.length && firstIndex + 10 >= symbols.length;
+        boolean result = firstIndex <= lastIndex && firstIndex + 9 >= lastIndex;
 
-        for (int i = firstIndex; result && i < symbols.length; i++) {
+        for (int i = firstIndex; result && i <= lastIndex; i++) {
             result = symbols[i] >= '0' && symbols[i] <= '9';
         }
 
-        if (result && firstIndex + 10 == symbols.length) {
+        if (result && firstIndex + 9 == lastIndex) {
             String digits = string.substring(firstIndex);
             result = digits.compareTo("2147483647") <= 0;
         }
