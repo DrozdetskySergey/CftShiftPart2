@@ -35,7 +35,7 @@ public final class Arguments {
         boolean isAppend = false;
         Set<Path> files = new LinkedHashSet<>();
 
-        List<String> arguments = decomposeArguments(filterAndClean(args));
+        List<String> arguments = getDecomposedArguments(args);
 
         for (Iterator<String> iterator = arguments.iterator(); iterator.hasNext(); ) {
             String argument = iterator.next();
@@ -71,49 +71,39 @@ public final class Arguments {
     }
 
     /**
-     * В массиве строк выкидывает null и пустые строки, убирает пробелы в начале и в конце каждой стоки.
-     * Возвращает список оставшихся очищенных строк.
+     * В массиве строк выбрасываются null и пустые строки. Оставшиеся строки являются аргументами утилиты.
+     * Аргумент считается опцией, если первый символ это минус. Не опции копируются без изменений,
+     * а опции проверяются на слипание и разделяются на самостоятельные аргументы.
+     * Возвращается новый список аргументов без слипшихся опций, при этом не нарушающий изначальный порядок.
      *
-     * @param array массив сток.
-     * @return Список отфильтрованных и очищенных строк.
+     * @param args массив сток (аргументы пришедшие из командной строки).
+     * @return Список аргументов без слипшихся опций.
      */
-    private static List<String> filterAndClean(String[] array) {
-        return Arrays.stream(array)
+    private static List<String> getDecomposedArguments(String[] args) {
+        return Arrays.stream(args)
                 .filter(Objects::nonNull)
                 .filter(Predicate.not(String::isBlank))
                 .map(String::strip)
-                .toList();
-    }
+                .flatMap(s -> {
+                    List<String> arguments = new ArrayList<>();
 
-    /**
-     * Проверят список аргументов. Аргумент может быть {@linkplain Option опцией} или нет соответственно.
-     * У опции первый символ должен быть минус. Опции проверяет на слипание и разделяет на самостоятельные аргументы.
-     * Не опции копирует без изменений.
-     * Возвращает новый список аргументов без слипшихся опций, при этом не нарушая изначальный порядок.
-     *
-     * @param arguments список аргументов.
-     * @return Список аргументов без слипшихся опций.
-     */
-    private static List<String> decomposeArguments(List<String> arguments) {
-        List<String> result = new ArrayList<>();
+                    if (isNotOption(s)) {
+                        arguments.add(s);
+                    } else {
+                        for (int i = 1; i < s.length(); i++) {
+                            char symbol = s.charAt(i);
+                            arguments.add("-" + symbol);
 
-        for (String s : arguments) {
-            if (isNotOption(s)) {
-                result.add(s);
-            } else {
-                for (int i = 1; i < s.length(); i++) {
-                    char symbol = s.charAt(i);
-                    result.add("-" + symbol);
-
-                    if ((symbol == SET_DIRECTORY.symbol || symbol == SET_PREFIX.symbol) && (i + 1 < s.length())) {
-                        result.add(s.substring(i + 1));
-                        break;
+                            if ((symbol == SET_DIRECTORY.symbol || symbol == SET_PREFIX.symbol) && (i + 1 < s.length())) {
+                                arguments.add(s.substring(i + 1));
+                                break;
+                            }
+                        }
                     }
-                }
-            }
-        }
 
-        return result;
+                    return arguments.stream();
+                })
+                .toList();
     }
 
     /**
