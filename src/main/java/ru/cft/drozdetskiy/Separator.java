@@ -43,7 +43,7 @@ final class Separator {
      *
      * @param iterator       объект интерфейса {@link Iterator} параметризованный строкой.
      * @param statisticsType требуемый {@linkplain  StatisticsType тип статистики}.
-     * @return Неизменяемый словарь {@link Map} с собранной статистикой в соответствии с
+     * @return Неизменяемый словарь {@link Map} с собранной {@link Statistics статистикой} в соответствии с
      * {@linkplain  ContentType типом содержимого} обработанных строк.
      * @throws IOException если метод append у объектов интерфейса {@link Appendable} бросает IOException.
      */
@@ -61,7 +61,7 @@ final class Separator {
             allStatistics.get(type).include(next);
         }
 
-        return allStatistics;
+        return Map.copyOf(allStatistics);
     }
 
     /**
@@ -89,7 +89,7 @@ final class Separator {
             if (symbols[i] == '.' && result == INTEGER && symbols.length > firstIndex + 1) {
                 result = FLOAT;
             } else if ((symbols[i] == 'e' || symbols[i] == 'E')
-                    && ((result == INTEGER && i > firstIndex) || (result == FLOAT && i > firstIndex + 1))) {
+                       && ((result == INTEGER && i > firstIndex) || (result == FLOAT && i > firstIndex + 1))) {
                 result = isConvertedToInteger(string.substring(i + 1)) ? FLOAT : STRING;
                 break;
             } else if (symbols[i] < '0' || '9' < symbols[i]) {
@@ -120,13 +120,13 @@ final class Separator {
             firstIndex++;
         }
 
-        boolean result = (firstIndex < symbols.length) && (firstIndex + 10 >= symbols.length);
+        boolean result = firstIndex < symbols.length && firstIndex + 10 >= symbols.length;
 
         for (int i = firstIndex; result && i < symbols.length; i++) {
             result = symbols[i] >= '0' && symbols[i] <= '9';
         }
 
-        if (result && (firstIndex + 10 == symbols.length)) {
+        if (result && firstIndex + 10 == symbols.length) {
             String digits = string.substring(firstIndex);
             result = digits.compareTo("2147483647") <= 0;
         }
