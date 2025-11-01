@@ -35,7 +35,7 @@ final class FilesIterator implements Iterator<String>, Closeable {
      */
     private String next;
     /**
-     * Флаг: объект был закрыт (close) или нет.
+     * Флаг закрытия этого объекта.
      */
     private boolean isClosed;
 
@@ -90,15 +90,11 @@ final class FilesIterator implements Iterator<String>, Closeable {
 
     @Override
     public void close() {
-        if (isClosed) {
-            return;
+        while (!isClosed && !readers.isEmpty()) {
+            closeReader(readers.remove(0));
         }
 
         isClosed = true;
-
-        while (!readers.isEmpty()) {
-            closeReader(readers.remove(0));
-        }
     }
 
     /**
