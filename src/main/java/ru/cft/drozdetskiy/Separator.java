@@ -87,10 +87,10 @@ final class Separator {
         ContentType result = firstIndex <= lastIndex ? INTEGER : STRING; // STRING если строка "+" или "-"
 
         for (int i = firstIndex; result != STRING && i <= lastIndex; i++) {
-            if (symbols[i] == '.' && result == INTEGER && firstIndex < lastIndex) {
+            if (symbols[i] == '.' && result == INTEGER && firstIndex != lastIndex) {
                 result = FLOAT;
             } else if ((symbols[i] == 'e' || symbols[i] == 'E')
-                       && ((result == INTEGER && i > firstIndex) || (result == FLOAT && i > firstIndex + 1))) {
+                       && ((result == INTEGER && firstIndex < i) || (result == FLOAT && firstIndex + 1 < i))) {
                 result = isConvertedToInteger(string.substring(i + 1)) ? FLOAT : STRING;
                 break;
             } else if (symbols[i] < '0' || '9' < symbols[i]) {
@@ -122,10 +122,10 @@ final class Separator {
             firstIndex++;
         }
 
-        boolean result = firstIndex <= lastIndex && firstIndex + 9 >= lastIndex;
+        boolean result = firstIndex <= lastIndex && lastIndex < firstIndex + 10;
 
         for (int i = firstIndex; result && i <= lastIndex; i++) {
-            result = symbols[i] >= '0' && symbols[i] <= '9';
+            result = '0' <= symbols[i] && symbols[i] <= '9';
         }
 
         if (result && firstIndex + 9 == lastIndex) {
