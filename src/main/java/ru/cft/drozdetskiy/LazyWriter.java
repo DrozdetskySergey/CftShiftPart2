@@ -34,7 +34,7 @@ final class LazyWriter implements Appendable, Closeable {
      */
     private Writer writer;
     /**
-     * Флаг: объект был закрыт (close) или нет.
+     * Флаг закрытия этого объекта.
      */
     private boolean isClosed;
 
@@ -77,13 +77,7 @@ final class LazyWriter implements Appendable, Closeable {
 
     @Override
     public void close() {
-        if (isClosed) {
-            return;
-        }
-
-        isClosed = true;
-
-        if (writer != null) {
+        if (!isClosed && writer != null) {
             try {
                 writer.close();
                 LOG.debug("Закрытие врайтера для файла {}", file);
@@ -92,6 +86,8 @@ final class LazyWriter implements Appendable, Closeable {
                 LOG.warn("Сбой закрытия врайтера для файла {}", e.getMessage());
             }
         }
+
+        isClosed = true;
     }
 
     /**
