@@ -43,8 +43,8 @@ final class FullIntegersStatistics implements Statistics {
         StringBuilder result = new StringBuilder(String.format("Количество целых чисел = %d%n", count));
 
         if (count > 0) {
-            BigDecimal average = (new BigDecimal(sum)).setScale(6, RoundingMode.DOWN)
-                    .divide(BigDecimal.valueOf(count), RoundingMode.DOWN);
+            BigDecimal average = (new BigDecimal(sum)).setScale(6, RoundingMode.HALF_EVEN)
+                    .divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN).stripTrailingZeros();
             result.append(String.format("| Минимальное значение = %s%n", minInteger));
             result.append(String.format("| Максимальное значение = %s%n", maxInteger));
             result.append(String.format("| Среднее арифметическое значение = %s%n", average));

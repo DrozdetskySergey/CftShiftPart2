@@ -54,7 +54,7 @@ final class FullFloatsStatistics implements Statistics {
         StringBuilder result = new StringBuilder(String.format("Количество вещественных чисел = %d%n", count));
 
         if (count > 0) {
-            BigDecimal average = sum.divide(BigDecimal.valueOf(count), RoundingMode.DOWN);
+            BigDecimal average = sum.divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
             result.append(String.format("| Минимальное значение = %s%n", minDecimal));
             result.append(String.format("| Максимальное значение = %s%n", maxDecimal));
             result.append(String.format("| Среднее арифметическое значение = %s%n", hasNormalScale ? average : message));
