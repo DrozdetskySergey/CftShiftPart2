@@ -7,6 +7,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static ru.cft.drozdetskiy.args.Option.*;
 
@@ -35,13 +36,13 @@ public final class Arguments {
         boolean isAppend = false;
         Set<Path> files = new LinkedHashSet<>();
 
-        List<String> arguments = getDecomposedArguments(args);
-
-        for (Iterator<String> iterator = arguments.iterator(); iterator.hasNext(); ) {
+        for (Iterator<String> iterator = getDecomposedArguments(args).iterator(); iterator.hasNext(); ) {
             String argument = iterator.next();
 
             if (isNotOption(argument)) {
                 files.add(Path.of(argument).toAbsolutePath().normalize());
+            } else if (argument.length() < 2) {
+                throw new InvalidInputException("опция %s", argument);
             } else {
                 char symbol = argument.charAt(1);
 
@@ -72,9 +73,9 @@ public final class Arguments {
 
     /**
      * В массиве строк выбрасываются null и пустые строки. Оставшиеся строки являются аргументами утилиты.
-     * Аргумент считается опцией, если первый символ это минус. Не опции копируются без изменений,
+     * Аргумент считается опцией, если первый символ это минус. Не опции передаются без изменений,
      * а опции проверяются на слипание и разделяются на самостоятельные аргументы.
-     * Возвращается новый список аргументов без слипшихся опций, при этом изначальный порядок не нарушается.
+     * Возвращается список аргументов без слипшихся опций, при этом изначальный порядок не нарушается.
      *
      * @param args массив сток.
      * @return Список аргументов без слипшихся опций.
@@ -85,19 +86,19 @@ public final class Arguments {
                 .filter(Predicate.not(String::isBlank))
                 .map(String::strip)
                 .flatMap(s -> {
+                    if (s.length() <= 2 || isNotOption(s)) {
+                        return Stream.of(s);
+                    }
+
                     List<String> arguments = new ArrayList<>();
 
-                    if (isNotOption(s)) {
-                        arguments.add(s);
-                    } else {
-                        for (int i = 1; i < s.length(); i++) {
-                            char symbol = s.charAt(i);
-                            arguments.add("-" + symbol);
+                    for (int i = 1; i < s.length(); i++) {
+                        char symbol = s.charAt(i);
+                        arguments.add("-" + symbol);
 
-                            if ((symbol == SET_DIRECTORY.symbol || symbol == SET_PREFIX.symbol) && (i + 1 < s.length())) {
-                                arguments.add(s.substring(i + 1));
-                                break;
-                            }
+                        if ((symbol == SET_DIRECTORY.symbol || symbol == SET_PREFIX.symbol) && (i + 1 < s.length())) {
+                            arguments.add(s.substring(i + 1));
+                            break;
                         }
                     }
 
