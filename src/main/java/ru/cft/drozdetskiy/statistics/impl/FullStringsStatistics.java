@@ -6,7 +6,7 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 /**
  * Полная статистика для значения типа {@linkplain ContentType#STRING STRING} переданного в формате строки.
  */
-final public class FullStringsStatistics implements Statistics {
+public final class FullStringsStatistics implements Statistics {
 
     /**
      * Минимальная длина строки.

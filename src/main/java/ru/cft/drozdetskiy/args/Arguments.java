@@ -1,7 +1,7 @@
 package ru.cft.drozdetskiy.args;
 
 import ru.cft.drozdetskiy.InvalidInputException;
-import ru.cft.drozdetskiy.statistics.StatisticsType;
+import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -13,7 +13,7 @@ import static ru.cft.drozdetskiy.args.Option.*;
 
 /**
  * Функциональный класс. Специализируется на аргументах для утилиты.
- * Предоставляет статичный метод {@link #parse(String[]) parse}
+ * Реализует статичный метод {@link #parse(String[]) parse}
  */
 public final class Arguments {
 
@@ -22,7 +22,7 @@ public final class Arguments {
 
     /**
      * Парсит массив строк, вычленяет {@linkplain Option опции} и пути до файлов.
-     * Создаёт и возвращает {@link ArgumentsDTO DTO} с подготовленными входными данными для утилиты.
+     * Возвращает в качестве результата {@link ArgumentsDTO DTO} с подготовленными входными данными для утилиты.
      *
      * @param args массив строк.
      * @return {@linkplain ArgumentsDTO DTO} с входными данными для утилиты.
@@ -32,7 +32,7 @@ public final class Arguments {
     public static ArgumentsDTO parse(String[] args) {
         StringBuilder prefix = new StringBuilder();
         Path directory = null;
-        StatisticsType statisticsType = StatisticsType.SIMPLE;
+        StatisticsFactory statisticsFactory = StatisticsFactory.SIMPLE;
         boolean isAppend = false;
         Set<Path> files = new LinkedHashSet<>();
 
@@ -49,9 +49,9 @@ public final class Arguments {
                 if (symbol == APPEND_FILES.symbol) {
                     isAppend = true;
                 } else if (symbol == SIMPLE_STAT.symbol) {
-                    statisticsType = StatisticsType.SIMPLE;
+                    statisticsFactory = StatisticsFactory.SIMPLE;
                 } else if (symbol == FULL_STAT.symbol) {
-                    statisticsType = StatisticsType.FULL;
+                    statisticsFactory = StatisticsFactory.FULL;
                 } else if (symbol == SET_DIRECTORY.symbol && iterator.hasNext()) {
                     directory = directory == null ? Path.of(iterator.next()) : directory.resolve(iterator.next());
                 } else if (symbol == SET_PREFIX.symbol && iterator.hasNext()) {
@@ -65,7 +65,7 @@ public final class Arguments {
         return new ArgumentsDTO.Builder()
                 .prefix(prefix.toString())
                 .directory((directory == null ? Path.of(".") : directory).toAbsolutePath().normalize())
-                .statisticsType(statisticsType)
+                .statisticsFactory(statisticsFactory)
                 .isAppend(isAppend)
                 .files(List.copyOf(files))
                 .build();

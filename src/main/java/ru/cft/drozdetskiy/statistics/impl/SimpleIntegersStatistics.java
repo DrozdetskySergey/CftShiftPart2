@@ -6,7 +6,7 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 /**
  * Краткая статистика для значения типа {@linkplain ContentType#INTEGER INTEGER} переданного в формате строки.
  */
-final class SimpleIntegersStatistics implements Statistics {
+public final class SimpleIntegersStatistics implements Statistics {
 
     /**
      * Количество.

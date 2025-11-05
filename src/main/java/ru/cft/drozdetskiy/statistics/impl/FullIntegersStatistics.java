@@ -10,7 +10,7 @@ import java.math.RoundingMode;
 /**
  * Полная статистика для значения типа {@linkplain ContentType#INTEGER INTEGER} переданного в формате строки.
  */
-final class FullIntegersStatistics implements Statistics {
+public final class FullIntegersStatistics implements Statistics {
 
     /**
      * Минимальное значение.

@@ -9,7 +9,7 @@ import java.math.RoundingMode;
 /**
  * Полная статистика для значения типа {@linkplain ContentType#FLOAT FLOAT} переданного в формате строки.
  */
-final class FullFloatsStatistics implements Statistics {
+public final class FullFloatsStatistics implements Statistics {
 
     /**
      * Минимальное значение.

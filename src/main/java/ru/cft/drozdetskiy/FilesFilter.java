@@ -47,9 +47,7 @@ public final class FilesFilter {
         } else {
             try {
                 Map<ContentType, Statistics> allStatistics = filterFiles(Arguments.parse(args));
-                System.out.println(allStatistics.get(INTEGER));
-                System.out.println(allStatistics.get(FLOAT));
-                System.out.println(allStatistics.get(STRING));
+                Arrays.stream(ContentType.values()).map(allStatistics::get).forEach(System.out::println);
                 LOG.info("Остановка утилиты.");
             } catch (InvalidInputException e) {
                 System.out.printf("Не верно задан аргумент: %s%n%n%s", e.getMessage(), help);
@@ -92,7 +90,7 @@ public final class FilesFilter {
         var separator = new Separator(Map.of(INTEGER, integersWriter, FLOAT, floatsWriter, STRING, stringsWriter));
 
         try (integersWriter; floatsWriter; stringsWriter; var iterator = new FilesIterator(dto.files())) {
-            return separator.handleStrings(iterator, dto.statisticsType());
+            return separator.handleStrings(iterator, dto.statisticsFactory());
         }
     }
 

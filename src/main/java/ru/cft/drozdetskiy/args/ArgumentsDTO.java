@@ -1,6 +1,6 @@
 package ru.cft.drozdetskiy.args;
 
-import ru.cft.drozdetskiy.statistics.StatisticsType;
+import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -8,13 +8,13 @@ import java.util.List;
 /**
  * Контейнер для передачи данных (DTO) пришедших в аргументы программы. Создаётся через Builder.
  *
- * @param prefix         Префикс имен файлов с результатом.
- * @param directory      Каталог для результата.
- * @param statisticsType Тип требуемой статистики.
- * @param isAppend       Флаг режима записи в конец файла.
- * @param files          Список путей к файлам.
+ * @param prefix            Префикс имен файлов с результатом.
+ * @param directory         Каталог для результата.
+ * @param statisticsFactory Фабрика для создания объектов статистики.
+ * @param isAppend          Флаг режима записи в конец файла.
+ * @param files             Список путей к файлам.
  */
-public record ArgumentsDTO(String prefix, Path directory, StatisticsType statisticsType, boolean isAppend,
+public record ArgumentsDTO(String prefix, Path directory, StatisticsFactory statisticsFactory, boolean isAppend,
                            List<Path> files) {
 
     /**
@@ -24,7 +24,7 @@ public record ArgumentsDTO(String prefix, Path directory, StatisticsType statist
 
         private String prefix;
         private Path directory;
-        private StatisticsType statisticsType;
+        private StatisticsFactory statisticsFactory;
         private boolean isAppend;
         private List<Path> files;
 
@@ -51,12 +51,12 @@ public record ArgumentsDTO(String prefix, Path directory, StatisticsType statist
         }
 
         /**
-         * Builder. Задаёт тип требуемой статистики.
+         * Builder. Задаёт фабрику для создания объектов статистики.
          *
-         * @param statisticsType {@linkplain StatisticsType Тип статистики}.
+         * @param statisticsFactory {@linkplain StatisticsFactory фабрика} для создания объектов статистики.
          */
-        public Builder statisticsType(StatisticsType statisticsType) {
-            this.statisticsType = statisticsType;
+        public Builder statisticsFactory(StatisticsFactory statisticsFactory) {
+            this.statisticsFactory = statisticsFactory;
 
             return this;
         }
@@ -89,7 +89,7 @@ public record ArgumentsDTO(String prefix, Path directory, StatisticsType statist
          * @return новый объект класса {@link ArgumentsDTO}
          */
         public ArgumentsDTO build() {
-            return new ArgumentsDTO(prefix, directory, statisticsType, isAppend, files);
+            return new ArgumentsDTO(prefix, directory, statisticsFactory, isAppend, files);
         }
     }
 }

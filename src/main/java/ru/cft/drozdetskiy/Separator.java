@@ -1,11 +1,10 @@
 package ru.cft.drozdetskiy;
 
 import ru.cft.drozdetskiy.statistics.Statistics;
-import ru.cft.drozdetskiy.statistics.StatisticsFactories;
 import ru.cft.drozdetskiy.statistics.StatisticsFactory;
-import ru.cft.drozdetskiy.statistics.StatisticsType;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -14,8 +13,7 @@ import static ru.cft.drozdetskiy.ContentType.*;
 
 /**
  * Распределяет строки в зависимости от {@linkplain  ContentType типа содержимого} по объектам
- * интерфейса {@link Appendable}, переданные в конструктор. При этом собирается статистика требуемого
- * {@linkplain  StatisticsType типа }.
+ * интерфейса {@link Appendable}, переданные в конструктор. При этом собирается статистика.
  */
 final class Separator {
 
@@ -37,22 +35,19 @@ final class Separator {
 
     /**
      * Обрабатывает строки из объекта интерфейса {@link Iterator}.
-     * В зависимости от {@linkplain  ContentType типа содержимого} строка отправляется в один из объектов
+     * В зависимости от {@linkplain ContentType типа содержимого} строка отправляется в один из объектов
      * интерфейса {@link Appendable} переданных в конструктор этого класса.
-     * При этом собирается и потом отдаётся статистика требуемого {@linkplain  StatisticsType типа}.
+     * При этом собирается статистика и выдаётся в качестве результата.
      *
-     * @param iterator       объект интерфейса {@link Iterator} параметризованный строкой.
-     * @param statisticsType требуемый {@linkplain  StatisticsType тип статистики}.
+     * @param iterator          объект интерфейса {@link Iterator} параметризованный строкой.
+     * @param statisticsFactory фабрика для создания объектов интерфейса {@link Statistics}.
      * @return Неизменяемый словарь {@link Map} с собранной {@link Statistics статистикой} в соответствии с
      * {@linkplain  ContentType типом содержимого} обработанных строк.
      * @throws IOException если метод append у объектов интерфейса {@link Appendable} бросает IOException.
      */
-    public Map<ContentType, Statistics> handleStrings(Iterator<String> iterator, StatisticsType statisticsType) throws IOException {
-        StatisticsFactory factory = StatisticsFactories.get(statisticsType);
+    public Map<ContentType, Statistics> handleStrings(Iterator<String> iterator, StatisticsFactory statisticsFactory) throws IOException {
         Map<ContentType, Statistics> allStatistics = new EnumMap<>(ContentType.class);
-        allStatistics.put(INTEGER, factory.createForInteger());
-        allStatistics.put(FLOAT, factory.createForFloat());
-        allStatistics.put(STRING, factory.createForString());
+        Arrays.stream(ContentType.values()).forEach(e -> allStatistics.put(e, statisticsFactory.createFor(e)));
 
         while (iterator.hasNext()) {
             String next = iterator.next();

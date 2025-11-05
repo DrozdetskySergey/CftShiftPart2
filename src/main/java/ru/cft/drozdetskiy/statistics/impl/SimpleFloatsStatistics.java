@@ -6,7 +6,7 @@ import ru.cft.drozdetskiy.statistics.Statistics;
 /**
  * Краткая статистика для значения типа {@linkplain ContentType#FLOAT FLOAT} переданного в формате строки.
  */
-final class SimpleFloatsStatistics implements Statistics {
+public final class SimpleFloatsStatistics implements Statistics {
 
     /**
      * Количество.
