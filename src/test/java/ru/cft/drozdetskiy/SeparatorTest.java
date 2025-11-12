@@ -41,7 +41,7 @@ class SeparatorTest {
         StringBuilder floats = new StringBuilder();
         Separator separator = new Separator(Map.of(INTEGER, new StringBuilder(), FLOAT, floats, STRING, new StringBuilder()));
 
-        System.out.println(separator.handleStrings(input.iterator(), StatisticsFactory.FULL));
+        separator.handleStrings(input.iterator(), StatisticsFactory.FULL);
         List<String> result = Arrays.stream(floats.toString().split(System.lineSeparator())).toList();
 
         assertEquals(input, result);
