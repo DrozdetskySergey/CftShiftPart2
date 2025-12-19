@@ -66,22 +66,22 @@ public final class FilesFilter {
     }
 
     /**
-     * Основной метод всей утилиты. Получает подготовленные аргументы через DTO, создаёт нужные объекты
-     * и запускает фильтрацию строк из файлов. Возвращает собранную статистику.
+     * Получает подготовленные аргументы через DTO, создаёт нужные объекты и запускает фильтрацию строк из файлов.
+     * Возвращает собранную статистику по отфильтрованным строкам.
      *
-     * @param dto DTO с аргументами для утилиты.
-     * @return Словарь {@link Map} с собранной статистикой в соответствии с
+     * @param dto {@linkplain ArgumentsDTO DTO} с аргументами для утилиты.
+     * @return Объект интерфейса {@link Map} с собранной {@linkplain Statistics статистикой} в соответствии с
      * {@linkplain  ContentType типом содержимого} обработанных строк.
      * @throws IOException           если произошёл сбой при работе с файлом.
      * @throws InvalidInputException если пользователь задал не верные данные.
-     * @throws InvalidPathException  если заданный пользователем путь нельзя конвертировать в {@linkplain Path}.
+     * @throws InvalidPathException  если заданный пользователем путь нельзя конвертировать в объект интерфейса {@link Path}.
      */
     private static Map<ContentType, Statistics> filterFiles(ArgumentsDTO dto) throws IOException {
         createDirectory(dto.directory());
         Path integersFile = dto.directory().resolve(dto.prefix() + "integers.txt");
         Path floatsFile = dto.directory().resolve(dto.prefix() + "floats.txt");
         Path stringsFile = dto.directory().resolve(dto.prefix() + "strings.txt");
-        throwInvalidInputExceptionIfContainsAny(dto.files(), List.of(integersFile, floatsFile, stringsFile));
+        throwExceptionIfCollectionsOverlap(List.of(integersFile, floatsFile, stringsFile), dto.files());
 
         OpenOption[] openOptions = getOpenOptions(dto.isAppend());
         var integersWriter = new LazyWriter(integersFile, openOptions);
@@ -109,15 +109,15 @@ public final class FilesFilter {
     }
 
     /**
-     * Бросает InvalidInputException если контрольный перечень путей содержит какой-либо из альтернативных путей.
+     * Бросает InvalidInputException если коллекции путей пересекаются (имеют хотя бы один одинаковый путь).
      *
-     * @param checklist    контрольный перечень путей.
-     * @param alternatives альтернативный перечень путей.
-     * @throws InvalidInputException если контрольный перечень путей содержит какой-либо альтернативный путь.
+     * @param paths1 первая коллекция путей.
+     * @param paths2 вторая коллекция путей.
+     * @throws InvalidInputException если коллекции путей пересекаются.
      */
-    private static void throwInvalidInputExceptionIfContainsAny(Collection<Path> checklist, Collection<Path> alternatives) {
-        for (Path p : alternatives) {
-            if (checklist.contains(p)) {
+    private static void throwExceptionIfCollectionsOverlap(Collection<Path> paths1, Collection<Path> paths2) {
+        for (Path p : paths1) {
+            if (paths2.contains(p)) {
                 throw new InvalidInputException("совпадающий путь %s", p);
             }
         }
@@ -127,7 +127,7 @@ public final class FilesFilter {
      * Создаёт новый массив опций {@link StandardOpenOption} для открытия файла в зависимости от переданного флага.
      *
      * @param isAppend true если нужно открыть файл для записи в конец, false если нужно писать в начало файла.
-     * @return Массив опций {@link StandardOpenOption}.
+     * @return Массив объектов интерфейса {@link OpenOption}.
      */
     private static OpenOption[] getOpenOptions(boolean isAppend) {
         return isAppend ?
