@@ -6,7 +6,8 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * Контейнер для передачи данных (DTO) пришедших в аргументы программы. Создаётся через Builder.
+ * Контейнер для передачи данных (DTO) пришедших в аргументы программы.
+ * Имеется встроенный {@linkplain ArgumentsDTO.Builder Builder}.
  *
  * @param prefix            Префикс имен файлов с результатом.
  * @param directory         Каталог для результата.
@@ -18,7 +19,7 @@ public record ArgumentsDTO(String prefix, Path directory, StatisticsFactory stat
                            List<Path> files) {
 
     /**
-     * Builder. Встроенный статичный класс для сборки объекта класса {@link ArgumentsDTO}
+     * Builder. Встроенный статичный класс для сборки объекта класса {@linkplain ArgumentsDTO}
      */
     public static final class Builder {
 
@@ -86,7 +87,7 @@ public record ArgumentsDTO(String prefix, Path directory, StatisticsFactory stat
         /**
          * Builder. Завершает конструирование объекта.
          *
-         * @return новый объект класса {@link ArgumentsDTO}
+         * @return новый объект класса {@linkplain ArgumentsDTO}
          */
         public ArgumentsDTO build() {
             return new ArgumentsDTO(prefix, directory, statisticsFactory, isAppend, files);

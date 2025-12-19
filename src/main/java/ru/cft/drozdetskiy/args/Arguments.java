@@ -13,7 +13,7 @@ import static ru.cft.drozdetskiy.args.Option.*;
 
 /**
  * Функциональный класс. Специализируется на аргументах для утилиты.
- * Реализует статичный метод {@link #parse(String[]) parse}
+ * Реализует статичный метод {@linkplain #parse(String[])}
  */
 public final class Arguments {
 
@@ -22,12 +22,12 @@ public final class Arguments {
 
     /**
      * Парсит массив строк, вычленяет {@linkplain Option опции} и пути до файлов.
-     * Возвращает в качестве результата {@link ArgumentsDTO DTO} с подготовленными входными данными для утилиты.
+     * Возвращает в качестве результата {@linkplain ArgumentsDTO DTO} с подготовленными входными данными для утилиты.
      *
      * @param args массив строк.
      * @return {@linkplain ArgumentsDTO DTO} с входными данными для утилиты.
      * @throws InvalidInputException если встречается неизвестная опция.
-     * @throws InvalidPathException  если заданный путь нельзя конвертировать в {@linkplain Path}.
+     * @throws InvalidPathException  если заданный путь нельзя конвертировать в объект интерфейса {@link Path}.
      */
     public static ArgumentsDTO parse(String[] args) {
         StringBuilder prefix = new StringBuilder();
