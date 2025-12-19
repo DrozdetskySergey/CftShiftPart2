@@ -1,7 +1,6 @@
 package ru.cft.drozdetskiy.statistics;
 
 import ru.cft.drozdetskiy.ContentType;
-import ru.cft.drozdetskiy.statistics.impl.*;
 
 /**
  * Фабрика для создания объектов интерфейса {@link Statistics} для любого {@linkplain ContentType типа} содержимого строки.

@@ -1,7 +1,6 @@
-package ru.cft.drozdetskiy.statistics.impl;
+package ru.cft.drozdetskiy.statistics;
 
 import ru.cft.drozdetskiy.ContentType;
-import ru.cft.drozdetskiy.statistics.Statistics;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -10,7 +9,7 @@ import java.math.RoundingMode;
 /**
  * Полная статистика для значения типа {@linkplain ContentType#INTEGER INTEGER} переданного в формате строки.
  */
-public final class FullIntegersStatistics implements Statistics {
+final class FullIntegersStatistics implements Statistics {
 
     /**
      * Минимальное значение.

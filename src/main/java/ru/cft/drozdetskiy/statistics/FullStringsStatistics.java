@@ -1,12 +1,11 @@
-package ru.cft.drozdetskiy.statistics.impl;
+package ru.cft.drozdetskiy.statistics;
 
 import ru.cft.drozdetskiy.ContentType;
-import ru.cft.drozdetskiy.statistics.Statistics;
 
 /**
  * Полная статистика для значения типа {@linkplain ContentType#STRING STRING} переданного в формате строки.
  */
-public final class FullStringsStatistics implements Statistics {
+final class FullStringsStatistics implements Statistics {
 
     /**
      * Минимальная длина строки.

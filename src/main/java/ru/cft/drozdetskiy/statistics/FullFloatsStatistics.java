@@ -1,7 +1,6 @@
-package ru.cft.drozdetskiy.statistics.impl;
+package ru.cft.drozdetskiy.statistics;
 
 import ru.cft.drozdetskiy.ContentType;
-import ru.cft.drozdetskiy.statistics.Statistics;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -9,7 +8,7 @@ import java.math.RoundingMode;
 /**
  * Полная статистика для значения типа {@linkplain ContentType#FLOAT FLOAT} переданного в формате строки.
  */
-public final class FullFloatsStatistics implements Statistics {
+final class FullFloatsStatistics implements Statistics {
 
     /**
      * Минимальное значение.

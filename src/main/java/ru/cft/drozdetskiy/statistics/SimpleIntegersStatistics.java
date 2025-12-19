@@ -1,12 +1,11 @@
-package ru.cft.drozdetskiy.statistics.impl;
+package ru.cft.drozdetskiy.statistics;
 
 import ru.cft.drozdetskiy.ContentType;
-import ru.cft.drozdetskiy.statistics.Statistics;
 
 /**
  * Краткая статистика для значения типа {@linkplain ContentType#INTEGER INTEGER} переданного в формате строки.
  */
-public final class SimpleIntegersStatistics implements Statistics {
+final class SimpleIntegersStatistics implements Statistics {
 
     /**
      * Количество.

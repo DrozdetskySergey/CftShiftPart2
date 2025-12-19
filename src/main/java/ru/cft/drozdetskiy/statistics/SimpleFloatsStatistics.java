@@ -1,12 +1,11 @@
-package ru.cft.drozdetskiy.statistics.impl;
+package ru.cft.drozdetskiy.statistics;
 
 import ru.cft.drozdetskiy.ContentType;
-import ru.cft.drozdetskiy.statistics.Statistics;
 
 /**
  * Краткая статистика для значения типа {@linkplain ContentType#FLOAT FLOAT} переданного в формате строки.
  */
-public final class SimpleFloatsStatistics implements Statistics {
+final class SimpleFloatsStatistics implements Statistics {
 
     /**
      * Количество.
