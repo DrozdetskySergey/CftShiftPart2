@@ -53,24 +53,27 @@ final class LazyWriter implements Appendable, Closeable {
 
     @Override
     public Appendable append(CharSequence chars) throws IOException {
-        throwIllegalStateExceptionIfClosed();
-        getWriter().append(chars);
+        throwExceptionIfClosed();
+        createWriterIfNotExist();
+        writer.append(chars);
 
         return this;
     }
 
     @Override
     public Appendable append(CharSequence chars, int start, int end) throws IOException {
-        throwIllegalStateExceptionIfClosed();
-        getWriter().append(chars, start, end);
+        throwExceptionIfClosed();
+        createWriterIfNotExist();
+        writer.append(chars, start, end);
 
         return this;
     }
 
     @Override
     public Appendable append(char c) throws IOException {
-        throwIllegalStateExceptionIfClosed();
-        getWriter().append(c);
+        throwExceptionIfClosed();
+        createWriterIfNotExist();
+        writer.append(c);
 
         return this;
     }
@@ -93,16 +96,13 @@ final class LazyWriter implements Appendable, Closeable {
     /**
      * Создаёт проксируемый объект если он не существует.
      *
-     * @return Объект класса {@link BufferedWriter} созданный для файла.
      * @throws IOException если ошибка создания или открытия файла.
      */
-    private Writer getWriter() throws IOException {
+    private void createWriterIfNotExist() throws IOException {
         if (writer == null) {
             writer = Files.newBufferedWriter(file, openOptions);
             LOG.debug("Создание врайтера для файла {}, опции: {}", file, openOptions);
         }
-
-        return writer;
     }
 
     /**
@@ -110,7 +110,7 @@ final class LazyWriter implements Appendable, Closeable {
      *
      * @throws IllegalStateException если объект закрыт.
      */
-    private void throwIllegalStateExceptionIfClosed() {
+    private void throwExceptionIfClosed() {
         if (isClosed) {
             throw new IllegalStateException("Объект BufferedWriter находится в неподходящем состоянии для выполняемой операции, уже закрыт (close).");
         }
