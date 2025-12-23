@@ -41,7 +41,7 @@ final class Separator {
      *
      * @param iterator          объект интерфейса {@link Iterator} параметризованный строкой.
      * @param statisticsFactory фабрика для создания объектов интерфейса {@link Statistics}.
-     * @return Неизменяемый словарь {@link Map} с собранной {@link Statistics статистикой} в соответствии с
+     * @return Неизменяемый словарь {@link Map} с собранной {@linkplain Statistics статистикой} в соответствии с
      * {@linkplain  ContentType типом содержимого} обработанных строк.
      * @throws IOException если метод append у объектов интерфейса {@link Appendable} бросает IOException.
      */
@@ -51,7 +51,7 @@ final class Separator {
 
         while (iterator.hasNext()) {
             String next = iterator.next();
-            ContentType type = getContentType(next);
+            ContentType type = classifyContentType(next);
             writers.get(type).append(next).append(System.lineSeparator());
             allStatistics.get(type).include(next);
         }
@@ -71,7 +71,7 @@ final class Separator {
      * @param string проверяемая строка.
      * @return {@linkplain  ContentType Тип содержимого} строки.
      */
-    private ContentType getContentType(String string) {
+    private ContentType classifyContentType(String string) {
         if (string.isEmpty()) {
             return STRING;
         }
@@ -117,13 +117,14 @@ final class Separator {
             firstIndex++;
         }
 
-        boolean result = firstIndex <= lastIndex && lastIndex < firstIndex + 10;
+        final int firstToLastIndexDiff = 9; // строка из 10 цифр имеет разницу крайних индексов 9 (последний - первый)
+        boolean result = firstIndex <= lastIndex && lastIndex <= firstIndex + firstToLastIndexDiff;
 
         for (int i = firstIndex; result && i <= lastIndex; i++) {
             result = '0' <= symbols[i] && symbols[i] <= '9';
         }
 
-        if (result && firstIndex + 9 == lastIndex) {
+        if (result && lastIndex == firstIndex + firstToLastIndexDiff) {
             String digits = string.substring(firstIndex);
             result = digits.compareTo("2147483647") <= 0;
         }
