@@ -83,7 +83,7 @@ public final class FilesFilter {
         Path stringsFile = dto.directory().resolve(dto.prefix() + "strings.txt");
         throwExceptionIfCollectionsOverlap(List.of(integersFile, floatsFile, stringsFile), dto.files());
 
-        OpenOption[] openOptions = getOpenOptions(dto.isAppend());
+        OpenOption[] openOptions = createOpenOptions(dto.isAppend());
         var integersWriter = new LazyWriter(integersFile, openOptions);
         var floatsWriter = new LazyWriter(floatsFile, openOptions);
         var stringsWriter = new LazyWriter(stringsFile, openOptions);
@@ -129,7 +129,7 @@ public final class FilesFilter {
      * @param isAppend true если нужно открыть файл для записи в конец, false если нужно писать в начало файла.
      * @return Массив объектов интерфейса {@link OpenOption}.
      */
-    private static OpenOption[] getOpenOptions(boolean isAppend) {
+    private static OpenOption[] createOpenOptions(boolean isAppend) {
         return isAppend ?
                 new StandardOpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.APPEND} :
                 new StandardOpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
