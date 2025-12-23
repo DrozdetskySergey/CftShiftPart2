@@ -1,7 +1,7 @@
 package ru.cft.drozdetskiy.statistics;
 
 /**
- * Статистика о значениях переданных в формате строки. Предоставляет метод {@linkplain #include(String) include}
+ * Статистика о значениях переданных в формате строки. Предоставляет метод {@linkplain #include(String)}
  */
 public interface Statistics {
 
