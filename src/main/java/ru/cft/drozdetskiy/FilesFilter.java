@@ -77,7 +77,7 @@ public final class FilesFilter {
      * @throws InvalidPathException  если заданный пользователем путь нельзя конвертировать в объект интерфейса {@link Path}.
      */
     private static Map<ContentType, Statistics> filterFiles(ArgumentsDTO dto) throws IOException {
-        createDirectory(dto.directory());
+        makeDirectory(dto.directory());
         Path integersFile = dto.directory().resolve(dto.prefix() + "integers.txt");
         Path floatsFile = dto.directory().resolve(dto.prefix() + "floats.txt");
         Path stringsFile = dto.directory().resolve(dto.prefix() + "strings.txt");
@@ -95,12 +95,12 @@ public final class FilesFilter {
     }
 
     /**
-     * Создаёт каталог по переданному пути.
+     * В файловой системе создаёт каталог(и) по переданному пути.
      *
      * @param path путь для каталога.
      * @throws InvalidInputException если не удалось создать каталог.
      */
-    private static void createDirectory(Path path) {
+    private static void makeDirectory(Path path) {
         try {
             Files.createDirectories(path);
         } catch (Exception e) {
