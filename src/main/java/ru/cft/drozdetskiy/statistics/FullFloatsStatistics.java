@@ -25,7 +25,7 @@ final class FullFloatsStatistics implements Statistics {
     /**
      * Флаг. Сигнализирует о том, что приходящие значения не имели крупного масштаба (scale).
      */
-    private boolean hasNormalScale = true;
+    private boolean isScaleWithinLimit = true;
     /**
      * Количество.
      */
@@ -36,12 +36,12 @@ final class FullFloatsStatistics implements Statistics {
         BigDecimal decimal = new BigDecimal(value);
         minDecimal = minDecimal == null ? decimal : minDecimal.min(decimal);
         maxDecimal = maxDecimal == null ? decimal : maxDecimal.max(decimal);
-        final int greatestScale = 100000;
 
-        if (hasNormalScale && Math.abs(decimal.scale()) < greatestScale) {
+        final int scaleLimit = 100000;
+        isScaleWithinLimit = isScaleWithinLimit && Math.abs(decimal.scale()) < scaleLimit;
+
+        if (isScaleWithinLimit) {
             sum = sum.add(decimal);
-        } else {
-            hasNormalScale = false;
         }
 
         count++;
@@ -56,8 +56,8 @@ final class FullFloatsStatistics implements Statistics {
             BigDecimal average = sum.divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
             result.append(String.format("| Минимальное значение = %s%n", minDecimal));
             result.append(String.format("| Максимальное значение = %s%n", maxDecimal));
-            result.append(String.format("| Среднее арифметическое значение = %s%n", hasNormalScale ? average : message));
-            result.append(String.format("| Сумма всех вещественных чисел = %s%n", hasNormalScale ? sum : message));
+            result.append(String.format("| Среднее арифметическое значение = %s%n", isScaleWithinLimit ? average : message));
+            result.append(String.format("| Сумма всех вещественных чисел = %s%n", isScaleWithinLimit ? sum : message));
         }
 
         return result.toString();
