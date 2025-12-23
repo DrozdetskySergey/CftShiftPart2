@@ -69,7 +69,7 @@ final class FilesIterator implements Iterator<String>, Closeable {
 
     @Override
     public String next() {
-        throwIllegalStateExceptionIfClosed();
+        throwExceptionIfClosed();
 
         if (next == null) {
             throw new NoSuchElementException("Запрашиваемая следующая строка не существует.");
@@ -83,7 +83,7 @@ final class FilesIterator implements Iterator<String>, Closeable {
 
     @Override
     public boolean hasNext() {
-        throwIllegalStateExceptionIfClosed();
+        throwExceptionIfClosed();
 
         return next != null;
     }
@@ -149,7 +149,7 @@ final class FilesIterator implements Iterator<String>, Closeable {
      *
      * @throws IllegalStateException если объект закрыт.
      */
-    private void throwIllegalStateExceptionIfClosed() {
+    private void throwExceptionIfClosed() {
         if (isClosed) {
             throw new IllegalStateException("Объект FilesIterator находится в неподходящем состоянии для выполняемой операции, уже закрыт (close).");
         }
