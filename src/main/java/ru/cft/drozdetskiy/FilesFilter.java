@@ -22,7 +22,7 @@ import static ru.cft.drozdetskiy.ContentType.*;
  * Строки читаются по одной из каждого файла по очереди. Порядок сохраняется как их перечисляли в аргументах.
  * Статистика по каждому типу данных выводится в консоль.
  *
- * @author Дроздецкий Сергей, <a href="mailto:bigjunior@mail.ru">bigjunior@mail.ru</a>
+ * @author Дроздецкий Сергей, <a href="mailto:drozdetskiy_sergey@mail.ru">drozdetskiy_sergey@mail.ru</a>
  */
 public final class FilesFilter {
 
@@ -90,12 +90,13 @@ public final class FilesFilter {
         var separator = new Separator(Map.of(INTEGER, integersWriter, FLOAT, floatsWriter, STRING, stringsWriter));
 
         try (integersWriter; floatsWriter; stringsWriter; var iterator = new FilesIterator(dto.files())) {
+
             return separator.handleStrings(iterator, dto.statisticsFactory());
         }
     }
 
     /**
-     * В файловой системе создаёт каталог(и) по переданному пути.
+     * В файловой системе создаёт каталог по переданному пути.
      *
      * @param path путь для каталога.
      * @throws InvalidInputException если не удалось создать каталог.
