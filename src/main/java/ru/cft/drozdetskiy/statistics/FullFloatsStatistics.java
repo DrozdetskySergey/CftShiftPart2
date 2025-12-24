@@ -38,7 +38,7 @@ final class FullFloatsStatistics implements Statistics {
         maxDecimal = maxDecimal == null ? decimal : maxDecimal.max(decimal);
 
         final int scaleLimit = 100000;
-        isScaleWithinLimit = isScaleWithinLimit && Math.abs(decimal.scale()) < scaleLimit;
+        isScaleWithinLimit = isScaleWithinLimit && Math.abs(decimal.scale()) <= scaleLimit;
 
         if (isScaleWithinLimit) {
             sum = sum.add(decimal);
@@ -49,7 +49,7 @@ final class FullFloatsStatistics implements Statistics {
 
     @Override
     public String toString() {
-        final String message = "Сбой. Переполнение поддерживаемого диапазона.";
+        final String message = "Переполнение поддерживаемого лимита для масштаба.";
         StringBuilder result = new StringBuilder(String.format("Количество вещественных чисел = %d%n", count));
 
         if (count > 0) {
