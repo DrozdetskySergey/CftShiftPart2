@@ -9,8 +9,6 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static ru.cft.drozdetskiy.args.Option.*;
-
 /**
  * Функциональный класс. Специализируется на аргументах для утилиты.
  * Реализует статичный метод {@linkplain #parse(String[])}
@@ -41,23 +39,23 @@ public final class Arguments {
 
             if (isNotOption(argument)) {
                 files.add(Path.of(argument).toAbsolutePath().normalize());
-            } else if (argument.length() < 2) {
-                throw new InvalidInputException("опция %s", argument);
+            } else if (argument.equals("-")) {
+                throw new InvalidInputException("опция -");
             } else {
-                char symbol = argument.charAt(1);
-
-                if (symbol == APPEND_FILES.symbol) {
-                    isAppend = true;
-                } else if (symbol == SIMPLE_STAT.symbol) {
-                    statisticsFactory = StatisticsFactory.SIMPLE;
-                } else if (symbol == FULL_STAT.symbol) {
-                    statisticsFactory = StatisticsFactory.FULL;
-                } else if (symbol == SET_DIRECTORY.symbol && iterator.hasNext()) {
-                    directory = directory == null ? Path.of(iterator.next()) : directory.resolve(iterator.next());
-                } else if (symbol == SET_PREFIX.symbol && iterator.hasNext()) {
-                    prefix.append(iterator.next());
-                } else {
-                    throw new InvalidInputException("опция %s", argument);
+                switch (Option.fromSymbolOrThrow(argument.charAt(1))) {
+                    case APPEND_FILES -> isAppend = true;
+                    case SIMPLE_STAT -> statisticsFactory = StatisticsFactory.SIMPLE;
+                    case FULL_STAT -> statisticsFactory = StatisticsFactory.FULL;
+                    case SET_DIRECTORY -> {
+                        if (iterator.hasNext()) {
+                            directory = directory == null ? Path.of(iterator.next()) : directory.resolve(iterator.next());
+                        }
+                    }
+                    case SET_PREFIX -> {
+                        if (iterator.hasNext()) {
+                            prefix.append(iterator.next());
+                        }
+                    }
                 }
             }
         }
@@ -95,7 +93,7 @@ public final class Arguments {
                         char symbol = s.charAt(i);
                         arguments.add("-" + symbol);
 
-                        if ((symbol == SET_DIRECTORY.symbol || symbol == SET_PREFIX.symbol) && (i + 1 < s.length())) {
+                        if ((symbol == Option.SET_DIRECTORY.getSymbol() || symbol == Option.SET_PREFIX.getSymbol()) && (i + 1 < s.length())) {
                             arguments.add(s.substring(i + 1));
                             break;
                         }
