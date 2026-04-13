@@ -62,13 +62,12 @@ public final class Arguments {
             }
         }
 
-        return new ArgumentsDTO.Builder()
-                .prefix(prefix.toString())
-                .directory((directory == null ? Path.of(".") : directory).toAbsolutePath().normalize())
-                .statisticsFactory(statisticsFactory)
-                .isAppend(isAppend)
-                .files(List.copyOf(files))
-                .build();
+        return new ArgumentsDTO(
+                prefix.toString(),
+                (directory == null ? Path.of(".") : directory).toAbsolutePath().normalize(),
+                statisticsFactory,
+                isAppend,
+                List.copyOf(files));
     }
 
     /**
