@@ -13,7 +13,7 @@ import java.nio.file.Path;
 
 /**
  * Proxy класс реализующий интерфейсы: {@link Appendable}, {@link Closeable}.
- * Проксируемый объект класса {@link BufferedWriter} созданный для файла. Создаёт проксируемый объект только тогда,
+ * Проксируемый объект это класс {@link BufferedWriter} созданный для файла. Создаёт проксируемый объект только тогда,
  * когда первый раз вызывается метод интерфейса Appendable.
  */
 final class LazyWriter implements Appendable, Closeable {
@@ -79,7 +79,11 @@ final class LazyWriter implements Appendable, Closeable {
 
     @Override
     public void close() {
-        if (!isClosed && writer != null) {
+        if (isClosed) {
+            return;
+        }
+
+        if (writer != null) {
             try {
                 writer.close();
                 LOG.debug("Закрытие врайтера для файла {}", file);
@@ -105,13 +109,13 @@ final class LazyWriter implements Appendable, Closeable {
     }
 
     /**
-     * Бросает IllegalStateException если объект закрыт (close).
+     * Бросает IllegalStateException если уже был вызван метод close().
      *
      * @throws IllegalStateException если объект закрыт.
      */
     private void throwExceptionIfClosed() {
         if (isClosed) {
-            throw new IllegalStateException("Объект BufferedWriter находится в неподходящем состоянии для выполняемой операции, уже закрыт (close).");
+            throw new IllegalStateException("Объект BufferedWriter находится в неподходящем состоянии для выполняемой операции, был вызван метод close().");
         }
     }
 }
