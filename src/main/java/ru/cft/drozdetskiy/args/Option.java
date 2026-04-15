@@ -1,6 +1,6 @@
 package ru.cft.drozdetskiy.args;
 
-import ru.cft.drozdetskiy.InvalidInputException;
+import java.util.Optional;
 
 /**
  * Опции программы (аргументы начинающиеся с символа минус):
@@ -38,21 +38,20 @@ enum Option {
 
     /**
      * Производит поиск {@linkplain Option опции} по заданному символу.
-     * Если соответствие не обнаружилось, то бросает исключение.
+     * Возвращает {@link Optional контейнер} с соответствующей опцией или пустой если нет таковой.
      *
      * @param symbol символ по которому проверяется соответствие.
-     * @return {@linkplain Option Опция} соответствующая заданному символу.
-     * @throws InvalidInputException если заданный символ не соответствует какой-либо {@linkplain Option опции}.
+     * @return Контейнер с соответствующей опцией заданному символу либо пустой если не нашлось такой опции.
      */
-    public static Option fromSymbolOrThrow(char symbol) {
-        for (Option o : values()) {
-            if (o.symbol == symbol) {
+    public static Optional<Option> findBySymbol(char symbol) {
+        for (Option option : values()) {
+            if (option.symbol == symbol) {
 
-                return o;
+                return Optional.of(option);
             }
         }
 
-        throw new InvalidInputException("опция -'%c'", symbol);
+        return Optional.empty();
     }
 
     /**

@@ -39,23 +39,33 @@ public final class Arguments {
 
             if (isNotOption(argument)) {
                 files.add(Path.of(argument).toAbsolutePath().normalize());
-            } else if (argument.equals("-")) {
-                throw new InvalidInputException("опция -");
-            } else {
-                switch (Option.fromSymbolOrThrow(argument.charAt(1))) {
-                    case APPEND_FILES -> isAppend = true;
-                    case SIMPLE_STAT -> statisticsFactory = StatisticsFactory.SIMPLE;
-                    case FULL_STAT -> statisticsFactory = StatisticsFactory.FULL;
-                    case SET_DIRECTORY -> {
-                        if (iterator.hasNext()) {
-                            directory = directory == null ? Path.of(iterator.next()) : directory.resolve(iterator.next());
-                        }
+                continue;
+            }
+
+            if ("-".equals(argument)) {
+                throw new InvalidInputException("не поддерживаемая опция -");
+            }
+
+            Option option = Option.findBySymbol(argument.charAt(1))
+                    .orElseThrow(() -> new InvalidInputException("не известная опция %s", argument));
+
+            switch (option) {
+                case APPEND_FILES -> isAppend = true;
+                case SIMPLE_STAT -> statisticsFactory = StatisticsFactory.SIMPLE;
+                case FULL_STAT -> statisticsFactory = StatisticsFactory.FULL;
+                case SET_DIRECTORY -> {
+                    if (!iterator.hasNext()) {
+                        throw new InvalidInputException("для опции %s требуется аргумент", argument);
                     }
-                    case SET_PREFIX -> {
-                        if (iterator.hasNext()) {
-                            prefix.append(iterator.next());
-                        }
+
+                    directory = directory == null ? Path.of(iterator.next()) : directory.resolve(iterator.next());
+                }
+                case SET_PREFIX -> {
+                    if (!iterator.hasNext()) {
+                        throw new InvalidInputException("для опции %s требуется аргумент", argument);
                     }
+
+                    prefix.append(iterator.next());
                 }
             }
         }
@@ -93,7 +103,7 @@ public final class Arguments {
                         char symbol = s.charAt(i);
                         arguments.add("-" + symbol);
 
-                        if ((symbol == Option.SET_DIRECTORY.getSymbol() || symbol == Option.SET_PREFIX.getSymbol()) && (i + 1 < s.length())) {
+                        if (isParameterizedOptionSymbol(symbol) && (i + 1 < s.length())) {
                             arguments.add(s.substring(i + 1));
                             break;
                         }
@@ -112,5 +122,16 @@ public final class Arguments {
      */
     private static boolean isNotOption(String argument) {
         return !argument.startsWith("-");
+    }
+
+    /**
+     * Проверяет соответствие символа какой-нибудь опции с параметром:
+     * {@linkplain Option#SET_DIRECTORY}, {@linkplain Option#SET_PREFIX}.
+     *
+     * @param symbol символ по которому проверяется соответствие.
+     * @return true если соответствует.
+     */
+    private static boolean isParameterizedOptionSymbol(char symbol) {
+        return symbol == Option.SET_DIRECTORY.getSymbol() || symbol == Option.SET_PREFIX.getSymbol();
     }
 }
