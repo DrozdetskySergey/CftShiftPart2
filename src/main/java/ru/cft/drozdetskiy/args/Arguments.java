@@ -33,17 +33,18 @@ public final class Arguments {
         StatisticsFactory statisticsFactory = StatisticsFactory.SIMPLE;
         boolean isAppend = false;
         Set<Path> files = new LinkedHashSet<>();
+        Iterator<String> iterator = getDecomposedArguments(args).iterator();
 
-        for (Iterator<String> iterator = getDecomposedArguments(args).iterator(); iterator.hasNext(); ) {
+        while (iterator.hasNext()) {
             String argument = iterator.next();
+
+            if ("-".equals(argument)) {
+                throw new InvalidInputException("не поддерживаемая опция -");
+            }
 
             if (isNotOption(argument)) {
                 files.add(Path.of(argument).toAbsolutePath().normalize());
                 continue;
-            }
-
-            if ("-".equals(argument)) {
-                throw new InvalidInputException("не поддерживаемая опция -");
             }
 
             Option option = Option.findBySymbol(argument.charAt(1))
@@ -103,7 +104,8 @@ public final class Arguments {
                         char symbol = s.charAt(i);
                         arguments.add("-" + symbol);
 
-                        if (isParameterizedOptionSymbol(symbol) && (i + 1 < s.length())) {
+                        if (Option.findBySymbol(symbol).filter(Option::hasParameter).isPresent() &&
+                            (i + 1 < s.length())) {
                             arguments.add(s.substring(i + 1));
                             break;
                         }
@@ -122,16 +124,5 @@ public final class Arguments {
      */
     private static boolean isNotOption(String argument) {
         return !argument.startsWith("-");
-    }
-
-    /**
-     * Проверяет соответствие символа какой-нибудь опции с параметром:
-     * {@linkplain Option#SET_DIRECTORY}, {@linkplain Option#SET_PREFIX}.
-     *
-     * @param symbol символ по которому проверяется соответствие.
-     * @return true если соответствует.
-     */
-    private static boolean isParameterizedOptionSymbol(char symbol) {
-        return symbol == Option.SET_DIRECTORY.getSymbol() || symbol == Option.SET_PREFIX.getSymbol();
     }
 }

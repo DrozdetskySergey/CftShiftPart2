@@ -1,39 +1,56 @@
 package ru.cft.drozdetskiy.args;
 
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Опции программы (аргументы начинающиеся с символа минус):
  * {@linkplain #SET_DIRECTORY}, {@linkplain #SET_PREFIX}, {@linkplain #APPEND_FILES},
  * {@linkplain #SIMPLE_STAT}, {@linkplain #FULL_STAT}
+ * Опция либо требует параметр, либо нет.
  */
 enum Option {
 
     /**
-     * Задать каталог для файлов с результатом. Синтаксис: -o каталог
+     * Задать каталог для файлов с результатом. Требуется параметр. Синтаксис: -o [каталог]
      */
-    SET_DIRECTORY('o'),
+    SET_DIRECTORY('o', true),
     /**
-     * Задать префикс для имён файлов с результатом. Синтаксис: -p префикс
+     * Задать префикс для имён файлов с результатом. Требуется параметр. Синтаксис: -p [префикс]
      */
-    SET_PREFIX('p'),
+    SET_PREFIX('p', true),
     /**
      * Включить режим записи в конец файла. Синтаксис: -a
      */
-    APPEND_FILES('a'),
+    APPEND_FILES('a', false),
     /**
      * Собирать краткую статистику. Синтаксис: -s
      */
-    SIMPLE_STAT('s'),
+    SIMPLE_STAT('s', false),
     /**
      * Собирать полную статистику. Синтаксис: -f
      */
-    FULL_STAT('f');
+    FULL_STAT('f', false);
 
+    /**
+     * Словарь опций в соответствие с символом.
+     */
+    private static final Map<Character, Option> OPTIONS =
+            Arrays.stream(values()).collect(Collectors.toMap(o -> o.symbol, o -> o));
+    /**
+     * Символ соответствующий опции.
+     */
     private final char symbol;
+    /**
+     * Флаг требования параметра для опции.
+     */
+    private final boolean hasParameter;
 
-    Option(char symbol) {
+    Option(char symbol, boolean hasParameter) {
         this.symbol = symbol;
+        this.hasParameter = hasParameter;
     }
 
     /**
@@ -44,20 +61,15 @@ enum Option {
      * @return Контейнер с соответствующей опцией заданному символу либо пустой если не нашлось такой опции.
      */
     public static Optional<Option> findBySymbol(char symbol) {
-        for (Option option : values()) {
-            if (option.symbol == symbol) {
-
-                return Optional.of(option);
-            }
-        }
-
-        return Optional.empty();
+        return Optional.ofNullable(OPTIONS.get(symbol));
     }
 
     /**
-     * @return Символ соответствующий данной {@linkplain Option опции}.
+     * Определяет для данной опции параметр требуется или нет.
+     *
+     * @return true если требуется параметр.
      */
-    public char getSymbol() {
-        return symbol;
+    public boolean hasParameter() {
+        return hasParameter;
     }
 }
