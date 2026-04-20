@@ -6,19 +6,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Опции программы (аргументы начинающиеся с символа минус):
- * {@linkplain #SET_DIRECTORY}, {@linkplain #SET_PREFIX}, {@linkplain #APPEND_FILES},
+ * Опции программы: {@linkplain #SET_DIRECTORY}, {@linkplain #SET_PREFIX}, {@linkplain #APPEND_FILES},
  * {@linkplain #SIMPLE_STAT}, {@linkplain #FULL_STAT}
- * Опция либо требует параметр, либо нет.
+ * Опция либо требует аргумент (option argument), либо нет.
  */
 enum Option {
 
     /**
-     * Задать каталог для файлов с результатом. Требуется параметр. Синтаксис: -o [каталог]
+     * Задать каталог для файлов с результатом. Требуется аргумент. Синтаксис: -o [каталог]
      */
     SET_DIRECTORY('o', true),
     /**
-     * Задать префикс для имён файлов с результатом. Требуется параметр. Синтаксис: -p [префикс]
+     * Задать префикс для имён файлов с результатом. Требуется аргумент. Синтаксис: -p [префикс]
      */
     SET_PREFIX('p', true),
     /**
@@ -40,17 +39,17 @@ enum Option {
     private static final Map<Character, Option> OPTIONS =
             Arrays.stream(values()).collect(Collectors.toMap(o -> o.symbol, o -> o));
     /**
-     * Символ соответствующий опции.
+     * Символ, который соответствует опции.
      */
     private final char symbol;
     /**
-     * Флаг требования параметра для опции.
+     * Флаг требования аргумента для опции.
      */
-    private final boolean hasParameter;
+    private final boolean hasArgument;
 
-    Option(char symbol, boolean hasParameter) {
+    Option(char symbol, boolean hasArgument) {
         this.symbol = symbol;
-        this.hasParameter = hasParameter;
+        this.hasArgument = hasArgument;
     }
 
     /**
@@ -65,11 +64,11 @@ enum Option {
     }
 
     /**
-     * Определяет для данной опции параметр требуется или нет.
+     * Определяет для данной опции требуется аргумент или нет.
      *
-     * @return true если требуется параметр.
+     * @return true если требуется аргумент.
      */
-    public boolean hasParameter() {
-        return hasParameter;
+    public boolean hasArgument() {
+        return hasArgument;
     }
 }

@@ -104,7 +104,7 @@ public final class Arguments {
                         char symbol = s.charAt(i);
                         arguments.add("-" + symbol);
 
-                        if (Option.findBySymbol(symbol).filter(Option::hasParameter).isPresent() &&
+                        if (Option.findBySymbol(symbol).filter(Option::hasArgument).isPresent() &&
                             (i + 1 < s.length())) {
                             arguments.add(s.substring(i + 1));
                             break;
