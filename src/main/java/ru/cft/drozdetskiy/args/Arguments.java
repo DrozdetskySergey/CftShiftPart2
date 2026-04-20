@@ -19,11 +19,11 @@ public final class Arguments {
     }
 
     /**
-     * Парсит массив строк, вычленяет {@linkplain Option опции} и пути до файлов.
-     * Возвращает в качестве результата {@linkplain ArgumentsDTO DTO} с подготовленными входными данными для утилиты.
+     * Парсит массив строк, вычленяет {@linkplain Option опции}, аргументы опций и операнды (пути до файлов).
+     * Возвращает в качестве результата {@linkplain ArgumentsDTO DTO} с аргументами для утилиты.
      *
      * @param args массив строк.
-     * @return {@linkplain ArgumentsDTO DTO} с входными данными для утилиты.
+     * @return {@linkplain ArgumentsDTO DTO} с аргументами для утилиты.
      * @throws InvalidInputException если встречается неизвестная опция.
      * @throws InvalidPathException  если заданный путь нельзя конвертировать в объект интерфейса {@link Path}.
      */
@@ -50,24 +50,17 @@ public final class Arguments {
             Option option = Option.findBySymbol(argument.charAt(1))
                     .orElseThrow(() -> new InvalidInputException("не известная опция %s", argument));
 
+            if (option.hasArgument() && !iterator.hasNext()) {
+                throw new InvalidInputException("для опции %s требуется аргумент", argument);
+            }
+
             switch (option) {
                 case APPEND_FILES -> isAppend = true;
                 case SIMPLE_STAT -> statisticsFactory = StatisticsFactory.SIMPLE;
                 case FULL_STAT -> statisticsFactory = StatisticsFactory.FULL;
-                case SET_DIRECTORY -> {
-                    if (!iterator.hasNext()) {
-                        throw new InvalidInputException("для опции %s требуется аргумент", argument);
-                    }
-
-                    directory = directory == null ? Path.of(iterator.next()) : directory.resolve(iterator.next());
-                }
-                case SET_PREFIX -> {
-                    if (!iterator.hasNext()) {
-                        throw new InvalidInputException("для опции %s требуется аргумент", argument);
-                    }
-
-                    prefix.append(iterator.next());
-                }
+                case SET_DIRECTORY ->
+                        directory = directory == null ? Path.of(iterator.next()) : directory.resolve(iterator.next());
+                case SET_PREFIX -> prefix.append(iterator.next());
             }
         }
 
@@ -82,7 +75,7 @@ public final class Arguments {
     /**
      * В массиве строк выбрасываются null и пустые строки. Оставшиеся строки являются аргументами утилиты.
      * Аргумент считается опцией, если первый символ это минус. Не опции передаются без изменений,
-     * а опции проверяются на слипание и разделяются на самостоятельные аргументы.
+     * а опции проверяются на слипание и разделяются на одиночные опции и их аргументы.
      * Возвращается список аргументов без слипшихся опций, при этом изначальный порядок не нарушается.
      *
      * @param args массив сток.
