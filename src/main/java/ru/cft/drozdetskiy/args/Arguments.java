@@ -9,6 +9,9 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static ru.cft.drozdetskiy.args.Option.OPTION_PREFIX;
+import static ru.cft.drozdetskiy.args.Option.hasNotOptionPrefix;
+
 /**
  * Функциональный класс. Специализируется на аргументах для утилиты.
  * Реализует статичный метод {@linkplain #parse(String[])}
@@ -38,16 +41,16 @@ public final class Arguments {
         while (iterator.hasNext()) {
             String argument = iterator.next();
 
-            if ("-".equals(argument)) {
-                throw new InvalidInputException("не поддерживаемая опция -");
-            }
-
-            if (isNotOption(argument)) {
+            if (hasNotOptionPrefix(argument)) {
                 files.add(Path.of(argument).toAbsolutePath().normalize());
                 continue;
             }
 
-            Option option = Option.findBySymbol(argument.charAt(1))
+            if (OPTION_PREFIX.equals(argument)) {
+                throw new InvalidInputException("пустая опция %s", OPTION_PREFIX);
+            }
+
+            var option = Option.findBySymbol(argument.charAt(OPTION_PREFIX.length()))
                     .orElseThrow(() -> new InvalidInputException("не известная опция %s", argument));
 
             if (option.hasArgument() && !iterator.hasNext()) {
@@ -73,9 +76,8 @@ public final class Arguments {
     }
 
     /**
-     * В массиве строк выбрасываются null и пустые строки. Оставшиеся строки являются аргументами утилиты.
-     * Аргумент считается опцией, если первый символ это минус. Не опции передаются без изменений,
-     * а опции проверяются на слипание и разделяются на одиночные опции и их аргументы.
+     * В массиве строк выбрасывают null и пустые строки. Убирает пробелы в начале и конце строк.
+     * Опции проверяются на слипание и разделяются на одиночные опции и их аргументы. Не опции передаются без изменений.
      * Возвращается список аргументов без слипшихся опций, при этом изначальный порядок не нарушается.
      *
      * @param args массив сток.
@@ -87,15 +89,15 @@ public final class Arguments {
                 .filter(Predicate.not(String::isBlank))
                 .map(String::strip)
                 .flatMap(s -> {
-                    if (s.length() <= 2 || isNotOption(s)) {
+                    if (hasNotOptionPrefix(s) || s.length() - OPTION_PREFIX.length() <= 1) {
                         return Stream.of(s);
                     }
 
                     List<String> arguments = new ArrayList<>();
 
-                    for (int i = 1; i < s.length(); i++) {
+                    for (int i = OPTION_PREFIX.length(); i < s.length(); i++) {
                         char symbol = s.charAt(i);
-                        arguments.add("-" + symbol);
+                        arguments.add(OPTION_PREFIX + symbol);
 
                         if (Option.findBySymbol(symbol).filter(Option::hasArgument).isPresent() &&
                             (i + 1 < s.length())) {
@@ -107,15 +109,5 @@ public final class Arguments {
                     return arguments.stream();
                 })
                 .toList();
-    }
-
-    /**
-     * Проверяет что аргумент не может быть {@linkplain Option опцией}. У опции первый символ это минус.
-     *
-     * @param argument проверяемый аргумент в виде строки.
-     * @return true если аргумент не может быть опцией.
-     */
-    private static boolean isNotOption(String argument) {
-        return !argument.startsWith("-");
     }
 }

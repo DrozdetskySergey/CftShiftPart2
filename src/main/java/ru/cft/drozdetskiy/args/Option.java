@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
  * Опции программы: {@linkplain #SET_DIRECTORY}, {@linkplain #SET_PREFIX}, {@linkplain #APPEND_FILES},
  * {@linkplain #SIMPLE_STAT}, {@linkplain #FULL_STAT}
  * Опция либо требует аргумент (option argument), либо нет.
+ * Опция обязательно начинается с {@linkplain #OPTION_PREFIX}.
  */
 enum Option {
 
@@ -39,6 +40,10 @@ enum Option {
     private static final Map<Character, Option> OPTIONS =
             Arrays.stream(values()).collect(Collectors.toMap(o -> o.symbol, o -> o));
     /**
+     * Обязательные символы с которых начинается опция.
+     */
+    public static final String OPTION_PREFIX = "-";
+    /**
      * Символ, который соответствует опции.
      */
     private final char symbol;
@@ -50,6 +55,16 @@ enum Option {
     Option(char symbol, boolean hasArgument) {
         this.symbol = symbol;
         this.hasArgument = hasArgument;
+    }
+
+    /**
+     * Проверяет что строка не начинается с {@linkplain #OPTION_PREFIX}. Следовательно, не может являться опцией.
+     *
+     * @param string проверяемая строка.
+     * @return true если строка не начинается с OPTION_PREFIX.
+     */
+    public static boolean hasNotOptionPrefix(String string) {
+        return string != null && !string.startsWith(OPTION_PREFIX);
     }
 
     /**
