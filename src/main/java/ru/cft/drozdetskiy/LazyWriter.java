@@ -10,6 +10,7 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
 /**
  * Proxy класс реализующий интерфейсы: {@link Appendable}, {@link Closeable}.
@@ -42,12 +43,14 @@ final class LazyWriter implements Appendable, Closeable {
      * Проксируемый объект класса {@link BufferedWriter} созданный для файла. Создаёт проксируемый объект
      * только тогда, когда первый раз вызывается метод интерфейса Appendable.
      *
-     * @param file        путь к файлу.
-     * @param openOptions массив опций для создания или открытия файла.
+     * @param file     путь к файлу.
+     * @param isAppend true если нужно открыть файл для записи в конец, false если нужно писать в начало файла.
      */
-    public LazyWriter(Path file, OpenOption[] openOptions) {
+    public LazyWriter(Path file, boolean isAppend) {
         this.file = file;
-        this.openOptions = openOptions;
+        openOptions = isAppend ?
+                new StandardOpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.APPEND} :
+                new StandardOpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
     }
 
     @Override

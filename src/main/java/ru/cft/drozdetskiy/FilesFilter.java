@@ -7,7 +7,9 @@ import ru.cft.drozdetskiy.args.ArgumentsDTO;
 import ru.cft.drozdetskiy.statistics.Statistics;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -83,14 +85,13 @@ public final class FilesFilter {
         Path stringsFile = dto.directory().resolve(dto.prefix() + "strings.txt");
         throwExceptionIfCollectionsOverlap(List.of(integersFile, floatsFile, stringsFile), dto.files());
 
-        OpenOption[] openOptions = createOpenOptions(dto.isAppend());
-        var integersWriter = new LazyWriter(integersFile, openOptions);
-        var floatsWriter = new LazyWriter(floatsFile, openOptions);
-        var stringsWriter = new LazyWriter(stringsFile, openOptions);
+        var iterator = new FilesIterator(dto.files());
+        var integersWriter = new LazyWriter(integersFile, dto.isAppend());
+        var floatsWriter = new LazyWriter(floatsFile, dto.isAppend());
+        var stringsWriter = new LazyWriter(stringsFile, dto.isAppend());
         var separator = new Separator(Map.of(INTEGER, integersWriter, FLOAT, floatsWriter, STRING, stringsWriter));
 
-        try (integersWriter; floatsWriter; stringsWriter; var iterator = new FilesIterator(dto.files())) {
-
+        try (iterator; integersWriter; floatsWriter; stringsWriter) {
             return separator.handleStrings(iterator, dto.statisticsFactory());
         }
     }
@@ -122,17 +123,5 @@ public final class FilesFilter {
                 throw new InvalidInputException("совпадающий путь %s", p);
             }
         }
-    }
-
-    /**
-     * Создаёт новый массив опций {@link StandardOpenOption} для открытия файла в зависимости от переданного флага.
-     *
-     * @param isAppend true если нужно открыть файл для записи в конец, false если нужно писать в начало файла.
-     * @return Массив объектов интерфейса {@link OpenOption}.
-     */
-    private static OpenOption[] createOpenOptions(boolean isAppend) {
-        return isAppend ?
-                new StandardOpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.APPEND} :
-                new StandardOpenOption[]{StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE};
     }
 }
