@@ -1,5 +1,6 @@
 package ru.cft.drozdetskiy;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -9,6 +10,7 @@ import static ru.cft.drozdetskiy.ContentType.*;
 class ContentTypeClassifierTest {
 
     @ParameterizedTest
+    @DisplayName("Содержимое строки квалифицируется как целое число")
     @ValueSource(strings = {
             "0", "+1", "-0",
             "+000000001234567890987654321234567890",
@@ -21,6 +23,7 @@ class ContentTypeClassifierTest {
     }
 
     @ParameterizedTest
+    @DisplayName("Содержимое строки квалифицируется как вещественное число")
     @ValueSource(strings = {
             "1.0", "+0.0", "3.1415", "+314.15E-2", "-.45", "-15.e+25", ".0", "0.", "+0.", "-.0", ".0e0",
             "+0E+0", "1.E-1", "0.e-224", "0.E0", "470E+12", "03e0",
@@ -33,6 +36,7 @@ class ContentTypeClassifierTest {
     }
 
     @ParameterizedTest
+    @DisplayName("Содержимое строки квалифицируется как обычная строка")
     @ValueSource(strings = {
             "", " ", "Java", ".", "E1", "-.e5", "042.1415.3", "+27eE7", "1567e+", "99E2.5", "+.", "-", "..",
             "e5", "3E3E3", "6.e000-", ".e0", "777E ", "80.08e", "22e-2147483648", "+4.05E12345678901", "+-1",
