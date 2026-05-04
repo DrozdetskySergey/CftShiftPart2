@@ -7,10 +7,6 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
-
-import static ru.cft.drozdetskiy.args.Option.OPTION_PREFIX;
-import static ru.cft.drozdetskiy.args.Option.hasNotOptionPrefix;
 
 /**
  * Функциональный класс. Специализируется на аргументах для утилиты.
@@ -27,7 +23,7 @@ public final class Arguments {
      *
      * @param args массив строк.
      * @return {@linkplain ArgumentsDTO DTO} с аргументами для утилиты.
-     * @throws InvalidInputException если встречается неизвестная опция.
+     * @throws InvalidInputException если встречается неизвестная или пустая опция.
      * @throws InvalidPathException  если заданный путь нельзя конвертировать в объект интерфейса {@link Path}.
      */
     public static ArgumentsDTO parse(String[] args) {
@@ -41,16 +37,12 @@ public final class Arguments {
         while (iterator.hasNext()) {
             String argument = iterator.next();
 
-            if (hasNotOptionPrefix(argument)) {
+            if (Option.isNotOption(argument)) {
                 files.add(Path.of(argument).toAbsolutePath().normalize());
                 continue;
             }
 
-            if (OPTION_PREFIX.equals(argument)) {
-                throw new InvalidInputException("пустая опция %s", OPTION_PREFIX);
-            }
-
-            var option = Option.findBySymbol(argument.charAt(OPTION_PREFIX.length()))
+            Option option = Option.findByString(argument)
                     .orElseThrow(() -> new InvalidInputException("не известная опция %s", argument));
 
             if (option.hasArgument() && !iterator.hasNext()) {
@@ -76,38 +68,21 @@ public final class Arguments {
     }
 
     /**
-     * В массиве строк выбрасывают null и пустые строки. Убирает пробелы в начале и конце строк.
-     * Опции проверяются на слипание и разделяются на одиночные опции и их аргументы. Не опции передаются без изменений.
+     * В массиве строк выбрасывают null и пустые строки. Убирает пробелы в начале и конце строк. Оставшиеся строки
+     * считаются аргументами: {@linkplain Option опции}, аргументы опций и операнды (пути до файлов).
+     * Опции проверяются на слипание и разделяются на одиночные опции и их аргументы. Не опции остаются без изменений.
      * Возвращается список аргументов без слипшихся опций, при этом изначальный порядок не нарушается.
      *
      * @param args массив сток.
      * @return Список аргументов без слипшихся опций.
+     * @throws InvalidInputException если встречается неизвестная или пустая опция.
      */
     private static List<String> getDecomposedArguments(String[] args) {
         return Arrays.stream(args)
                 .filter(Objects::nonNull)
                 .filter(Predicate.not(String::isBlank))
                 .map(String::strip)
-                .flatMap(s -> {
-                    if (hasNotOptionPrefix(s) || s.length() - OPTION_PREFIX.length() <= 1) {
-                        return Stream.of(s);
-                    }
-
-                    List<String> arguments = new ArrayList<>();
-
-                    for (int i = OPTION_PREFIX.length(); i < s.length(); i++) {
-                        char symbol = s.charAt(i);
-                        arguments.add(OPTION_PREFIX + symbol);
-
-                        if (Option.findBySymbol(symbol).filter(Option::hasArgument).isPresent() &&
-                            (i + 1 < s.length())) {
-                            arguments.add(s.substring(i + 1));
-                            break;
-                        }
-                    }
-
-                    return arguments.stream();
-                })
+                .flatMap(s -> Option.decompose(s).stream())
                 .toList();
     }
 }

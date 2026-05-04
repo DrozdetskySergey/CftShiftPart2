@@ -1,8 +1,8 @@
 package ru.cft.drozdetskiy.args;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
+import ru.cft.drozdetskiy.InvalidInputException;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +42,7 @@ enum Option {
     /**
      * Обязательные символы с которых начинается опция.
      */
-    public static final String OPTION_PREFIX = "-";
+    private static final String OPTION_PREFIX = "-";
     /**
      * Символ, который соответствует опции.
      */
@@ -58,24 +58,70 @@ enum Option {
     }
 
     /**
-     * Проверяет что строка не начинается с {@linkplain #OPTION_PREFIX}. Следовательно, не может являться опцией.
+     * Проверяет что строка не может являться опцией.
      *
      * @param string проверяемая строка.
-     * @return true если строка не начинается с OPTION_PREFIX.
+     * @return true если строка не может являться опцией.
      */
-    public static boolean hasNotOptionPrefix(String string) {
-        return string != null && !string.startsWith(OPTION_PREFIX);
+    public static boolean isNotOption(String string) {
+        return !string.startsWith(OPTION_PREFIX);
     }
 
     /**
-     * Производит поиск {@linkplain Option опции} по заданному символу.
-     * Возвращает {@link Optional контейнер} с соответствующей опцией или пустой если нет таковой.
+     * Производит поиск опции по заданной строке.
+     * Возвращает {@link Optional контейнер} с соответствующей опцией или пустой если нет подходящей.
      *
-     * @param symbol символ по которому проверяется соответствие.
-     * @return Контейнер с соответствующей опцией заданному символу либо пустой если не нашлось такой опции.
+     * @param string строка по которому проверяется соответствие.
+     * @return Контейнер с соответствующей опцией либо пустой если не нашлось такой опции.
      */
-    public static Optional<Option> findBySymbol(char symbol) {
-        return Optional.ofNullable(OPTIONS.get(symbol));
+    public static Optional<Option> findByString(String string) {
+        if (isNotOption(string)) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(OPTIONS.get(string.charAt(OPTION_PREFIX.length())));
+    }
+
+    /**
+     * Парсит строку и производит декомпозицию слипшихся опций.
+     * Если строка не может являться опцией или слипшимися опциями, тогда возвращается список из одной этой строки.
+     * Если строка состоит из одной опции, тогда возвращается список из одной этой строки.
+     * Если строка состоит из нескольких слипшихся опций и(или) из опции, слипшейся со своим аргументом,
+     * тогда она разделяется на одиночные опции и аргумент крайней опции, если он присутствует, и возвращается
+     * список опций в виде строк (без слипшихся опций), при этом изначальный порядок не нарушается.
+     *
+     * @param string проверяемая строка.
+     * @return Список аргументов без слипшихся опций в виде отдельных строк.
+     * @throws InvalidInputException если встречается неизвестная или пустая опция.
+     */
+    public static List<String> decompose(String string) {
+        if (isNotOption(string)) {
+            return List.of(string);
+        }
+
+        if (OPTION_PREFIX.equals(string)) {
+            throw new InvalidInputException("пустая опция %s", OPTION_PREFIX);
+        }
+
+        List<String> arguments = new ArrayList<>();
+
+        for (int i = OPTION_PREFIX.length(); i < string.length(); i++) {
+            char symbol = string.charAt(i);
+            Option option = OPTIONS.get(symbol);
+
+            if (option == null) {
+                throw new InvalidInputException("не известная опция %s%c", OPTION_PREFIX, symbol);
+            }
+
+            arguments.add(OPTION_PREFIX + symbol);
+
+            if (option.hasArgument() && i + 1 < string.length()) {
+                arguments.add(string.substring(i + 1));
+                break;
+            }
+        }
+
+        return arguments;
     }
 
     /**
@@ -85,5 +131,12 @@ enum Option {
      */
     public boolean hasArgument() {
         return hasArgument;
+    }
+
+    @Override
+    public String toString() {
+        return hasArgument ?
+                OPTION_PREFIX + symbol + " [аргумент]" :
+                OPTION_PREFIX + symbol;
     }
 }
