@@ -8,8 +8,7 @@ import java.util.stream.Collectors;
 /**
  * Опции программы: {@linkplain #SET_DIRECTORY}, {@linkplain #SET_PREFIX}, {@linkplain #APPEND_FILES},
  * {@linkplain #SIMPLE_STAT}, {@linkplain #FULL_STAT}
- * Опция либо требует аргумент (option argument), либо нет.
- * Опция обязательно начинается с {@linkplain #OPTION_PREFIX}.
+ * Опция либо требует аргумент, либо нет.
  */
 enum Option {
 
@@ -68,11 +67,10 @@ enum Option {
     }
 
     /**
-     * Производит поиск опции по заданной строке.
-     * Возвращает {@link Optional контейнер} с соответствующей опцией или пустой если нет подходящей.
+     * Производит поиск опции совпадающей с началом строки, дальнейшие символы игнорируются.
      *
-     * @param string строка по которому проверяется соответствие.
-     * @return Контейнер с соответствующей опцией либо пустой если не нашлось такой опции.
+     * @param string строка начало которой проверяется на соответствие какой-либо опции.
+     * @return {@link Optional Контейнер} с опцией либо пустой если начало строки не соответствует ни одной опции.
      */
     public static Optional<Option> findByString(String string) {
         if (isNotOption(string)) {
