@@ -73,7 +73,7 @@ enum Option {
      * @return {@link Optional Контейнер} с опцией либо пустой если начало строки не соответствует ни одной опции.
      */
     public static Optional<Option> findByString(String string) {
-        if (isNotOption(string)) {
+        if (isNotOption(string) || OPTION_PREFIX.equals(string)) {
             return Optional.empty();
         }
 
