@@ -111,7 +111,7 @@ enum Option {
                 throw new InvalidInputException("не известная опция %s%c", OPTION_PREFIX, symbol);
             }
 
-            arguments.add(OPTION_PREFIX + symbol);
+            arguments.add(option.toString());
 
             if (option.hasArgument() && i + 1 < string.length()) {
                 arguments.add(string.substring(i + 1));
