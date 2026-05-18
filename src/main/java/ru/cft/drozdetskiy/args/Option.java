@@ -135,8 +135,6 @@ enum Option {
 
     @Override
     public String toString() {
-        return hasArgument ?
-                OPTION_PREFIX + symbol + " [аргумент]" :
-                OPTION_PREFIX + symbol;
+        return OPTION_PREFIX + symbol;
     }
 }
