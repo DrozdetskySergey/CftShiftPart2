@@ -63,7 +63,7 @@ enum Option {
      * @return true если строка не может являться опцией.
      */
     public static boolean isNotOption(String string) {
-        return !string.startsWith(OPTION_PREFIX) || OPTION_PREFIX.equals(string);
+        return !string.startsWith(OPTION_PREFIX);
     }
 
     /**
