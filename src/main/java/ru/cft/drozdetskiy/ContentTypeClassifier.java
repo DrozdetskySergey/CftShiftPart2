@@ -39,7 +39,7 @@ final class ContentTypeClassifier {
 
             if (isDecimalSeparator(symbol) && result == INTEGER && firstIndex != lastIndex) {
                 result = FLOAT;
-            } else if (isDecimalExponent(symbol) &&
+            } else if (isExponent(symbol) &&
                        ((result == INTEGER && firstIndex < i) || (result == FLOAT && firstIndex + 1 < i))) {
                 result = isSubstringConvertedToInteger(string, i + 1) ? FLOAT : STRING;
                 break;
@@ -104,12 +104,12 @@ final class ContentTypeClassifier {
     }
 
     /**
-     * Проверяет, что символ является десятичным показателем степени.
+     * Проверяет, что символ является символом экспоненты.
      *
      * @param symbol проверяемый символ.
-     * @return true если символ является десятичным показателем степени.
+     * @return true если символ является символом экспоненты.
      */
-    private static boolean isDecimalExponent(char symbol) {
+    private static boolean isExponent(char symbol) {
         return symbol == 'e' || symbol == 'E';
     }
 
