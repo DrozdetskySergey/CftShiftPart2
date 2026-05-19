@@ -39,8 +39,7 @@ final class ContentTypeClassifier {
 
             if (isDecimalSeparator(symbol) && result == INTEGER && firstIndex != lastIndex) {
                 result = FLOAT;
-            } else if (isExponent(symbol) &&
-                       ((result == INTEGER && firstIndex < i) || (result == FLOAT && firstIndex + 1 < i))) {
+            } else if (isExponent(symbol) && firstIndex < i - (result == INTEGER ? 0 : 1)) {
                 result = isSubstringConvertedToInteger(string, i + 1) ? FLOAT : STRING;
                 break;
             } else if (!isDigit(symbol)) {
