@@ -42,7 +42,7 @@ public final class Arguments {
                 continue;
             }
 
-            Option option = Option.findByString(argument)
+            Option option = Option.findByStringStart(argument)
                     .orElseThrow(() -> new InvalidInputException("не известная опция %s", argument));
 
             if (option.hasArgument() && !iterator.hasNext()) {

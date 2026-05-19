@@ -70,9 +70,10 @@ enum Option {
      * Производит поиск опции совпадающей с началом строки, дальнейшие символы игнорируются.
      *
      * @param string строка начало которой проверяется на соответствие какой-либо опции.
-     * @return {@link Optional Контейнер} с опцией либо пустой если начало строки не соответствует ни одной опции.
+     * @return {@link Optional} с опцией либо {@linkplain Optional#empty()} если начало строки
+     * не соответствует ни одной опции.
      */
-    public static Optional<Option> findByString(String string) {
+    public static Optional<Option> findByStringStart(String string) {
         if (isNotOption(string) || OPTION_PREFIX.equals(string)) {
             return Optional.empty();
         }
