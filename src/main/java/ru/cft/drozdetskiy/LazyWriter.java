@@ -118,7 +118,7 @@ final class LazyWriter implements Appendable, Closeable {
      */
     private void throwExceptionIfClosed() {
         if (isClosed) {
-            throw new IllegalStateException("Объект BufferedWriter находится в неподходящем состоянии для выполняемой операции, был вызван метод close().");
+            throw new IllegalStateException("Объект LazyWriter закрыт, уже был вызван метод close().");
         }
     }
 }
