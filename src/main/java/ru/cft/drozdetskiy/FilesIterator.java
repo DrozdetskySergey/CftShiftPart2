@@ -150,13 +150,13 @@ final class FilesIterator implements Iterator<String>, Closeable {
     }
 
     /**
-     * Бросает IllegalStateException если объект закрыт (close).
+     * Бросает IllegalStateException если объект закрыт, уже был вызван метод close().
      *
      * @throws IllegalStateException если объект закрыт.
      */
     private void throwExceptionIfClosed() {
         if (isClosed) {
-            throw new IllegalStateException("Объект FilesIterator находится в неподходящем состоянии для выполняемой операции, уже закрыт (close).");
+            throw new IllegalStateException("Объект FilesIterator закрыт, уже был вызван метод close().");
         }
     }
 }
