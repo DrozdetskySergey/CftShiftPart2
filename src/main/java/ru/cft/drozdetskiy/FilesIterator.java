@@ -90,8 +90,13 @@ final class FilesIterator implements Iterator<String>, Closeable {
 
     @Override
     public void close() {
-        while (!isClosed && !readers.isEmpty()) {
-            closeReader(readers.remove(0));
+        if (isClosed) {
+            return;
+        }
+
+        while (!readers.isEmpty()) {
+            int lastIndex = readers.size() - 1;
+            closeReader(readers.remove(lastIndex));
         }
 
         isClosed = true;
