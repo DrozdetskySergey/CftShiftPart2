@@ -42,7 +42,7 @@ final class FilesIterator implements Iterator<String>, Closeable {
     /**
      * Итератор по строкам из файлов. Выдаёт по одной строке из каждого файла по очереди.
      *
-     * @param files Список файлов.
+     * @param files Список путей к файлам.
      * @throws InvalidInputException если передан пустой список фалов.
      * @throws IOException           если сбой при создании ридера для файла.
      */
