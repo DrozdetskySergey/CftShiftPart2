@@ -12,8 +12,8 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static ru.cft.drozdetskiy.ContentType.*;
 
@@ -83,7 +83,7 @@ public final class FilesFilter {
         Path integersFile = dto.directory().resolve(dto.prefix() + "integers.txt");
         Path floatsFile = dto.directory().resolve(dto.prefix() + "floats.txt");
         Path stringsFile = dto.directory().resolve(dto.prefix() + "strings.txt");
-        throwExceptionIfCollectionsOverlap(List.of(integersFile, floatsFile, stringsFile), dto.files());
+        throwExceptionIfCollectionsOverlap(dto.files(), Set.of(integersFile, floatsFile, stringsFile));
 
         var iterator = new FilesIterator(dto.files());
         var integersWriter = new LazyWriter(integersFile, dto.isAppend());
@@ -112,16 +112,19 @@ public final class FilesFilter {
 
     /**
      * Бросает InvalidInputException если коллекции путей пересекаются (имеют хотя бы один одинаковый путь).
+     * Перебирается первая коллекция путей и ищется такой же путь во второй коллекции. Для оптимизации рекомендуется
+     * второй коллекции быть {@link Set}.
      *
      * @param paths1 первая коллекция путей.
      * @param paths2 вторая коллекция путей.
      * @throws InvalidInputException если коллекции путей пересекаются.
      */
     private static void throwExceptionIfCollectionsOverlap(Collection<Path> paths1, Collection<Path> paths2) {
-        for (Path p : paths1) {
-            if (paths2.contains(p)) {
-                throw new InvalidInputException("совпадающий путь %s", p);
-            }
-        }
+        paths1.stream()
+                .filter(paths2::contains)
+                .findAny()
+                .ifPresent(p -> {
+                    throw new InvalidInputException("совпадающий путь %s", p);
+                });
     }
 }
