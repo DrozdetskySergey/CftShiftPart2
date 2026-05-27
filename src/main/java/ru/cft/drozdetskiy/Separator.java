@@ -1,5 +1,7 @@
 package ru.cft.drozdetskiy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.cft.drozdetskiy.statistics.Statistics;
 import ru.cft.drozdetskiy.statistics.StatisticsFactory;
 
@@ -14,6 +16,8 @@ import java.util.Map;
  * интерфейса {@link Appendable}, переданные в конструктор. При этом собирается статистика.
  */
 final class Separator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Separator.class);
 
     /**
      * Словарь с объектами интерфейса {@link Appendable} в соответствии с {@linkplain  ContentType типом}.
@@ -34,8 +38,9 @@ final class Separator {
     /**
      * Обрабатывает строки из объекта интерфейса {@link Iterator}.
      * В зависимости от {@linkplain ContentType типа содержимого} строка отправляется в один из объектов
-     * интерфейса {@link Appendable} переданных в конструктор этого класса.
-     * При этом собирается статистика и выдаётся в качестве результата.
+     * интерфейса {@link Appendable} переданных в конструктор этого класса. При этом собирается статистика
+     * и выдаётся в качестве результата. Если тип содержимого был определен неверно, то обработка строк не прерывается,
+     * а ошибочно классифицированная строка считается простой строкой.
      *
      * @param iterator          объект интерфейса {@link Iterator} параметризованный строкой.
      * @param statisticsFactory фабрика для создания объектов интерфейса {@link Statistics}.
@@ -50,8 +55,16 @@ final class Separator {
         while (iterator.hasNext()) {
             String next = iterator.next();
             ContentType type = ContentTypeClassifier.classify(next);
+
+            try {
+                allStatistics.get(type).include(next);
+            } catch (NumberFormatException e) {
+                type = ContentType.STRING;
+                allStatistics.get(type).include(next);
+                LOG.warn("Некорректно определён тип содержимого строки '{}' как число, автоматически переопределен как простая строка.", next);
+            }
+
             writers.get(type).append(next).append(System.lineSeparator());
-            allStatistics.get(type).include(next);
         }
 
         return Map.copyOf(allStatistics);
