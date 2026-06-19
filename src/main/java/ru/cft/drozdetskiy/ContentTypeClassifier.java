@@ -40,7 +40,7 @@ final class ContentTypeClassifier {
 
             if (isDecimalSeparator(symbol) && result == INTEGER && firstIndex != lastIndex) {
                 result = FLOAT;
-            } else if (isExponent(symbol) && firstIndex < i - (result == INTEGER ? 0 : 1)) {
+            } else if (isExponent(symbol) && i > firstIndex + (result == FLOAT ? 1 : 0)) {
                 result = isSubstringConvertedToInteger(string, i + 1) ? FLOAT : STRING;
                 break;
             } else if (!isDigit(symbol)) {
