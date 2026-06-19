@@ -102,9 +102,11 @@ enum Option {
             throw new InvalidInputException("пустая опция %s", OPTION_PREFIX);
         }
 
-        List<String> arguments = new ArrayList<>();
+        final int firstIndex = OPTION_PREFIX.length();
+        final int lastIndex = string.length() - 1;
+        final List<String> result = new ArrayList<>();
 
-        for (int i = OPTION_PREFIX.length(); i < string.length(); i++) {
+        for (int i = firstIndex; i <= lastIndex; i++) {
             char symbol = string.charAt(i);
             Option option = OPTIONS.get(symbol);
 
@@ -112,15 +114,15 @@ enum Option {
                 throw new InvalidInputException("не известная опция %s%c", OPTION_PREFIX, symbol);
             }
 
-            arguments.add(option.toString());
+            result.add(OPTION_PREFIX + symbol);
 
-            if (option.hasArgument() && i + 1 < string.length()) {
-                arguments.add(string.substring(i + 1));
+            if (option.hasArgument() && i < lastIndex) {
+                result.add(string.substring(i + 1));
                 break;
             }
         }
 
-        return arguments;
+        return result;
     }
 
     /**
