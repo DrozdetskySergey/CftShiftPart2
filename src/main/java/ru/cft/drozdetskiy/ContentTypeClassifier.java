@@ -69,7 +69,7 @@ final class ContentTypeClassifier {
     private static boolean isSubstringConvertedToInteger(String string, int beginIndex) {
         final int lastIndex = string.length() - 1;
 
-        if (lastIndex < beginIndex) {
+        if (string.isEmpty() || lastIndex < beginIndex) {
             return false;
         }
 
@@ -86,9 +86,12 @@ final class ContentTypeClassifier {
             result = isDigit(string.charAt(i));
         }
 
-        if (result && firstIndex + firstToLastIndexDiff == lastIndex) {
-            String digits = string.substring(firstIndex);
-            result = digits.compareTo("2147483647") <= 0;
+        if (result && lastIndex == firstIndex + firstToLastIndexDiff) {
+            String rangeBound = "2147483647";
+
+            for (int i = 0; result && i <= firstToLastIndexDiff; i++) {
+                result = string.charAt(firstIndex + i) <= rangeBound.charAt(i);
+            }
         }
 
         return result;
