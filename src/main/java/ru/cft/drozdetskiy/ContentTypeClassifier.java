@@ -88,9 +88,11 @@ final class ContentTypeClassifier {
 
         if (result && lastIndex == firstIndex + firstToLastIndexDiff) {
             String rangeBound = "2147483647";
+            int comparison = 0;
 
-            for (int i = 0; result && i <= firstToLastIndexDiff; i++) {
-                result = string.charAt(firstIndex + i) <= rangeBound.charAt(i);
+            for (int i = firstIndex, n = 0; comparison == 0 && i <= lastIndex; i++, n++) {
+                comparison = Character.compare(string.charAt(i), rangeBound.charAt(n));
+                result = comparison <= 0;
             }
         }
 
