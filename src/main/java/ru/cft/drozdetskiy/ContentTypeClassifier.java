@@ -90,8 +90,8 @@ final class ContentTypeClassifier {
             String rangeBound = "2147483647";
             int comparison = 0;
 
-            for (int i = firstIndex, n = 0; comparison == 0 && i <= lastIndex; i++, n++) {
-                comparison = Character.compare(string.charAt(i), rangeBound.charAt(n));
+            for (int i = 0; comparison == 0 && i < rangeBound.length(); i++) {
+                comparison = Character.compare(string.charAt(firstIndex + i), rangeBound.charAt(i));
                 result = comparison <= 0;
             }
         }
