@@ -8,7 +8,7 @@ import java.math.RoundingMode;
 /**
  * Полная статистика для значения типа {@linkplain ContentType#FLOAT FLOAT} переданного в формате строки.
  */
-final class FullFloatsStatistics implements Statistics {
+final class FullFloatsStatistics extends Statistics {
 
     /**
      * Минимальное значение.
@@ -21,15 +21,21 @@ final class FullFloatsStatistics implements Statistics {
     /**
      * Сумма.
      */
-    private BigDecimal sum = BigDecimal.ZERO;
+    private BigDecimal sum;
     /**
      * Флаг. Сигнализирует о том, что приходящие значения не имели крупного масштаба (scale).
      */
-    private boolean isScaleWithinLimit = true;
+    private boolean isScaleWithinLimit;
+
     /**
-     * Количество.
+     * Полная статистика для значения типа {@linkplain ContentType#FLOAT FLOAT} переданного в формате строки.
      */
-    private long count;
+    public FullFloatsStatistics() {
+        super(ContentType.FLOAT);
+
+        sum = BigDecimal.ZERO;
+        isScaleWithinLimit = true;
+    }
 
     @Override
     public void include(String value) {
@@ -45,6 +51,22 @@ final class FullFloatsStatistics implements Statistics {
         }
 
         count++;
+    }
+
+    @Override
+    public String getAdditionalInfo() {
+        final String message = "Переполнение поддерживаемого лимита для масштаба.";
+        StringBuilder result = new StringBuilder();
+
+        if (count > 0) {
+            BigDecimal average = sum.divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+            result.append(String.format("Минимальное вещественное число = %s%n", minDecimal));
+            result.append(String.format("Максимальное вещественное число = %s%n", maxDecimal));
+            result.append(String.format("Среднее арифметическое значение = %s%n", isScaleWithinLimit ? average : message));
+            result.append(String.format("Сумма всех вещественных чисел = %s%n", isScaleWithinLimit ? sum : message));
+        }
+
+        return result.toString();
     }
 
     @Override
