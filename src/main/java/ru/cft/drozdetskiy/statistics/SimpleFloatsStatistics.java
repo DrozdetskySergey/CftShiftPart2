@@ -5,16 +5,23 @@ import ru.cft.drozdetskiy.ContentType;
 /**
  * Краткая статистика для значения типа {@linkplain ContentType#FLOAT FLOAT} переданного в формате строки.
  */
-final class SimpleFloatsStatistics implements Statistics {
+final class SimpleFloatsStatistics extends Statistics {
 
     /**
-     * Количество.
+     * Краткая статистика для значения типа {@linkplain ContentType#FLOAT FLOAT} переданного в формате строки.
      */
-    private long count;
+    public SimpleFloatsStatistics() {
+        super(ContentType.FLOAT);
+    }
 
     @Override
     public void include(String value) {
         count++;
+    }
+
+    @Override
+    public String getAdditionalInfo() {
+        return "";
     }
 
     @Override

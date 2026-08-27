@@ -5,16 +5,23 @@ import ru.cft.drozdetskiy.ContentType;
 /**
  * Краткая статистика для значения типа {@linkplain ContentType#INTEGER INTEGER} переданного в формате строки.
  */
-final class SimpleIntegersStatistics implements Statistics {
+final class SimpleIntegersStatistics extends Statistics {
 
     /**
-     * Количество.
+     * Краткая статистика для значения типа {@linkplain ContentType#INTEGER INTEGER} переданного в формате строки.
      */
-    private long count;
+    public SimpleIntegersStatistics() {
+        super(ContentType.INTEGER);
+    }
 
     @Override
     public void include(String value) {
         count++;
+    }
+
+    @Override
+    public String getAdditionalInfo() {
+        return "";
     }
 
     @Override
