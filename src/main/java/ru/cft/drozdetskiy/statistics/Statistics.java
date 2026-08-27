@@ -18,7 +18,7 @@ public abstract class Statistics {
      * Количество значений которые были переданы в данную статистику через метод {@linkplain #include(String)}
      * и удачно обработаны.
      */
-    private long count;
+    protected long count;
 
     /**
      * Статистика о значениях переданных в формате строки. {@linkplain ContentType Тип содержимого} строк фиксируется
