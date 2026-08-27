@@ -1,8 +1,8 @@
 package ru.cft.drozdetskiy;
 
 /**
- * Типы содержимого строки: {@linkplain #INTEGER}, {@linkplain #FLOAT}, {@linkplain #STRING}
- * то есть можно распарсить строку в целое число или в вещественное число, либо оставить строкой.
+ * Типы содержимого строки: {@linkplain #INTEGER}, {@linkplain #FLOAT}, {@linkplain #STRING},
+ * то есть некую строку можно распарсить в целое число либо в вещественное число или это простая строка (любые символы).
  */
 public enum ContentType {
     /**
