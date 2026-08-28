@@ -3,7 +3,7 @@ package ru.cft.drozdetskiy.statistics;
 import ru.cft.drozdetskiy.ContentType;
 
 /**
- * Фабрика для создания объектов интерфейса {@link Statistics} для любого {@linkplain ContentType типа} содержимого строки.
+ * Фабрика объектов {@linkplain Statistics} для любого {@linkplain ContentType типа содержимого} строки.
  * Реализует метод {@linkplain #createFor(ContentType)}.
  * Существует две фабрики: {@linkplain #SIMPLE} и {@linkplain #FULL}.
  */
@@ -37,10 +37,10 @@ public enum StatisticsFactory {
     };
 
     /**
-     * Создаёт новый объект интерфейса {@link Statistics} для любого {@linkplain ContentType типа} содержимого строки.
+     * Создаёт новый объект {@linkplain Statistics} для любого {@linkplain ContentType типа} содержимого строки.
      *
-     * @param type {@linkplain ContentType тип} содержимого строки.
-     * @return Объект интерфейса {@link Statistics}.
+     * @param type {@linkplain ContentType тип содержимого} строки.
+     * @return Новый объект {@linkplain Statistics}.
      */
     public abstract Statistics createFor(ContentType type);
 }
