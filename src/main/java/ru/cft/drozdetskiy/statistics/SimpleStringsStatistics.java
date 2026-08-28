@@ -23,9 +23,4 @@ final class SimpleStringsStatistics extends Statistics {
     public String getAdditionalInfo() {
         return "";
     }
-
-    @Override
-    public String toString() {
-        return String.format("Количество строк = %d%n", count);
-    }
 }

@@ -23,9 +23,4 @@ final class SimpleIntegersStatistics extends Statistics {
     public String getAdditionalInfo() {
         return "";
     }
-
-    @Override
-    public String toString() {
-        return String.format("Количество целых чисел = %d%n", count);
-    }
 }

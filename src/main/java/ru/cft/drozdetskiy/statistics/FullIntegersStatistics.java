@@ -57,20 +57,4 @@ final class FullIntegersStatistics extends Statistics {
 
         return result.toString();
     }
-
-    @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder(String.format("Количество целых чисел = %d%n", count));
-
-        if (count > 0) {
-            BigDecimal average = (new BigDecimal(sum)).setScale(6, RoundingMode.HALF_EVEN)
-                    .divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN).stripTrailingZeros();
-            result.append(String.format("| Минимальное значение = %s%n", minInteger));
-            result.append(String.format("| Максимальное значение = %s%n", maxInteger));
-            result.append(String.format("| Среднее арифметическое значение = %s%n", average));
-            result.append(String.format("| Сумма всех целых чисел = %s%n", sum));
-        }
-
-        return result.toString();
-    }
 }

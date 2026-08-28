@@ -23,9 +23,4 @@ final class SimpleFloatsStatistics extends Statistics {
     public String getAdditionalInfo() {
         return "";
     }
-
-    @Override
-    public String toString() {
-        return String.format("Количество вещественных чисел = %d%n", count);
-    }
 }

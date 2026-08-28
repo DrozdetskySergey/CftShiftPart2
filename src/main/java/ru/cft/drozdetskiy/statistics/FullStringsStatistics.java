@@ -44,16 +44,4 @@ final class FullStringsStatistics extends Statistics {
 
         return result.toString();
     }
-
-    @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder(String.format("Количество строк = %d%n", count));
-
-        if (count > 0) {
-            result.append(String.format("| Минимальная длина строки = %d%n", minLength));
-            result.append(String.format("| Максимальная длина строки = %d%n", maxLength));
-        }
-
-        return result.toString();
-    }
 }
