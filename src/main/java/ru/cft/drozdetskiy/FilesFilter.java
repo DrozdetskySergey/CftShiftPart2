@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import ru.cft.drozdetskiy.args.Arguments;
 import ru.cft.drozdetskiy.args.ArgumentsDTO;
 import ru.cft.drozdetskiy.statistics.Statistics;
+import ru.cft.drozdetskiy.statistics.StatisticsPrinter;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -49,7 +50,7 @@ public final class FilesFilter {
         } else {
             try {
                 Map<ContentType, Statistics> allStatistics = filterFiles(Arguments.parse(args));
-                Arrays.stream(ContentType.values()).map(allStatistics::get).forEach(System.out::println);
+                Arrays.stream(ContentType.values()).map(allStatistics::get).forEach(StatisticsPrinter::println);
                 LOG.info("Остановка утилиты.");
             } catch (InvalidInputException e) {
                 System.out.printf("Не верно задан аргумент: %s%n%n%s", e.getMessage(), help);
